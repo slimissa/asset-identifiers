@@ -13,12 +13,15 @@
     ],
     "coverage": {
       "exchanges": [
+        "XETR",
+        "XHKG",
+        "XKRX",
+        "XLON",
         "XNAS",
         "XNYS",
-        "XLON",
-        "XTKS",
-        "XHKG",
-        "XETR"
+        "XPAR",
+        "XSWX",
+        "XTKS"
       ],
       "asset_classes": [
         "equity",
@@ -89,20 +92,20 @@
       ],
       "corporate_actions": [
         {
-          "date": "2020-08-31",
-          "action_type": "SPLIT",
-          "ratio": "4:1",
-          "details": "Four-for-one stock split",
-          "source": "Apple Inc. press release",
-          "source_url": "https://www.apple.com/newsroom/2020/07/apple-announces-four-for-one-stock-split/"
-        },
-        {
           "date": "2014-06-09",
           "action_type": "SPLIT",
           "ratio": "7:1",
           "details": "Seven-for-one stock split",
           "source": "Apple Inc. press release",
           "source_url": "https://www.apple.com/newsroom/2014/04/23Apple-Announces-7-for-1-Stock-Split/"
+        },
+        {
+          "date": "2020-08-31",
+          "action_type": "SPLIT",
+          "ratio": "4:1",
+          "details": "Four-for-one stock split",
+          "source": "Apple Inc. press release",
+          "source_url": "https://www.apple.com/newsroom/2020/07/apple-announces-four-for-one-stock-split/"
         }
       ]
     },
@@ -340,18 +343,18 @@
       ],
       "corporate_actions": [
         {
-          "date": "2024-06-10",
-          "action_type": "SPLIT",
-          "ratio": "10:1",
-          "details": "Ten-for-one stock split",
-          "source": "NVIDIA Corporation press release",
-          "source_url": "https://nvidianews.nvidia.com/"
-        },
-        {
           "date": "2021-07-20",
           "action_type": "SPLIT",
           "ratio": "4:1",
           "details": "Four-for-one stock split",
+          "source": "NVIDIA Corporation press release",
+          "source_url": "https://nvidianews.nvidia.com/"
+        },
+        {
+          "date": "2024-06-10",
+          "action_type": "SPLIT",
+          "ratio": "10:1",
+          "details": "Ten-for-one stock split",
           "source": "NVIDIA Corporation press release",
           "source_url": "https://nvidianews.nvidia.com/"
         }
@@ -1432,18 +1435,18 @@
       ],
       "corporate_actions": [
         {
-          "date": "2022-08-25",
-          "action_type": "SPLIT",
-          "ratio": "3:1",
-          "details": "Three-for-one stock split",
-          "source": "Tesla press release",
-          "source_url": "https://ir.tesla.com/"
-        },
-        {
           "date": "2020-08-31",
           "action_type": "SPLIT",
           "ratio": "5:1",
           "details": "Five-for-one stock split",
+          "source": "Tesla press release",
+          "source_url": "https://ir.tesla.com/"
+        },
+        {
+          "date": "2022-08-25",
+          "action_type": "SPLIT",
+          "ratio": "3:1",
+          "details": "Three-for-one stock split",
           "source": "Tesla press release",
           "source_url": "https://ir.tesla.com/"
         }

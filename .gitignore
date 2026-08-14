@@ -30,3 +30,17 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
