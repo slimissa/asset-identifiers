@@ -1,0 +1,47 @@
+{
+  "name": "asset-identifiers-registry",
+  "version": "0.1.0",
+  "description": "Canonical, versioned, machine-readable registry of financial instrument identifiers — ISIN, CUSIP, SEDOL, FIGI, LEI, and ticker symbols.",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test test/test_registry.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "finance",
+    "trading",
+    "securities",
+    "isin",
+    "cusip",
+    "sedol",
+    "figi",
+    "lei",
+    "identifiers",
+    "registry",
+    "quant",
+    "quantitative-finance"
+  ],
+  "author": "Le P'tit",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slimissa/asset-identifiers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/slimissa/asset-identifiers/issues"
+  },
+  "homepage": "https://github.com/slimissa/asset-identifiers#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
