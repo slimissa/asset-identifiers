@@ -1,0 +1,413 @@
+{
+  "meta": {
+    "registry": "asset-identifiers",
+    "description": "Cross-language consistency contract for all wrapper implementations",
+    "version": "0.1.0",
+    "generated": "2026-08-14",
+    "purpose": "Defines expected values that all wrappers (Python, JavaScript, Rust, Go) must return identically",
+    "test_suites": [
+      "test_wrappers.py",
+      "test_registry.py",
+      "test_cross_reference.py",
+      "test_check_digits.py"
+    ]
+  },
+  "registry": {
+    "version": "0.1.0",
+    "count": 50,
+    "sources": [
+      "SEC EDGAR",
+      "OpenFIGI",
+      "NASDAQ",
+      "NYSE",
+      "London Stock Exchange",
+      "Tokyo Stock Exchange"
+    ]
+  },
+  "instruments": {
+    "aapl": {
+      "isin": "US0378331005",
+      "cusip": "037833100",
+      "sedol": null,
+      "figi": "BBG000B9XRY4",
+      "lei": "HWUPKR0MPOU8FGXBT394",
+      "ticker": "AAPL",
+      "exchange": "XNAS",
+      "name": "Apple Inc.",
+      "currency": "USD",
+      "asset_class": "equity",
+      "instrument_type": "COMMON_STOCK",
+      "sector": "TECHNOLOGY",
+      "industry": "CONSUMER_ELECTRONICS",
+      "country": "US",
+      "active": true,
+      "listing_date": "1980-12-12",
+      "delisting_date": null,
+      "listings_count": 2,
+      "listings_exchanges": ["XNAS", "XETR"],
+      "history_count": 1,
+      "corporate_actions_count": 2
+    },
+    "msft": {
+      "isin": "US5949181045",
+      "cusip": "594918104",
+      "sedol": null,
+      "figi": "BBG000BPH459",
+      "lei": "INR2EJN1ERAN0W5ZP974",
+      "ticker": "MSFT",
+      "exchange": "XNAS",
+      "name": "Microsoft Corporation",
+      "currency": "USD",
+      "asset_class": "equity",
+      "instrument_type": "COMMON_STOCK",
+      "sector": "TECHNOLOGY",
+      "industry": "SOFTWARE",
+      "country": "US",
+      "active": true,
+      "listing_date": "1986-03-13",
+      "delisting_date": null,
+      "listings_count": 1,
+      "history_count": 1,
+      "corporate_actions_count": 0
+    },
+    "meta": {
+      "isin": "US30303M1027",
+      "cusip": "30303M102",
+      "sedol": null,
+      "figi": "BBG000MM2P62",
+      "lei": "BQ4BKCS1HXDV9HN80Z93",
+      "ticker": "META",
+      "exchange": "XNAS",
+      "name": "Meta Platforms, Inc.",
+      "currency": "USD",
+      "asset_class": "equity",
+      "instrument_type": "COMMON_STOCK",
+      "sector": "TECHNOLOGY",
+      "industry": "SOCIAL_MEDIA",
+      "country": "US",
+      "active": true,
+      "listing_date": "2012-05-18",
+      "delisting_date": null,
+      "old_ticker": "FB",
+      "change_date": "2022-06-09",
+      "change_type": "rename",
+      "change_reason": "COMPANY_REBRANDING",
+      "history_count": 2,
+      "history_tickers": ["FB", "META"],
+      "corporate_actions_count": 0
+    },
+    "googl": {
+      "isin": "US02079K1079",
+      "cusip": "02079K107",
+      "sedol": null,
+      "figi": "BBG009S39JX6",
+      "ticker": "GOOGL",
+      "exchange": "XNAS",
+      "name": "Alphabet Inc.",
+      "currency": "USD",
+      "asset_class": "equity",
+      "country": "US",
+      "active": true,
+      "old_ticker": "GOOG",
+      "history_tickers": ["GOOG", "GOOGL"],
+      "corporate_actions_count": 1
+    },
+    "xom": {
+      "isin": "US30231G1022",
+      "cusip": "30231G102",
+      "ticker": "XOM",
+      "exchange": "XNYS",
+      "name": "Exxon Mobil Corporation",
+      "currency": "USD",
+      "asset_class": "equity",
+      "country": "US",
+      "active": true,
+      "history_count": 2,
+      "history_tickers": ["XON", "XOM"],
+      "first_change_type": "none",
+      "second_change_type": "rename",
+      "second_change_reason": "MERGER"
+    },
+    "pru": {
+      "description": "Duplicate ticker disambiguation test case",
+      "count": 2,
+      "exchanges": ["XLON", "XNYS"],
+      "xlons": {
+        "isin": "GB0007099541",
+        "cusip": null,
+        "sedol": null,
+        "figi": "BBG000BDY322",
+        "ticker": "PRU",
+        "exchange": "XLON",
+        "name": "Prudential plc",
+        "currency": "GBP",
+        "country": "GB",
+        "asset_class": "equity",
+        "active": true
+      },
+      "xnys": {
+        "isin": "US7443201022",
+        "cusip": "744320102",
+        "sedol": null,
+        "figi": "BBG000HCJMF9",
+        "ticker": "PRU",
+        "exchange": "XNYS",
+        "name": "Prudential Financial, Inc.",
+        "currency": "USD",
+        "country": "US",
+        "asset_class": "equity",
+        "active": true
+      }
+    },
+    "spy": {
+      "isin": "US78462F1030",
+      "cusip": "78462F103",
+      "figi": "BBG000BDTBL9",
+      "ticker": "SPY",
+      "exchange": "XNYS",
+      "name": "SPDR S&P 500 ETF Trust",
+      "currency": "USD",
+      "asset_class": "etf",
+      "country": "US",
+      "active": true
+    },
+    "qqq": {
+      "isin": "US46090E1038",
+      "cusip": "46090E103",
+      "figi": "BBG000BSWKH7",
+      "ticker": "QQQ",
+      "exchange": "XNAS",
+      "name": "Invesco QQQ Trust",
+      "currency": "USD",
+      "asset_class": "etf",
+      "country": "US",
+      "active": true
+    },
+    "nvda": {
+      "isin": "US67066G1040",
+      "cusip": "67066G104",
+      "figi": "BBG000BBJQV0",
+      "ticker": "NVDA",
+      "exchange": "XNAS",
+      "name": "NVIDIA Corporation",
+      "currency": "USD",
+      "asset_class": "equity",
+      "country": "US",
+      "active": true,
+      "corporate_actions_count": 2,
+      "corporate_action_dates": ["2021-07-20", "2024-06-10"]
+    },
+    "tsla": {
+      "isin": "US88160R1014",
+      "cusip": "88160R101",
+      "figi": "BBG000N9MNX3",
+      "ticker": "TSLA",
+      "exchange": "XNAS",
+      "name": "Tesla, Inc.",
+      "currency": "USD",
+      "asset_class": "equity",
+      "country": "US",
+      "active": true,
+      "corporate_actions_count": 2,
+      "corporate_action_dates": ["2020-08-31", "2022-08-25"]
+    },
+    "sony": {
+      "isin": "JP3435000009",
+      "cusip": null,
+      "sedol": null,
+      "figi": "BBG000BCM915",
+      "ticker": "7203",
+      "exchange": "XTKS",
+      "name": "Sony Group Corporation",
+      "currency": "JPY",
+      "asset_class": "equity",
+      "country": "JP",
+      "active": true
+    },
+    "sap": {
+      "isin": "DE0007164600",
+      "cusip": null,
+      "sedol": null,
+      "figi": "BBG000BG7GX2",
+      "ticker": "SAP",
+      "exchange": "XETR",
+      "name": "SAP SE",
+      "currency": "EUR",
+      "asset_class": "equity",
+      "country": "DE",
+      "active": true
+    },
+    "samsung": {
+      "isin": "KR7005930003",
+      "cusip": null,
+      "sedol": null,
+      "figi": "BBG000BCY2S8",
+      "ticker": "005930",
+      "exchange": "XKRX",
+      "name": "Samsung Electronics Co., Ltd.",
+      "currency": "KRW",
+      "asset_class": "equity",
+      "country": "KR",
+      "active": true
+    },
+    "tencent": {
+      "isin": "HK0941009539",
+      "cusip": null,
+      "sedol": null,
+      "figi": "BBG000BJ35N5",
+      "ticker": "0700",
+      "exchange": "XHKG",
+      "name": "Tencent Holdings Limited",
+      "currency": "HKD",
+      "asset_class": "equity",
+      "country": "HK",
+      "active": true
+    }
+  },
+  "coverage": {
+    "exchanges": [
+      "XETR", "XHKG", "XKRX", "XLON", "XNAS", "XNYS", "XPAR", "XSWX", "XTKS"
+    ],
+    "exchange_count": 9,
+    "asset_classes": ["equity", "etf"],
+    "asset_class_count": 2,
+    "currencies": ["CHF", "EUR", "GBP", "HKD", "JPY", "KRW", "USD"],
+    "currency_count": 7,
+    "countries": ["CH", "DE", "FR", "GB", "HK", "JP", "KR", "US"],
+    "country_count": 8
+  },
+  "identifier_coverage": {
+    "isin": {
+      "covered": 50,
+      "total": 50,
+      "percentage": 100.0
+    },
+    "cusip": {
+      "covered": 43,
+      "total": 50,
+      "percentage": 86.0
+    },
+    "sedol": {
+      "covered": 0,
+      "total": 50,
+      "percentage": 0.0
+    },
+    "figi": {
+      "covered": 49,
+      "total": 50,
+      "percentage": 98.0
+    },
+    "lei": {
+      "covered": 50,
+      "total": 50,
+      "percentage": 100.0
+    }
+  },
+  "ticker_changes": {
+    "count": 3,
+    "changes": [
+      {
+        "isin": "US30303M1027",
+        "old_ticker": "FB",
+        "new_ticker": "META",
+        "change_date": "2022-06-09",
+        "change_type": "rename",
+        "reason": "COMPANY_REBRANDING"
+      },
+      {
+        "isin": "US02079K1079",
+        "old_ticker": "GOOG",
+        "new_ticker": "GOOGL",
+        "change_date": "2014-04-03",
+        "change_type": "rename",
+        "reason": "CLASS_C_SHARE_CREATION"
+      },
+      {
+        "isin": "US30231G1022",
+        "old_ticker": "XON",
+        "new_ticker": "XOM",
+        "change_date": "1999-12-01",
+        "change_type": "rename",
+        "reason": "MERGER"
+      }
+    ]
+  },
+  "duplicate_tickers": {
+    "count": 1,
+    "tickers": ["PRU"],
+    "pru": {
+      "exchanges": ["XLON", "XNYS"],
+      "count": 2
+    }
+  },
+  "multi_exchange_listings": {
+    "count": 1,
+    "instruments": ["AAPL"],
+    "aapl": {
+      "exchanges": ["XNAS", "XETR"],
+      "currencies": ["USD", "EUR"],
+      "primary_exchange": "XNAS"
+    }
+  },
+  "corporate_actions": {
+    "total_instruments_with_actions": 9,
+    "total_actions": 13,
+    "instruments": ["AAPL", "GOOGL", "AMZN", "NVDA", "KO", "WMT", "GE", "TSLA", "AVGO"],
+    "action_types": ["SPLIT", "SPINOFF"]
+  },
+  "api_contract": {
+    "lookup_methods": [
+      "by_isin",
+      "by_cusip",
+      "by_sedol",
+      "by_figi",
+      "by_lei",
+      "by_ticker",
+      "by_exchange",
+      "by_asset_class",
+      "by_country",
+      "by_currency"
+    ],
+    "metadata_methods": ["meta", "version", "generated", "sources"],
+    "bulk_methods": ["all"],
+    "aggregate_methods": ["exchanges", "asset_classes", "currencies", "countries"],
+    "convenience_methods": ["resolve", "ticker_exists", "isin_exists", "identifier_coverage"],
+    "properties": ["count", "instruments", "path"]
+  },
+  "expected_lookup_results": {
+    "by_isin_US0378331005": {
+      "ticker": "AAPL",
+      "exchange": "XNAS",
+      "currency": "USD",
+      "name": "Apple Inc."
+    },
+    "by_cusip_037833100": {
+      "isin": "US0378331005",
+      "ticker": "AAPL"
+    },
+    "by_figi_BBG000B9XRY4": {
+      "isin": "US0378331005",
+      "ticker": "AAPL"
+    },
+    "by_ticker_AAPL_XNAS": {
+      "isin": "US0378331005",
+      "name": "Apple Inc."
+    },
+    "by_ticker_PRU": {
+      "count": 2,
+      "exchanges": ["XLON", "XNYS"]
+    },
+    "by_ticker_PRU_XNYS": {
+      "isin": "US7443201022",
+      "name": "Prudential Financial, Inc.",
+      "currency": "USD"
+    },
+    "by_ticker_PRU_XLON": {
+      "isin": "GB0007099541",
+      "name": "Prudential plc",
+      "currency": "GBP"
+    },
+    "by_ticker_ZZZZ_XNAS": null,
+    "by_isin_XX0000000000": null
+  }
+}

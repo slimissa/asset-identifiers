@@ -192,11 +192,14 @@ class TestCrossLanguageConsistency:
         with open(consistency_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        assert data.get("count") == self.EXPECTED_COUNT, "Count mismatch"
-        assert data.get("aapl", {}).get("isin") == self.EXPECTED_AAPL_ISIN
-        assert data.get("aapl", {}).get("cusip") == self.EXPECTED_AAPL_CUSIP
-        assert data.get("aapl", {}).get("figi") == self.EXPECTED_AAPL_FIGI
-        assert data.get("aapl", {}).get("ticker") == self.EXPECTED_AAPL_TICKER
+        registry_data = data.get("registry", {})
+        assert registry_data.get("count") == self.EXPECTED_COUNT, "Count mismatch"
+
+        aapl_data = data.get("instruments", {}).get("aapl", {})
+        assert aapl_data.get("isin") == self.EXPECTED_AAPL_ISIN
+        assert aapl_data.get("cusip") == self.EXPECTED_AAPL_CUSIP
+        assert aapl_data.get("figi") == self.EXPECTED_AAPL_FIGI
+        assert aapl_data.get("ticker") == self.EXPECTED_AAPL_TICKER
 
     def test_python_matches_consistency_file(self):
         """Python wrapper results should match consistency file."""
@@ -208,12 +211,14 @@ class TestCrossLanguageConsistency:
         with open(consistency_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        assert registry.count == data.get("count")
+        registry_data = data.get("registry", {})
+        assert registry.count == registry_data.get("count")
         
         aapl = registry.by_isin(self.EXPECTED_AAPL_ISIN)
-        assert aapl["ticker"] == data["aapl"]["ticker"]
-        assert aapl["cusip"] == data["aapl"]["cusip"]
-        assert aapl["figi"] == data["aapl"]["figi"]
+        aapl_data = data.get("instruments", {}).get("aapl", {})
+        assert aapl["ticker"] == aapl_data.get("ticker")
+        assert aapl["cusip"] == aapl_data.get("cusip")
+        assert aapl["figi"] == aapl_data.get("figi")
 
     def test_registry_data_matches_expected(self):
         """Registry data should match expected values."""
