@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "0.1.0",
-    "generated": "2026-01-15",
+    "generated": "2026-08-14",
     "count": 50,
     "sources": [
       "SEC EDGAR",
@@ -13,32 +13,33 @@
     ],
     "coverage": {
       "exchanges": [
+        "XETR",
+        "XHKG",
+        "XKRX",
+        "XLON",
         "XNAS",
         "XNYS",
-        "XLON",
-        "XTKS",
-        "XHKG",
-        "XETR"
+        "XPAR",
+        "XSWX",
+        "XTKS"
       ],
       "asset_classes": [
         "equity",
         "etf"
       ],
       "countries": [
-        "US",
-        "GB",
-        "JP",
-        "HK",
-        "DE",
         "CH",
+        "DE",
         "FR",
+        "GB",
+        "HK",
+        "JP",
         "KR",
-        "CN",
-        "TW",
-        "NL",
-        "IE"
+        "US"
       ]
-    }
+    },
+    "build_timestamp": "2026-08-14T18:58:17.810724Z",
+    "build_version": "1.0.0"
   },
   "instruments": [
     {
