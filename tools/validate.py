@@ -59,11 +59,33 @@ COUNTRY_IDENTIFIER_RULES = {
 }
 
 # ISO 3166-1 alpha-2 country codes (common subset)
+# ISO 3166-1 alpha-2 country codes (full official list)
 ISO3166_COUNTRIES: Set[str] = {
-    "US", "CA", "GB", "IE", "FR", "DE", "CH", "ES", "IT", "NL",
-    "JP", "AU", "HK", "SG", "KR", "CN", "TW", "IN", "BR", "MX",
-    "ZA", "TR", "PL", "AT", "BE", "DK", "FI", "GR", "NO", "PT",
-    "SE", "RU", "SA", "AE", "IL", "TH", "MY", "ID", "PH", "NZ",
+    "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR",
+    "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE",
+    "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ",
+    "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD",
+    "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR",
+    "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM",
+    "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI",
+    "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF",
+    "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS",
+    "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU",
+    "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT",
+    "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN",
+    "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK",
+    "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME",
+    "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ",
+    "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA",
+    "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU",
+    "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM",
+    "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS",
+    "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI",
+    "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV",
+    "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK",
+    "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA",
+    "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI",
+    "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW",
 }
 
 
@@ -81,90 +103,34 @@ def validate_isin_check_digit(isin: str) -> bool:
     Validate ISIN check digit.
 
     ISO 6166 algorithm:
-    1. Convert letters to numbers (A=10, B=11, ..., Z=35)
-    2. Split into individual digits
-    3. Double every other digit starting from the RIGHT
-    4. Sum all digits (doubled values are summed as individual digits)
-    5. Check digit = (10 - (sum % 10)) % 10
-
-    Example: US0378331005
-    U=30, S=28 → 3028 037833100 5
-    Position:   3  0  2  8  0  3  7  8  3  3  1  0  0
-    Double:     3  0  4  8  0  3  14 8  6  3  2  0  0
-    Sum digits: 3+0+4+8+0+3+1+4+8+6+3+2+0+0 = 42
-    Check: (10 - (42 % 10)) % 10 = 8 → Wait, actual check is 5.
-    Let me recompute correctly.
-
-    The algorithm doubles every OTHER digit starting from the RIGHT.
-    ISIN: U S 0 3 7 8 3 3 1 0 0 5
-    Convert letters: 30 28 0 3 7 8 3 3 1 0 0 5
-    Full digit string: 3 0 2 8 0 3 7 8 3 3 1 0 0 5
-
-    From the right (excluding check digit at end):
-    Position from right: 0(0) 1(1) 2(3) 3(3) 4(8) 5(7) 6(3) 7(0) 8(8) 9(2) 10(0) 11(3)
-    Double positions: 1, 3, 5, 7, 9, 11 (odd from right)
-
-    Let's be precise:
-    Digits (left to right): 3 0 2 8 0 3 7 8 3 3 1 0 0
-    Index from right:       12 11 10 9 8 7 6 5 4 3 2 1 0
-
-    Double indices 1, 3, 5, 7, 9, 11 (odd from right, zero-indexed even from right)
-    Index 0 (rightmost): 0 → no double
-    Index 1: 1 → double: 2
-    Index 2: 0 → no double: 0
-    Index 3: 3 → double: 6
-    Index 4: 3 → no double: 3
-    Index 5: 8 → double: 16 → 1+6=7
-    Index 6: 7 → no double: 7
-    Index 7: 3 → double: 6
-    Index 8: 0 → no double: 0
-    Index 9: 8 → double: 16 → 1+6=7
-    Index 10: 2 → no double: 2
-    Index 11: 0 → double: 0
-    Index 12: 3 → no double: 3
-
-    Sum: 0+2+0+6+3+7+7+6+0+7+2+0+3 = 43
-    Check: (10 - (43 % 10)) % 10 = (10 - 3) % 10 = 7
-
-    But actual check digit is 5. Something is wrong.
-
-    Let me look up the correct algorithm:
-    ISIN check digit uses the Luhn algorithm.
-    The Luhn algorithm doubles every second digit from the RIGHT.
-    For even-length strings, this means doubling positions 0, 2, 4, ... from the LEFT.
-    For odd-length strings, doubling positions 1, 3, 5, ... from the LEFT.
-
-    The full digit string for US0378331005 is: 30280378331005
-    Length: 14 digits (even)
-
-    For even length, double positions 0, 2, 4, 6, 8, 10, 12 from LEFT.
-    Position 0: 3 → double: 6
-    Position 1: 0 → no double: 0
-    Position 2: 2 → double: 4
-    Position 3: 8 → no double: 8
-    Position 4: 0 → double: 0
-    Position 5: 3 → no double: 3
-    Position 6: 7 → double: 14 → 1+4=5
-    Position 7: 8 → no double: 8
-    Position 8: 3 → double: 6
-    Position 9: 3 → no double: 3
-    Position 10: 1 → double: 2
-    Position 11: 0 → no double: 0
-    Position 12: 0 → double: 0
-    Position 13: 5 → no double: 5 (this is the check digit, not included)
-
-    Wait, the check digit is position 13. We validate positions 0-12.
-    Sum: 6+0+4+8+0+3+5+8+6+3+2+0+0 = 45
-    Check: (10 - (45 % 10)) % 10 = (10 - 5) % 10 = 5
-
-    Yes, 5 is correct. The confusion was in my manual calculation.
+    1. Length must be 12 characters
+    2. First 2 characters must be valid ISO 3166-1 alpha-2 country code
+    3. Characters 3-11 must be alphanumeric
+    4. Last character must be a digit
+    5. Convert letters to numbers (A=10, B=11, ..., Z=35)
+    6. Apply Luhn algorithm to validate check digit
     """
     if len(isin) != 12:
         return False
 
+    isin = isin.upper()
+
+    # Validate country code (first 2 chars must be valid ISO 3166-1 alpha-2)
+    country_code = isin[:2]
+    if country_code not in ISO3166_COUNTRIES:
+        return False
+
+    # Validate characters 3-11 are alphanumeric
+    if not all(c.isalnum() for c in isin[2:11]):
+        return False
+
+    # Validate last character is a digit
+    if not isin[11].isdigit():
+        return False
+
     # Convert letters to numbers
     digits = []
-    for char in isin[:11].upper():
+    for char in isin[:11]:
         if char.isalpha():
             num = char_to_number(char)
             digits.extend([num // 10, num % 10])
@@ -343,6 +309,39 @@ def validate_count(data: Dict) -> List[str]:
     actual = len(data.get("instruments", []))
     if declared != actual:
         errors.append(f"meta.count ({declared}) does not match actual instrument count ({actual})")
+    return errors
+
+
+def validate_coverage(data: Dict) -> List[str]:
+    """Validate meta.coverage matches actual data."""
+    errors = []
+    coverage = data.get("meta", {}).get("coverage", {})
+    instruments = data.get("instruments", [])
+
+    if not coverage:
+        return errors
+
+    # Check exchanges
+    declared_exchanges = set(coverage.get("exchanges", []))
+    actual_exchanges = set(i.get("exchange") for i in instruments if i.get("exchange"))
+    missing = actual_exchanges - declared_exchanges
+    for exchange in sorted(missing):
+        errors.append(f"meta.coverage.exchanges missing {exchange}")
+
+    # Check asset classes
+    declared_classes = set(coverage.get("asset_classes", []))
+    actual_classes = set(i.get("asset_class") for i in instruments if i.get("asset_class"))
+    missing_classes = actual_classes - declared_classes
+    for asset_class in sorted(missing_classes):
+        errors.append(f"meta.coverage.asset_classes missing {asset_class}")
+
+    # Check countries
+    declared_countries = set(coverage.get("countries", []))
+    actual_countries = set(i.get("country") for i in instruments if i.get("country"))
+    missing_countries = actual_countries - declared_countries
+    for country in sorted(missing_countries):
+        errors.append(f"meta.coverage.countries missing {country}")
+
     return errors
 
 
@@ -545,6 +544,7 @@ def validate_registry(data_path: Path, schema_path: Path) -> Tuple[bool, List[st
     # Run validations
     errors.extend(validate_schema(data, schema))
     errors.extend(validate_count(data))
+    errors.extend(validate_coverage(data))
 
     instruments = data.get("instruments", [])
     if instruments:
