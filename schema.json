@@ -1,0 +1,386 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/slimissa/asset-identifiers/schema.json",
+  "title": "Asset Identifier Registry",
+  "description": "Canonical, versioned, machine-readable registry mapping financial instruments to standard identifiers (ISIN, CUSIP, SEDOL, FIGI) and ticker symbols.",
+  "type": "object",
+  "required": ["meta", "instruments"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "type": "object",
+      "description": "Registry metadata and version information.",
+      "required": ["version", "generated", "count", "sources"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Registry version following Semantic Versioning.",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "examples": ["1.0.0"]
+        },
+        "generated": {
+          "type": "string",
+          "description": "Date the registry snapshot was generated.",
+          "format": "date",
+          "examples": ["2026-01-15"]
+        },
+        "count": {
+          "type": "integer",
+          "description": "Total number of instruments in the registry.",
+          "minimum": 0,
+          "examples": [750]
+        },
+        "sources": {
+          "type": "array",
+          "description": "Data sources used to compile this registry.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "examples": ["SEC EDGAR", "OpenFIGI", "NASDAQ"]
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "description": "Coverage statistics for the registry.",
+          "additionalProperties": false,
+          "properties": {
+            "exchanges": {
+              "type": "array",
+              "description": "List of MIC codes covered by this registry.",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z0-9]{4}$"
+              }
+            },
+            "asset_classes": {
+              "type": "array",
+              "description": "Asset classes represented in this registry.",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": ["equity", "etf", "bond", "option", "future", "other"]
+              }
+            },
+            "countries": {
+              "type": "array",
+              "description": "ISO 3166-1 alpha-2 country codes covered.",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "instruments": {
+      "type": "array",
+      "description": "List of financial instruments with their identifiers.",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "isin",
+          "ticker",
+          "exchange",
+          "name",
+          "currency",
+          "asset_class",
+          "active"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "isin": {
+            "type": "string",
+            "description": "ISO 6166 International Securities Identification Number.",
+            "pattern": "^[A-Z]{2}[A-Z0-9]{9}[0-9]$",
+            "minLength": 12,
+            "maxLength": 12,
+            "examples": ["US0378331005"]
+          },
+          "cusip": {
+            "type": ["string", "null"],
+            "description": "CUSIP number (US/Canada only). Null if not applicable.",
+            "pattern": "^[A-Z0-9]{9}$",
+            "minLength": 9,
+            "maxLength": 9,
+            "examples": ["037833100"]
+          },
+          "sedol": {
+            "type": ["string", "null"],
+            "description": "SEDOL code (UK/Europe). Null if not applicable.",
+            "pattern": "^[B-DF-HJ-NP-TV-Z0-9]{6}[0-9]$",
+            "minLength": 7,
+            "maxLength": 7,
+            "examples": ["2046251"]
+          },
+          "figi": {
+            "type": ["string", "null"],
+            "description": "Financial Instrument Global Identifier (Bloomberg OpenFIGI). Null if not available.",
+            "pattern": "^BBG[0-9A-Z]{9}$",
+            "minLength": 12,
+            "maxLength": 12,
+            "examples": ["BBG000B9XRY4"]
+          },
+          "lei": {
+            "type": ["string", "null"],
+            "description": "Legal Entity Identifier (ISO 17442). Null if not available.",
+            "pattern": "^[A-Z0-9]{20}$",
+            "minLength": 20,
+            "maxLength": 20,
+            "examples": ["HWUPKR0MPOU8FGXBT394"]
+          },
+          "ticker": {
+            "type": "string",
+            "description": "Current ticker symbol on the primary exchange.",
+            "minLength": 1,
+            "maxLength": 16,
+            "pattern": "^[A-Z0-9.\\-]+$",
+            "examples": ["AAPL", "BRK.B", "BF-B"]
+          },
+          "exchange": {
+            "type": "string",
+            "description": "Primary exchange MIC code (ISO 10383).",
+            "pattern": "^[A-Z0-9]{4}$",
+            "minLength": 4,
+            "maxLength": 4,
+            "examples": ["XNAS", "XNYS", "XLON"]
+          },
+          "name": {
+            "type": "string",
+            "description": "Legal entity name of the issuer.",
+            "minLength": 1,
+            "maxLength": 200,
+            "examples": ["Apple Inc."]
+          },
+          "currency": {
+            "type": "string",
+            "description": "Primary trading currency (ISO 4217).",
+            "pattern": "^[A-Z]{3}$",
+            "minLength": 3,
+            "maxLength": 3,
+            "examples": ["USD", "EUR", "GBP", "JPY"]
+          },
+          "asset_class": {
+            "type": "string",
+            "description": "Type of financial instrument.",
+            "enum": ["equity", "etf", "bond", "option", "future", "other"]
+          },
+          "instrument_type": {
+            "type": "string",
+            "description": "Specific instrument type within the asset class.",
+            "minLength": 1,
+            "maxLength": 50,
+            "examples": ["COMMON_STOCK", "PREFERRED_STOCK", "ETF", "CORPORATE_BOND"]
+          },
+          "sector": {
+            "type": ["string", "null"],
+            "description": "Primary business sector.",
+            "minLength": 1,
+            "maxLength": 100,
+            "examples": ["TECHNOLOGY", "FINANCIALS", "HEALTHCARE"]
+          },
+          "industry": {
+            "type": ["string", "null"],
+            "description": "Specific industry within the sector.",
+            "minLength": 1,
+            "maxLength": 100,
+            "examples": ["CONSUMER_ELECTRONICS", "INVESTMENT_BANKING"]
+          },
+          "country": {
+            "type": ["string", "null"],
+            "description": "Country of domicile (ISO 3166-1 alpha-2).",
+            "pattern": "^[A-Z]{2}$",
+            "minLength": 2,
+            "maxLength": 2,
+            "examples": ["US", "GB", "JP"]
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the instrument is currently listed and active.",
+            "examples": [true]
+          },
+          "listing_date": {
+            "type": ["string", "null"],
+            "description": "Date the instrument was first listed.",
+            "format": "date",
+            "examples": ["1980-12-12"]
+          },
+          "delisting_date": {
+            "type": ["string", "null"],
+            "description": "Date the instrument was delisted, if applicable.",
+            "format": "date",
+            "examples": ["2022-10-27"]
+          },
+          "listings": {
+            "type": "array",
+            "description": "All exchange listings for this instrument, including secondary listings.",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "required": ["exchange", "ticker", "currency", "status"],
+              "additionalProperties": false,
+              "properties": {
+                "exchange": {
+                  "type": "string",
+                  "description": "Exchange MIC code.",
+                  "pattern": "^[A-Z0-9]{4}$",
+                  "minLength": 4,
+                  "maxLength": 4
+                },
+                "ticker": {
+                  "type": "string",
+                  "description": "Ticker symbol on this exchange.",
+                  "minLength": 1,
+                  "maxLength": 16,
+                  "pattern": "^[A-Z0-9.\\-]+$"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Trading currency on this exchange.",
+                  "pattern": "^[A-Z]{3}$",
+                  "minLength": 3,
+                  "maxLength": 3
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Listing status on this exchange.",
+                  "enum": ["PRIMARY", "SECONDARY", "DEPOSITARY_RECEIPT", "DELISTED"]
+                },
+                "listing_date": {
+                  "type": ["string", "null"],
+                  "description": "Date listed on this exchange.",
+                  "format": "date"
+                },
+                "delisting_date": {
+                  "type": ["string", "null"],
+                  "description": "Date delisted from this exchange, if applicable.",
+                  "format": "date"
+                }
+              }
+            }
+          },
+          "history": {
+            "type": "array",
+            "description": "Chronological history of ticker changes and significant events.",
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "required": ["ticker", "change_date", "change_type"],
+              "additionalProperties": false,
+              "properties": {
+                "ticker": {
+                  "type": "string",
+                  "description": "Ticker symbol after this event.",
+                  "minLength": 1,
+                  "maxLength": 16,
+                  "pattern": "^[A-Z0-9.\\-]+$"
+                },
+                "change_date": {
+                  "type": "string",
+                  "description": "Date the change took effect.",
+                  "format": "date"
+                },
+                "change_type": {
+                  "type": "string",
+                  "description": "Type of change event.",
+                  "enum": [
+                    "none",
+                    "rename",
+                    "delisting",
+                    "relisting",
+                    "merger",
+                    "acquisition",
+                    "spinoff",
+                    "split",
+                    "reverse_split"
+                  ]
+                },
+                "reason": {
+                  "type": ["string", "null"],
+                  "description": "Reason for the change.",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "examples": ["COMPANY_REBRANDING", "MERGER", "ACQUISITION"]
+                },
+                "source": {
+                  "type": ["string", "null"],
+                  "description": "Source of the change announcement.",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "examples": ["NASDAQ official announcement", "SEC filing"]
+                },
+                "source_url": {
+                  "type": ["string", "null"],
+                  "description": "URL to the official announcement.",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "corporate_actions": {
+            "type": "array",
+            "description": "Corporate actions affecting this instrument.",
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "required": ["date", "action_type"],
+              "additionalProperties": false,
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "description": "Date the corporate action occurred.",
+                  "format": "date"
+                },
+                "action_type": {
+                  "type": "string",
+                  "description": "Type of corporate action.",
+                  "enum": [
+                    "SPLIT",
+                    "REVERSE_SPLIT",
+                    "DIVIDEND",
+                    "SPINOFF",
+                    "MERGER",
+                    "ACQUISITION",
+                    "RIGHTS_ISSUE",
+                    "BUYBACK"
+                  ]
+                },
+                "ratio": {
+                  "type": ["string", "null"],
+                  "description": "Ratio for splits (e.g., '4:1', '1:10').",
+                  "pattern": "^\\d+:\\d+$",
+                  "examples": ["4:1", "1:10"]
+                },
+                "details": {
+                  "type": ["string", "null"],
+                  "description": "Additional details about the action.",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "source": {
+                  "type": ["string", "null"],
+                  "description": "Source of the corporate action.",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "source_url": {
+                  "type": ["string", "null"],
+                  "description": "URL to the official announcement.",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
