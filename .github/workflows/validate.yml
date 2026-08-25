@@ -1,0 +1,283 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * 1"  # Weekly on Monday at 02:00 UTC
+  workflow_dispatch: {}  # Manual trigger
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Python Validation ────────────────────────────────────────────
+
+  validate-python:
+    name: Python — validate and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install pytest jsonschema requests
+
+      - name: Validate registry
+        run: python3 tools/validate.py --verbose
+
+      - name: Build distribution
+        run: python3 tools/build.py
+
+      - name: Run Python tests
+        run: |
+          pytest tests/test_check_digits.py -v
+          pytest tests/test_registry.py -v
+          pytest tests/test_cross_reference.py -v
+          pytest tests/test_wrappers.py -v
+
+  # ─── JavaScript Validation ────────────────────────────────────────
+
+  validate-javascript:
+    name: JavaScript — test wrapper
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: wrappers/javascript/package-lock.json
+
+      - name: Install dependencies
+        working-directory: wrappers/javascript
+        run: npm install
+
+      - name: Run JavaScript tests
+        working-directory: wrappers/javascript
+        run: npm test
+
+  # ─── Rust Validation ──────────────────────────────────────────────
+
+  validate-rust:
+    name: Rust — build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            wrappers/rust/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('wrappers/rust/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Check formatting
+        working-directory: wrappers/rust
+        run: cargo fmt --check
+
+      - name: Run clippy
+        working-directory: wrappers/rust
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run Rust tests
+        working-directory: wrappers/rust
+        run: cargo test
+
+  # ─── Go Validation ────────────────────────────────────────────────
+
+  validate-go:
+    name: Go — test wrapper
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache: true
+          cache-dependency-path: wrappers/go/go.sum
+
+      - name: Run Go tests
+        working-directory: wrappers/go
+        run: go test ./... -v -cover
+
+  # ─── Schema Validation ────────────────────────────────────────────
+
+  validate-schema:
+    name: Schema — JSON validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install jsonschema
+        run: pip install jsonschema
+
+      - name: Validate JSON schema
+        run: |
+          python3 - << 'EOF'
+          import json
+          import jsonschema
+          from pathlib import Path
+
+          # Load files
+          with open("identifiers.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          with open("schema.json", "r", encoding="utf-8") as f:
+              schema = json.load(f)
+
+          # Validate
+          validator = jsonschema.Draft7Validator(schema)
+          errors = list(validator.iter_errors(data))
+
+          if errors:
+              for error in errors[:20]:
+                  print(f"  - {error.message} at {'/'.join(str(p) for p in error.path)}")
+              exit(1)
+
+          print(f"OK: {data['meta']['count']} instruments validated against schema")
+          EOF
+
+      - name: Validate JSON syntax (all files)
+        run: |
+          python3 - << 'EOF'
+          import json
+          from pathlib import Path
+
+          json_files = [
+              "identifiers.json",
+              "schema.json",
+              "history/ticker_changes.json",
+              "tests/cross_language_consistency.json",
+              "identifiers.dist.json",
+              "identifiers.dist.min.json",
+          ]
+
+          for file_path in json_files:
+              path = Path(file_path)
+              if path.exists():
+                  try:
+                      with open(path, "r", encoding="utf-8") as f:
+                          json.load(f)
+                      print(f"OK: {file_path}")
+                  except json.JSONDecodeError as e:
+                      print(f"FAIL: {file_path}: {e}")
+                      exit(1)
+
+          print("All JSON files are valid")
+          EOF
+
+  # ─── Cross-Language Consistency ───────────────────────────────────
+
+  validate-consistency:
+    name: Cross-language consistency
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [validate-python, validate-javascript, validate-rust, validate-go]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Verify cross-language consistency
+        run: |
+          python3 - << 'EOF'
+          import json
+          from pathlib import Path
+
+          # Load the consistency contract
+          with open("tests/cross_language_consistency.json", "r", encoding="utf-8") as f:
+              consistency = json.load(f)
+
+          expected_count = consistency["registry"]["count"]
+          expected_aapl = consistency["instruments"]["aapl"]
+
+          # Check Python result
+          import sys
+          sys.path.insert(0, "wrappers/python")
+          from asset_identifiers import AssetRegistry
+
+          py_registry = AssetRegistry("identifiers.json")
+          assert py_registry.count == expected_count, f"Python count mismatch: {py_registry.count}"
+
+          py_aapl = py_registry.by_isin(expected_aapl["isin"])
+          assert py_aapl is not None, "Python: AAPL not found"
+          assert py_aapl["ticker"] == expected_aapl["ticker"], "Python: ticker mismatch"
+          assert py_aapl["cusip"] == expected_aapl["cusip"], "Python: CUSIP mismatch"
+          assert py_aapl["figi"] == expected_aapl["figi"], "Python: FIGI mismatch"
+          print(f"Python OK: {expected_count} instruments, AAPL verified")
+
+          # Check Go result
+          import subprocess
+          go_check = subprocess.run(
+              ["go", "run", "examples/go_lookup.go"],
+              capture_output=True, text=True, timeout=30
+          )
+          if go_check.returncode != 0:
+              print(f"Go FAILED: {go_check.stderr}")
+              exit(1)
+          print("Go OK: example ran successfully")
+
+          print("Cross-language consistency verified")
+          EOF
