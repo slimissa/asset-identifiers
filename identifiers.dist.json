@@ -38,7 +38,8 @@
         "US"
       ]
     },
-    "build_timestamp": "2026-08-25T13:23:16.175417Z",
+    "data_valid_as_of": "2026-08-25",
+    "build_timestamp": "2026-08-25T14:08:52.650275Z",
     "build_version": "1.0.0"
   },
   "instruments": [

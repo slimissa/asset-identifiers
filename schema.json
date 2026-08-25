@@ -4,32 +4,47 @@
   "title": "Asset Identifier Registry",
   "description": "Canonical, versioned, machine-readable registry mapping financial instruments to standard identifiers (ISIN, CUSIP, SEDOL, FIGI) and ticker symbols.",
   "type": "object",
-  "required": ["meta", "instruments"],
+  "required": [
+    "meta",
+    "instruments"
+  ],
   "additionalProperties": false,
   "properties": {
     "meta": {
       "type": "object",
       "description": "Registry metadata and version information.",
-      "required": ["version", "generated", "count", "sources"],
+      "required": [
+        "version",
+        "generated",
+        "count",
+        "sources",
+        "data_valid_as_of"
+      ],
       "additionalProperties": false,
       "properties": {
         "version": {
           "type": "string",
           "description": "Registry version following Semantic Versioning.",
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "examples": ["1.0.0"]
+          "examples": [
+            "1.0.0"
+          ]
         },
         "generated": {
           "type": "string",
           "description": "Date the registry snapshot was generated.",
           "format": "date",
-          "examples": ["2026-01-15"]
+          "examples": [
+            "2026-01-15"
+          ]
         },
         "count": {
           "type": "integer",
           "description": "Total number of instruments in the registry.",
           "minimum": 0,
-          "examples": [750]
+          "examples": [
+            750
+          ]
         },
         "sources": {
           "type": "array",
@@ -39,7 +54,11 @@
           "items": {
             "type": "string",
             "minLength": 1,
-            "examples": ["SEC EDGAR", "OpenFIGI", "NASDAQ"]
+            "examples": [
+              "SEC EDGAR",
+              "OpenFIGI",
+              "NASDAQ"
+            ]
           }
         },
         "coverage": {
@@ -62,7 +81,14 @@
               "uniqueItems": true,
               "items": {
                 "type": "string",
-                "enum": ["equity", "etf", "bond", "option", "future", "other"]
+                "enum": [
+                  "equity",
+                  "etf",
+                  "bond",
+                  "option",
+                  "future",
+                  "other"
+                ]
               }
             },
             "countries": {
@@ -75,6 +101,14 @@
               }
             }
           }
+        },
+        "data_valid_as_of": {
+          "type": "string",
+          "description": "Date the registry data was last verified against official sources.",
+          "format": "date",
+          "examples": [
+            "2026-08-25"
+          ]
         }
       }
     },
@@ -102,39 +136,61 @@
             "pattern": "^[A-Z]{2}[A-Z0-9]{9}[0-9]$",
             "minLength": 12,
             "maxLength": 12,
-            "examples": ["US0378331005"]
+            "examples": [
+              "US0378331005"
+            ]
           },
           "cusip": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "CUSIP number (US/Canada only). Null if not applicable.",
             "pattern": "^[A-Z0-9]{9}$",
             "minLength": 9,
             "maxLength": 9,
-            "examples": ["037833100"]
+            "examples": [
+              "037833100"
+            ]
           },
           "sedol": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "SEDOL code (UK/Europe). Null if not applicable.",
             "pattern": "^[B-DF-HJ-NP-TV-Z0-9]{6}[0-9]$",
             "minLength": 7,
             "maxLength": 7,
-            "examples": ["2046251"]
+            "examples": [
+              "2046251"
+            ]
           },
           "figi": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Financial Instrument Global Identifier (Bloomberg OpenFIGI). Null if not available.",
             "pattern": "^BBG[0-9A-Z]{9}$",
             "minLength": 12,
             "maxLength": 12,
-            "examples": ["BBG000B9XRY4"]
+            "examples": [
+              "BBG000B9XRY4"
+            ]
           },
           "lei": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Legal Entity Identifier (ISO 17442). Null if not available.",
             "pattern": "^[A-Z0-9]{20}$",
             "minLength": 20,
             "maxLength": 20,
-            "examples": ["HWUPKR0MPOU8FGXBT394"]
+            "examples": [
+              "HWUPKR0MPOU8FGXBT394"
+            ]
           },
           "ticker": {
             "type": "string",
@@ -142,7 +198,11 @@
             "minLength": 1,
             "maxLength": 16,
             "pattern": "^[A-Z0-9.\\-]+$",
-            "examples": ["AAPL", "BRK.B", "BF-B"]
+            "examples": [
+              "AAPL",
+              "BRK.B",
+              "BF-B"
+            ]
           },
           "exchange": {
             "type": "string",
@@ -150,14 +210,20 @@
             "pattern": "^[A-Z0-9]{4}$",
             "minLength": 4,
             "maxLength": 4,
-            "examples": ["XNAS", "XNYS", "XLON"]
+            "examples": [
+              "XNAS",
+              "XNYS",
+              "XLON"
+            ]
           },
           "name": {
             "type": "string",
             "description": "Legal entity name of the issuer.",
             "minLength": 1,
             "maxLength": 200,
-            "examples": ["Apple Inc."]
+            "examples": [
+              "Apple Inc."
+            ]
           },
           "currency": {
             "type": "string",
@@ -165,58 +231,107 @@
             "pattern": "^[A-Z]{3}$",
             "minLength": 3,
             "maxLength": 3,
-            "examples": ["USD", "EUR", "GBP", "JPY"]
+            "examples": [
+              "USD",
+              "EUR",
+              "GBP",
+              "JPY"
+            ]
           },
           "asset_class": {
             "type": "string",
             "description": "Type of financial instrument.",
-            "enum": ["equity", "etf", "bond", "option", "future", "other"]
+            "enum": [
+              "equity",
+              "etf",
+              "bond",
+              "option",
+              "future",
+              "other"
+            ]
           },
           "instrument_type": {
             "type": "string",
             "description": "Specific instrument type within the asset class.",
             "minLength": 1,
             "maxLength": 50,
-            "examples": ["COMMON_STOCK", "PREFERRED_STOCK", "ETF", "CORPORATE_BOND"]
+            "examples": [
+              "COMMON_STOCK",
+              "PREFERRED_STOCK",
+              "ETF",
+              "CORPORATE_BOND"
+            ]
           },
           "sector": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Primary business sector.",
             "minLength": 1,
             "maxLength": 100,
-            "examples": ["TECHNOLOGY", "FINANCIALS", "HEALTHCARE"]
+            "examples": [
+              "TECHNOLOGY",
+              "FINANCIALS",
+              "HEALTHCARE"
+            ]
           },
           "industry": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Specific industry within the sector.",
             "minLength": 1,
             "maxLength": 100,
-            "examples": ["CONSUMER_ELECTRONICS", "INVESTMENT_BANKING"]
+            "examples": [
+              "CONSUMER_ELECTRONICS",
+              "INVESTMENT_BANKING"
+            ]
           },
           "country": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Country of domicile (ISO 3166-1 alpha-2).",
             "pattern": "^[A-Z]{2}$",
             "minLength": 2,
             "maxLength": 2,
-            "examples": ["US", "GB", "JP"]
+            "examples": [
+              "US",
+              "GB",
+              "JP"
+            ]
           },
           "active": {
             "type": "boolean",
             "description": "Whether the instrument is currently listed and active.",
-            "examples": [true]
+            "examples": [
+              true
+            ]
           },
           "listing_date": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Date the instrument was first listed.",
             "format": "date",
-            "examples": ["1980-12-12"]
+            "examples": [
+              "1980-12-12"
+            ]
           },
           "delisting_date": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Date the instrument was delisted, if applicable.",
             "format": "date",
-            "examples": ["2022-10-27"]
+            "examples": [
+              "2022-10-27"
+            ]
           },
           "listings": {
             "type": "array",
@@ -225,7 +340,12 @@
             "uniqueItems": true,
             "items": {
               "type": "object",
-              "required": ["exchange", "ticker", "currency", "status"],
+              "required": [
+                "exchange",
+                "ticker",
+                "currency",
+                "status"
+              ],
               "additionalProperties": false,
               "properties": {
                 "exchange": {
@@ -252,15 +372,26 @@
                 "status": {
                   "type": "string",
                   "description": "Listing status on this exchange.",
-                  "enum": ["PRIMARY", "SECONDARY", "DEPOSITARY_RECEIPT", "DELISTED"]
+                  "enum": [
+                    "PRIMARY",
+                    "SECONDARY",
+                    "DEPOSITARY_RECEIPT",
+                    "DELISTED"
+                  ]
                 },
                 "listing_date": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Date listed on this exchange.",
                   "format": "date"
                 },
                 "delisting_date": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Date delisted from this exchange, if applicable.",
                   "format": "date"
                 }
@@ -273,7 +404,11 @@
             "uniqueItems": true,
             "items": {
               "type": "object",
-              "required": ["ticker", "change_date", "change_type"],
+              "required": [
+                "ticker",
+                "change_date",
+                "change_type"
+              ],
               "additionalProperties": false,
               "properties": {
                 "ticker": {
@@ -304,21 +439,37 @@
                   ]
                 },
                 "reason": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Reason for the change.",
                   "minLength": 1,
                   "maxLength": 200,
-                  "examples": ["COMPANY_REBRANDING", "MERGER", "ACQUISITION"]
+                  "examples": [
+                    "COMPANY_REBRANDING",
+                    "MERGER",
+                    "ACQUISITION"
+                  ]
                 },
                 "source": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Source of the change announcement.",
                   "minLength": 1,
                   "maxLength": 200,
-                  "examples": ["NASDAQ official announcement", "SEC filing"]
+                  "examples": [
+                    "NASDAQ official announcement",
+                    "SEC filing"
+                  ]
                 },
                 "source_url": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "URL to the official announcement.",
                   "format": "uri"
                 }
@@ -331,7 +482,10 @@
             "uniqueItems": true,
             "items": {
               "type": "object",
-              "required": ["date", "action_type"],
+              "required": [
+                "date",
+                "action_type"
+              ],
               "additionalProperties": false,
               "properties": {
                 "date": {
@@ -354,25 +508,40 @@
                   ]
                 },
                 "ratio": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Ratio for splits (e.g., '4:1', '1:10').",
                   "pattern": "^\\d+:\\d+$",
-                  "examples": ["4:1", "1:10"]
+                  "examples": [
+                    "4:1",
+                    "1:10"
+                  ]
                 },
                 "details": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Additional details about the action.",
                   "minLength": 1,
                   "maxLength": 500
                 },
                 "source": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "Source of the corporate action.",
                   "minLength": 1,
                   "maxLength": 200
                 },
                 "source_url": {
-                  "type": ["string", "null"],
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "description": "URL to the official announcement.",
                   "format": "uri"
                 }
