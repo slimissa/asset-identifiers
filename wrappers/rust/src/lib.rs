@@ -657,13 +657,13 @@ impl AssetRegistry {
         let mut classes: Vec<AssetClass> = self
             .asset_class_index
             .keys()
-            .filter_map(|k| match k.as_str() {
-                "equity" => Some(AssetClass::Equity),
-                "etf" => Some(AssetClass::Etf),
-                "bond" => Some(AssetClass::Bond),
-                "option" => Some(AssetClass::Option),
-                "future" => Some(AssetClass::Future),
-                _ => Some(AssetClass::Other),
+            .map(|k| match k.as_str() {
+                "equity" => AssetClass::Equity,
+                "etf" => AssetClass::Etf,
+                "bond" => AssetClass::Bond,
+                "option" => AssetClass::Option,
+                "future" => AssetClass::Future,
+                _ => AssetClass::Other,
             })
             .collect();
         classes.sort_by_key(|c| format!("{:?}", c));
@@ -828,7 +828,7 @@ mod tests {
     fn test_filter_by_exchange() {
         let registry = test_registry();
         let xnas = registry.by_exchange("XNAS");
-        assert!(xnas.len() > 0);
+        assert!(!xnas.is_empty());
         for inst in &xnas {
             assert_eq!(inst.exchange, "XNAS");
         }
@@ -838,7 +838,7 @@ mod tests {
     fn test_filter_by_asset_class() {
         let registry = test_registry();
         let etfs = registry.by_asset_class(AssetClass::Etf);
-        assert!(etfs.len() > 0);
+        assert!(!etfs.is_empty());
     }
 
     #[test]
