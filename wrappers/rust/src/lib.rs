@@ -444,10 +444,7 @@ impl AssetRegistry {
 
             // Asset class
             let asset_class = format!("{:?}", inst.asset_class).to_lowercase();
-            asset_class_index
-                .entry(asset_class)
-                .or_default()
-                .push(idx);
+            asset_class_index.entry(asset_class).or_default().push(idx);
 
             // Country
             if let Some(country) = &inst.country {
@@ -576,7 +573,7 @@ impl AssetRegistry {
     ///
     /// // Single result with exchange
     /// let aapl = registry.by_ticker("AAPL", Some("XNAS"));
-/// assert_eq!(aapl.len(), 1);
+    /// assert_eq!(aapl.len(), 1);
     ///
     /// // Multiple results without exchange
     /// let pru = registry.by_ticker("PRU", None);
@@ -714,9 +711,24 @@ impl AssetRegistry {
         };
 
         IdentifierCoverage {
-            isin: calc(self.instruments.iter().filter(|i| !i.isin.is_empty()).count()),
-            cusip: calc(self.instruments.iter().filter(|i| i.cusip.is_some()).count()),
-            sedol: calc(self.instruments.iter().filter(|i| i.sedol.is_some()).count()),
+            isin: calc(
+                self.instruments
+                    .iter()
+                    .filter(|i| !i.isin.is_empty())
+                    .count(),
+            ),
+            cusip: calc(
+                self.instruments
+                    .iter()
+                    .filter(|i| i.cusip.is_some())
+                    .count(),
+            ),
+            sedol: calc(
+                self.instruments
+                    .iter()
+                    .filter(|i| i.sedol.is_some())
+                    .count(),
+            ),
             figi: calc(self.instruments.iter().filter(|i| i.figi.is_some()).count()),
             lei: calc(self.instruments.iter().filter(|i| i.lei.is_some()).count()),
         }
