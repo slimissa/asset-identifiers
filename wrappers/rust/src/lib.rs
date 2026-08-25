@@ -832,7 +832,7 @@ mod tests {
     #[test]
     fn test_metadata() {
         let registry = test_registry();
-        assert_eq!(registry.version(), "0.1.0");
+        assert_eq!(registry.version(), "1.0.0");
         assert_eq!(registry.count(), 50);
     }
 

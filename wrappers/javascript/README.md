@@ -85,7 +85,7 @@ for (const inst of all) {
 
 // Get registry metadata
 const meta = registry.meta();
-console.log(meta.version);     // 0.1.0
+console.log(meta.version);     // 1.0.0
 console.log(meta.count);       // 50
 
 // Get aggregate information

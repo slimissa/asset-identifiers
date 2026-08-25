@@ -8,7 +8,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-asset-identifiers = "0.1.0"
+asset-identifiers = "1.0.0"
 ```
 
 Or install from source:
@@ -93,7 +93,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Get registry metadata
-    println!("Version: {}", registry.version());    // 0.1.0
+    println!("Version: {}", registry.version());    // 1.0.0
     println!("Generated: {}", registry.generated());
     println!("Sources: {:?}", registry.sources());
 
@@ -206,7 +206,7 @@ for instrument in &registry {
 
 ```rust
 println!("{}", registry);
-// Output: Asset Identifier Registry v0.1.0 (50 instruments)
+// Output: Asset Identifier Registry v1.0.0 (50 instruments)
 ```
 
 ## Type Safety
