@@ -70,3 +70,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [package.metadata.cargo-machete]
 ignored = ["serde", "serde_json", "thiserror"]
+
+[[example]]
+name = "rust_lookup"
+path = "../../examples/rust_lookup.rs"
