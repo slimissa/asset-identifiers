@@ -1,0 +1,72 @@
+[package]
+name = "asset-identifiers"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+description = "Canonical, versioned, machine-readable registry of financial instrument identifiers — ISIN, CUSIP, SEDOL, FIGI, LEI, and ticker symbols."
+license = "Apache-2.0"
+authors = ["Le P'tit"]
+repository = "https://github.com/slimissa/asset-identifiers"
+homepage = "https://github.com/slimissa/asset-identifiers"
+documentation = "https://docs.rs/asset-identifiers"
+readme = "README.md"
+keywords = [
+    "finance",
+    "trading",
+    "securities",
+    "isin",
+    "cusip",
+    "sedol",
+    "figi",
+    "lei",
+    "identifiers",
+    "registry",
+    "quant",
+    "quantitative-finance",
+    "asset",
+    "instrument",
+    "stock",
+    "equity",
+    "etf",
+]
+categories = [
+    "finance",
+    "parser-implementations",
+    "data-structures",
+]
+exclude = [
+    "tests/fixtures/**",
+    "target/**",
+]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+
+[dev-dependencies]
+tempfile = "3.0"
+pretty_assertions = "1.4"
+
+[features]
+default = []
+# Enable additional validation of check digits at load time
+strict = []
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[package.metadata.cargo-machete]
+ignored = ["serde", "serde_json", "thiserror"]
