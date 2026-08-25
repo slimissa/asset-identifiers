@@ -300,6 +300,12 @@ class AssetRegistry {
    * @returns {Object|Object[]|null}
    *   If exchange provided: Instrument object or null
    *   If exchange not provided: Array of matching instruments
+   *
+   * Warning: Some tickers are ambiguous — the same symbol exists on
+   * multiple exchanges. "PRU" is Prudential plc (XLON) and Prudential
+   * Financial (XNYS). Always use the exchange parameter when the ticker
+   * might be ambiguous. Check tickersWithMultipleListings() to detect
+   * ambiguous tickers before calling without an exchange.
    */
   byTicker(ticker, exchange = null) {
     const matches = this._tickerIndex.get(ticker.toUpperCase()) || [];
