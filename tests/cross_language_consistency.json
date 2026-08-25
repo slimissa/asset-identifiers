@@ -2,7 +2,7 @@
   "meta": {
     "registry": "asset-identifiers",
     "description": "Cross-language consistency contract for all wrapper implementations",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "generated": "2026-08-14",
     "purpose": "Defines expected values that all wrappers (Python, JavaScript, Rust, Go) must return identically",
     "test_suites": [
@@ -13,7 +13,7 @@
     ]
   },
   "registry": {
-    "version": "0.1.0",
+    "version": "1.0.0",
     "count": 50,
     "sources": [
       "SEC EDGAR",

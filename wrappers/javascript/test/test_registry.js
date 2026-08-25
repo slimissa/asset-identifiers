@@ -57,7 +57,7 @@ describe('Registry Loading', () => {
   test('has metadata', () => {
     const meta = registry.meta();
     assert.ok(meta, 'Metadata should exist');
-    assert.equal(meta.version, '0.1.0');
+    assert.equal(meta.version, '1.0.0');
     assert.equal(meta.count, 50);
   });
 });
@@ -253,7 +253,7 @@ describe('Filtering', () => {
 
 describe('Metadata', () => {
   test('returns version', () => {
-    assert.equal(registry.version(), '0.1.0');
+    assert.equal(registry.version(), '1.0.0');
   });
 
   test('returns generation date', () => {

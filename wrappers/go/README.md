@@ -114,7 +114,7 @@ func main() {
     }
 
     // Get registry metadata
-    fmt.Println("Version:", registry.Version())    // 0.1.0
+    fmt.Println("Version:", registry.Version())    // 1.0.0
     fmt.Println("Generated:", registry.Generated())
     fmt.Println("Sources:", registry.Sources())
 
@@ -137,7 +137,7 @@ func main() {
     fmt.Println("Ambiguous:", ambiguous)  // [PRU]
 
     // String representation
-    fmt.Println(registry)  // Asset Identifier Registry v0.1.0 (50 instruments)
+    fmt.Println(registry)  // Asset Identifier Registry v1.0.0 (50 instruments)
 }
 ```
 
@@ -224,7 +224,7 @@ LoadRegistry(path string) (*AssetRegistry, error)
 ```go
 // fmt.Stringer interface
 fmt.Println(registry)
-// Output: Asset Identifier Registry v0.1.0 (50 instruments)
+// Output: Asset Identifier Registry v1.0.0 (50 instruments)
 ```
 
 ## Type Safety

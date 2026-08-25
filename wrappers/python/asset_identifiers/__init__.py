@@ -31,12 +31,12 @@ Example:
 
     # Get registry metadata
     meta = registry.meta()
-    print(meta["version"])  # 0.1.0
+    print(meta["version"])  # 1.0.0
 """
 
 from .registry import AssetRegistry
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Le P'tit"
 __license__ = "Apache-2.0"
 __all__ = ["AssetRegistry"]
