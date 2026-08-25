@@ -419,6 +419,12 @@ func (r *AssetRegistry) ByLei(lei string) (*Instrument, bool) {
 //
 // If exchange is non-empty, returns at most one instrument.
 // If exchange is empty, returns all matching instruments.
+//
+// Warning: Some tickers are ambiguous — the same symbol exists on
+// multiple exchanges. "PRU" is Prudential plc (XLON) and Prudential
+// Financial (XNYS). Always use the exchange parameter when the ticker
+// might be ambiguous. Use TickersWithMultipleListings() to detect
+// ambiguous tickers before calling without an exchange.
 func (r *AssetRegistry) ByTicker(ticker string, exchange string) []*Instrument {
 	indices, ok := r.tickerIndex[strings.ToUpper(ticker)]
 	if !ok {

@@ -561,8 +561,16 @@ impl AssetRegistry {
 
     /// Look up instruments by ticker symbol.
     ///
-    /// If `exchange` is `Some`, returns `Option<&Instrument>`.
-    /// If `exchange` is `None`, returns `Vec<&Instrument>`.
+    /// If `exchange` is `Some`, returns at most one instrument.
+    /// If `exchange` is `None`, returns all matching instruments.
+    ///
+    /// # Warning: Ambiguous Tickers
+    ///
+    /// Some tickers are ambiguous — the same symbol exists on multiple
+    /// exchanges. "PRU" is Prudential plc (XLON) and Prudential Financial
+    /// (XNYS). Always use the `exchange` parameter when the ticker might
+    /// be ambiguous. Use [`tickers_with_multiple_listings`] to detect
+    /// ambiguous tickers before calling without an exchange.
     ///
     /// # Example
     ///
@@ -571,11 +579,11 @@ impl AssetRegistry {
     ///
     /// let registry = AssetRegistry::load("../../identifiers.json")?;
     ///
-    /// // Single result with exchange
+    /// // Single result with exchange (recommended)
     /// let aapl = registry.by_ticker("AAPL", Some("XNAS"));
     /// assert_eq!(aapl.len(), 1);
     ///
-    /// // Multiple results without exchange
+    /// // Multiple results without exchange (use with caution)
     /// let pru = registry.by_ticker("PRU", None);
     /// assert_eq!(pru.len(), 2);
     /// # Ok::<(), Box<dyn std::error::Error>>(())
