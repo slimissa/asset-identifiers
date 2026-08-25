@@ -236,34 +236,84 @@ def validate_sedol_check_digit(sedol: str) -> bool:
 
 # ─── Registry loading ─────────────────────────────────────────────────
 
+def _fetch_from_github(url: str) -> Optional[Dict]:
+    """Fetch JSON from GitHub raw content with fallback."""
+    import urllib.request
+    import urllib.error
+    try:
+        with urllib.request.urlopen(url, timeout=10) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, OSError):
+        return None
+
+
 def load_iso4217_currencies() -> Set[str]:
-    """Load currency codes from iso4217.json if available."""
+    """Load currency codes from iso4217.json if available.
+
+    Search order:
+    1. Local paths (../iso4217, ../../iso4217, etc.)
+    2. GitHub raw content (slimissa/iso4217)
+    """
     currencies = set()
+
+    # Local paths
     for path in [
         Path("../iso4217/iso4217.json"),
         Path("../../iso4217/iso4217.json"),
+        Path("../../../iso4217/iso4217.json"),
         Path("iso4217.json"),
+        Path.home() / "Documents" / "iso4217" / "iso4217.json",
     ]:
         if path.exists():
             try:
                 with open(path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                if "currencies" in data:
-                    for currency in data["currencies"]:
-                        if "code" in currency:
+                currency_list = data.get("currencies", data if isinstance(data, list) else [])
+                if isinstance(currency_list, list):
+                    for currency in currency_list:
+                        if isinstance(currency, dict) and "code" in currency:
                             currencies.add(currency["code"])
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError, AttributeError):
                 pass
+
+    # GitHub fallback
+    if not currencies:
+        github_url = "https://raw.githubusercontent.com/slimissa/iso4217/main/iso4217.json"
+        data = _fetch_from_github(github_url)
+        if data:
+            currencies_obj = data.get("currencies", {})
+            # Handle nested structure: {"active": [...], "withdrawn": [...]}
+            if isinstance(currencies_obj, dict):
+                for section in currencies_obj.values():
+                    if isinstance(section, list):
+                        for currency in section:
+                            if isinstance(currency, dict) and "code" in currency:
+                                currencies.add(currency["code"])
+            # Handle flat structure: [...]
+            elif isinstance(currencies_obj, list):
+                for currency in currencies_obj:
+                    if isinstance(currency, dict) and "code" in currency:
+                        currencies.add(currency["code"])
+
     return currencies
 
 
 def load_valid_mics() -> Set[str]:
-    """Load MIC codes from exchange-calendar if available."""
+    """Load MIC codes from exchange-calendar if available.
+
+    Search order:
+    1. Local paths (../exchange-calendar, ../../exchange-calendar, etc.)
+    2. GitHub API (slimissa/exchange-calendar exchanges directory)
+    """
     mics = set()
+
+    # Local paths
     for path in [
         Path("../exchange-calendar"),
         Path("../../exchange-calendar"),
+        Path("../../../exchange-calendar"),
         Path("exchange-calendar"),
+        Path.home() / "Documents" / "exchange-calendar",
     ]:
         if path.exists() and path.is_dir():
             exchanges_dir = path / "exchanges"
@@ -276,6 +326,25 @@ def load_valid_mics() -> Set[str]:
                             mics.add(data["mic"])
                     except (json.JSONDecodeError, KeyError):
                         pass
+
+    # GitHub fallback: fetch the list of exchange files from GitHub API
+    if not mics:
+        import urllib.request
+        import urllib.error
+        try:
+            api_url = "https://api.github.com/repos/slimissa/exchange-calendar/contents/exchanges"
+            with urllib.request.urlopen(api_url, timeout=15) as response:
+                files = json.loads(response.read().decode("utf-8"))
+            for file_info in files:
+                if file_info.get("name", "").endswith(".json"):
+                    raw_url = file_info.get("download_url")
+                    if raw_url:
+                        exchange_data = _fetch_from_github(raw_url)
+                        if exchange_data and "mic" in exchange_data:
+                            mics.add(exchange_data["mic"])
+        except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, OSError):
+            pass
+
     return mics
 
 
@@ -510,12 +579,60 @@ def validate_temporal_consistency(instruments: List[Dict]) -> List[str]:
     return errors
 
 
-def validate_cross_registry() -> List[str]:
-    """Validate cross-registry consistency."""
-    # Cross-registry validation is optional.
-    # It only runs when the other registries are available.
-    # Missing registries are not errors.
-    return []
+def validate_cross_registry(data: Dict) -> Tuple[List[str], List[str]]:
+    """
+    Validate currency codes against ISO 4217 and MICs against Exchange Calendar.
+
+    Returns:
+        (errors, warnings) — errors fail validation, warnings are informational.
+
+    If the other registries are available, every currency and exchange in
+    identifiers.json must exist in them. If not found, a warning is returned
+    but does not fail validation.
+    """
+    errors = []
+    warnings = []
+    instruments = data.get("instruments", [])
+
+    # Validate currencies against ISO 4217
+    if ISO4217_CURRENCIES:
+        for inst in instruments:
+            ticker = inst.get("ticker", "?")
+            currency = inst.get("currency")
+            if currency and currency not in ISO4217_CURRENCIES:
+                errors.append(
+                    f"{ticker}: currency {currency} not found in ISO 4217 registry"
+                )
+
+            for listing in inst.get("listings", []):
+                listing_currency = listing.get("currency")
+                if listing_currency and listing_currency not in ISO4217_CURRENCIES:
+                    errors.append(
+                        f"{ticker}: listing currency {listing_currency} not found in ISO 4217 registry"
+                    )
+    else:
+        warnings.append("ISO 4217 registry not found. Currency validation skipped.")
+
+    # Validate exchanges against Exchange Calendar
+    if VALID_MICS:
+        for inst in instruments:
+            ticker = inst.get("ticker", "?")
+            exchange = inst.get("exchange")
+            if exchange and exchange not in VALID_MICS:
+                errors.append(
+                    f"{ticker}: exchange {exchange} not found in Exchange Calendar registry"
+                )
+
+            for listing in inst.get("listings", []):
+                listing_exchange = listing.get("exchange")
+                if listing_exchange and listing_exchange not in VALID_MICS:
+                    errors.append(
+                        f"{ticker}: listing exchange {listing_exchange} not found in Exchange Calendar registry"
+                    )
+    else:
+        warnings.append("Exchange Calendar registry not found. MIC validation skipped.")
+
+    return errors, warnings
 
 
 # ─── Main validation ──────────────────────────────────────────────────
@@ -552,7 +669,11 @@ def validate_registry(data_path: Path, schema_path: Path) -> Tuple[bool, List[st
         errors.extend(validate_uniqueness(instruments))
         errors.extend(validate_business_rules(instruments))
         errors.extend(validate_temporal_consistency(instruments))
-        errors.extend(validate_cross_registry())
+        cross_errors, cross_warnings = validate_cross_registry(data)
+    errors.extend(cross_errors)
+    # Warnings are printed but do not fail validation
+    for warning in cross_warnings:
+        print(f"  Warning: {warning}", file=sys.stderr)
 
     return len(errors) == 0, errors
 
