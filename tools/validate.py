@@ -276,22 +276,17 @@ def load_iso4217_currencies() -> Set[str]:
             except (json.JSONDecodeError, KeyError, AttributeError):
                 pass
 
-    # GitHub fallback
+    # GitHub fallback — pin to v1.2.0 tag, only load active currencies
     if not currencies:
-        github_url = "https://raw.githubusercontent.com/slimissa/iso4217/main/iso4217.json"
+        github_url = "https://raw.githubusercontent.com/slimissa/iso4217/v1.2.0/iso4217.json"
         data = _fetch_from_github(github_url)
         if data:
             currencies_obj = data.get("currencies", {})
-            # Handle nested structure: {"active": [...], "withdrawn": [...]}
-            if isinstance(currencies_obj, dict):
-                for section in currencies_obj.values():
-                    if isinstance(section, list):
-                        for currency in section:
-                            if isinstance(currency, dict) and "code" in currency:
-                                currencies.add(currency["code"])
-            # Handle flat structure: [...]
-            elif isinstance(currencies_obj, list):
-                for currency in currencies_obj:
+            # Only load "active" currencies — withdrawn codes are not valid
+            # for current instrument listings
+            active_list = currencies_obj.get("active", [])
+            if isinstance(active_list, list):
+                for currency in active_list:
                     if isinstance(currency, dict) and "code" in currency:
                         currencies.add(currency["code"])
 
