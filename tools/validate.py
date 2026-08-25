@@ -381,6 +381,28 @@ def validate_count(data: Dict) -> List[str]:
     return errors
 
 
+def validate_data_valid_as_of(data: Dict) -> List[str]:
+    """Validate meta.data_valid_as_of is present and a valid date."""
+    errors = []
+    meta = data.get("meta", {})
+    date_str = meta.get("data_valid_as_of")
+
+    if not date_str:
+        errors.append("meta.data_valid_as_of is missing")
+        return errors
+
+    # Validate date format (YYYY-MM-DD)
+    try:
+        from datetime import datetime
+        datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError:
+        errors.append(
+            f"meta.data_valid_as_of should be YYYY-MM-DD: {date_str}"
+        )
+
+    return errors
+
+
 def validate_coverage(data: Dict) -> List[str]:
     """Validate meta.coverage matches actual data."""
     errors = []
@@ -662,6 +684,7 @@ def validate_registry(data_path: Path, schema_path: Path) -> Tuple[bool, List[st
     errors.extend(validate_schema(data, schema))
     errors.extend(validate_count(data))
     errors.extend(validate_coverage(data))
+    errors.extend(validate_data_valid_as_of(data))
 
     instruments = data.get("instruments", [])
     if instruments:
