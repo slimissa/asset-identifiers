@@ -43,9 +43,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     print_section("Lookup by ISIN");
 
-    let aapl = registry
-        .by_isin("US0378331005")
-        .ok_or("AAPL not found")?;
+    let aapl = registry.by_isin("US0378331005").ok_or("AAPL not found")?;
 
     println!("Ticker:      {}", aapl.ticker);
     println!("Name:        {}", aapl.name);
@@ -67,7 +65,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     if let Some(aapl_figi) = registry.by_figi("BBG000B9XRY4") {
-        println!("By FIGI BBG000B9XRY4 → {} ({})", aapl_figi.ticker, aapl_figi.name);
+        println!(
+            "By FIGI BBG000B9XRY4 → {} ({})",
+            aapl_figi.ticker, aapl_figi.name
+        );
     }
 
     if let Some(aapl_lei) = registry.by_lei("HWUPKR0MPOU8FGXBT394") {
@@ -86,17 +87,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let pru_all = registry.by_ticker("PRU", None);
     println!("PRU (all exchanges): {} results", pru_all.len());
     for pru in &pru_all {
-        println!("  {} on {} → {} ({})", pru.ticker, pru.exchange, pru.isin, pru.name);
+        println!(
+            "  {} on {} → {} ({})",
+            pru.ticker, pru.exchange, pru.isin, pru.name
+        );
     }
 
     let pru_london = registry.by_ticker("PRU", Some("XLON"));
     if let Some(inst) = pru_london.first() {
-        println!("PRU on XLON → {} ({}, {})", inst.isin, inst.name, inst.currency);
+        println!(
+            "PRU on XLON → {} ({}, {})",
+            inst.isin, inst.name, inst.currency
+        );
     }
 
     let pru_nyse = registry.by_ticker("PRU", Some("XNYS"));
     if let Some(inst) = pru_nyse.first() {
-        println!("PRU on XNYS → {} ({}, {})", inst.isin, inst.name, inst.currency);
+        println!(
+            "PRU on XNYS → {} ({}, {})",
+            inst.isin, inst.name, inst.currency
+        );
     }
 
     // ─── Filtering ──────────────────────────────────────────────────
@@ -164,7 +174,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("History:");
         for event in &meta.history {
             let reason = deref_or_nil(&event.reason);
-            println!("  {}  {}  {:?}  ({})", event.ticker, event.change_date, event.change_type, reason);
+            println!(
+                "  {}  {}  {:?}  ({})",
+                event.ticker, event.change_date, event.change_type, reason
+            );
         }
     }
 
@@ -190,11 +203,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     print_section("Existence Checks");
 
-    println!("US0378331005 exists: {}", registry.isin_exists("US0378331005"));
-    println!("XX0000000000 exists: {}", registry.isin_exists("XX0000000000"));
-    println!("AAPL on XNAS exists: {}", registry.ticker_exists("AAPL", Some("XNAS")));
-    println!("PRU anywhere exists: {}", registry.ticker_exists("PRU", None));
-    println!("ZZZZ exists:         {}", registry.ticker_exists("ZZZZ", None));
+    println!(
+        "US0378331005 exists: {}",
+        registry.isin_exists("US0378331005")
+    );
+    println!(
+        "XX0000000000 exists: {}",
+        registry.isin_exists("XX0000000000")
+    );
+    println!(
+        "AAPL on XNAS exists: {}",
+        registry.ticker_exists("AAPL", Some("XNAS"))
+    );
+    println!(
+        "PRU anywhere exists: {}",
+        registry.ticker_exists("PRU", None)
+    );
+    println!(
+        "ZZZZ exists:         {}",
+        registry.ticker_exists("ZZZZ", None)
+    );
 
     // ─── Iteration ──────────────────────────────────────────────────
 

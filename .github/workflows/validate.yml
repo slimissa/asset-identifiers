@@ -67,8 +67,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
-          cache-dependency-path: wrappers/javascript/package-lock.json
 
       - name: Install dependencies
         working-directory: wrappers/javascript
@@ -132,8 +130,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
-          cache: true
-          cache-dependency-path: wrappers/go/go.sum
 
       - name: Run Go tests
         working-directory: wrappers/go
