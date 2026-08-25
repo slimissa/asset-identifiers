@@ -267,8 +267,9 @@ jobs:
           # Check Go result
           import subprocess
           go_check = subprocess.run(
-              ["go", "run", "examples/go_lookup.go"],
-              capture_output=True, text=True, timeout=30
+              ["go", "run", "go_lookup.go"],
+              capture_output=True, text=True, timeout=30,
+              cwd="examples"
           )
           if go_check.returncode != 0:
               print(f"Go FAILED: {go_check.stderr}")
