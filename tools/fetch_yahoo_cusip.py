@@ -44,7 +44,7 @@ YAHOO_QUOTE_URL = (
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 # Rate limiting: Yahoo allows ~10 requests per second
-REQUEST_DELAY = 0.25  # 4 requests per second (safe margin)
+REQUEST_DELAY = 2.0  # 4 requests per second (safe margin)
 
 TIMEOUT = 15
 
@@ -383,6 +383,22 @@ def main():
     if args.limit:
         tickers = tickers[: args.limit]
         print(f"Limiting to {args.limit} tickers")
+
+    # Skip tickers that already have ISIN
+    existing_isins = {i.get("isin") for i in existing_instruments if i.get("isin")}
+    tickers_to_process = []
+    for ticker in tickers:
+        # Check if this ticker already has ISIN in registry
+        has_isin = any(
+            i.get("ticker", "").upper() == ticker and i.get("isin")
+            for i in existing_instruments
+        )
+        if not has_isin:
+            tickers_to_process.append(ticker)
+
+    if len(tickers_to_process) < len(tickers):
+        print(f"Skipping {len(tickers) - len(tickers_to_process)} tickers that already have ISIN")
+    tickers = tickers_to_process
 
     print(f"Processing {len(tickers)} tickers...")
 

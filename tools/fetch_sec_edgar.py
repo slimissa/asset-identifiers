@@ -2,7 +2,7 @@
 """
 SEC EDGAR fetcher for Asset Identifier Registry.
 
-Fetches company tickers, CIKs, and identifiers from SEC EDGAR
+Fetches company tickers, names, exchanges, and LEIs from SEC EDGAR
 and updates identifiers.json with the results.
 
 SEC EDGAR is the authoritative source for US-listed companies:
@@ -13,8 +13,9 @@ SEC EDGAR is the authoritative source for US-listed companies:
 Usage:
     python3 tools/fetch_sec_edgar.py --dry-run          # Preview changes
     python3 tools/fetch_sec_edgar.py                    # Apply changes
-    python3 tools/fetch_sec_edgar.py --output new.json  # Write to file
     python3 tools/fetch_sec_edgar.py --limit 100        # Only process 100 companies
+    python3 tools/fetch_sec_edgar.py --sp500            # Process all S&P 500 tickers
+    python3 tools/fetch_sec_edgar.py --tickers AAPL,MSFT  # Specific tickers
 
 Exit codes:
     0 — success
@@ -27,7 +28,6 @@ import sys
 import time
 import argparse
 import gzip
-import io
 import urllib.request
 import urllib.error
 from pathlib import Path
@@ -43,23 +43,18 @@ SEC_EDGAR_SUBMISSIONS_URL = (
     "https://data.sec.gov/submissions/CIK{:010d}.json"
 )
 
-# SEC requires a User-Agent header
 USER_AGENT = "AssetIdentifiersRegistry/1.0.0 (contact: le.ptit.quantos@gmail.com)"
 
-# Rate limiting: SEC allows 10 requests per second
-REQUEST_DELAY = 0.15  # ~6.7 requests per second (safe margin)
-
-# Timeout for HTTP requests
+REQUEST_DELAY = 0.15
 TIMEOUT = 30
 
-# Known exchange mappings from SEC to MIC codes
 EXCHANGE_MAPPINGS = {
     "NASDAQ": "XNAS",
     "NYSE": "XNYS",
     "NYSE ARCA": "XNYS",
     "NYSE AMERICAN": "XNYS",
     "NYSE MKT": "XNYS",
-    "OTC": None,  # Over-the-counter — not in our registry
+    "OTC": None,
     "OTCQX": None,
     "OTCQB": None,
     "PINK": None,
@@ -73,17 +68,7 @@ EXCHANGE_MAPPINGS = {
 # ─── Data Fetching ────────────────────────────────────────────────────
 
 def fetch_json(url: str) -> Optional[Dict]:
-    """
-    Fetch JSON from a URL with proper User-Agent header.
-
-    Handles gzip-compressed responses from SEC EDGAR.
-
-    Args:
-        url: URL to fetch
-
-    Returns:
-        Parsed JSON dict, or None on error
-    """
+    """Fetch JSON from URL with gzip support."""
     request = urllib.request.Request(
         url,
         headers={
@@ -95,11 +80,8 @@ def fetch_json(url: str) -> Optional[Dict]:
     try:
         with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
             raw = response.read()
-
-            # Check if gzip-compressed
             if raw[:2] == b"\x1f\x8b":
                 raw = gzip.decompress(raw)
-
             return json.loads(raw.decode("utf-8"))
     except urllib.error.HTTPError as e:
         print(f"  HTTP {e.code} for {url}", file=sys.stderr)
@@ -116,18 +98,8 @@ def fetch_json(url: str) -> Optional[Dict]:
 
 
 def fetch_company_tickers() -> Dict[str, Dict]:
-    """
-    Fetch all company tickers from SEC EDGAR.
-
-    Returns:
-        Dict mapping CIK string to company info dict:
-        {
-            "cik_str": "320193",
-            "ticker": "AAPL",
-            "title": "Apple Inc."
-        }
-    """
-    print(f"Fetching SEC EDGAR company tickers...")
+    """Fetch all company tickers from SEC EDGAR."""
+    print("Fetching SEC EDGAR company tickers...")
     data = fetch_json(SEC_EDGAR_COMPANY_TICKERS_URL)
 
     if not data:
@@ -139,93 +111,14 @@ def fetch_company_tickers() -> Dict[str, Dict]:
 
 
 def fetch_company_submissions(cik: str) -> Optional[Dict]:
-    """
-    Fetch SEC submissions for a specific company by CIK.
-
-    The submissions contain ISIN, exchange, and other identifiers
-    in the company's latest filings.
-
-    Args:
-        cik: CIK as string (will be zero-padded to 10 digits)
-
-    Returns:
-        Submissions JSON dict, or None on error
-    """
+    """Fetch SEC submissions for a company by CIK."""
     cik_int = int(cik)
     url = SEC_EDGAR_SUBMISSIONS_URL.format(cik_int)
     return fetch_json(url)
 
 
-def extract_isin_from_submissions(submissions: Dict) -> Optional[str]:
-    """
-    SEC EDGAR does NOT provide ISIN directly.
-
-    This function is retained for API compatibility but always
-    returns None. ISIN data must come from OpenFIGI or ANNA DSB.
-
-    Args:
-        submissions: SEC submissions JSON
-
-    Returns:
-        Always None — ISIN is not in SEC submissions
-    """
-    return None
-
-
-def extract_cusip_from_submissions(submissions: Dict) -> Optional[str]:
-    """
-    Extract CUSIP from SEC submissions data.
-
-    Args:
-        submissions: SEC submissions JSON
-
-    Returns:
-        CUSIP string or None
-    """
-    if not submissions:
-        return None
-
-    issuer = submissions.get("issuer", {})
-    cusip = issuer.get("cusip")
-    if cusip:
-        return cusip
-
-    return None
-
-
-def extract_lei_from_submissions(submissions: Dict) -> Optional[str]:
-    """
-    Extract LEI from SEC submissions data.
-
-    Args:
-        submissions: SEC submissions JSON
-
-    Returns:
-        LEI string or None
-    """
-    if not submissions:
-        return None
-
-    issuer = submissions.get("issuer", {})
-    lei = issuer.get("lei")
-    if lei:
-        return lei
-
-    return None
-
-
-# ─── Data Processing ──────────────────────────────────────────────────
-
 def map_exchange_to_mic(exchange_name: str) -> Optional[str]:
-    """
-    Map SEC exchange name to MIC code.
-
-    Args:
-        exchange_name: Exchange name from SEC (e.g., "NASDAQ", "NYSE")
-
-    Returns:
-        MIC code or None if not mapped
-    """
+    """Map SEC exchange name to MIC code."""
     if not exchange_name:
         return None
 
@@ -238,6 +131,64 @@ def map_exchange_to_mic(exchange_name: str) -> Optional[str]:
     return None
 
 
+# ─── Instrument Building ──────────────────────────────────────────────
+
+def build_new_instrument(
+    ticker: str,
+    name: str,
+    mic: str,
+    lei: Optional[str],
+    cik_str: str,
+) -> Dict:
+    """
+    Build a complete instrument entry from SEC EDGAR data.
+
+    This is the ONLY place new instruments are created from SEC data.
+    ISIN and CUSIP will be filled by Yahoo Finance fetcher later.
+    FIGI will be filled by OpenFIGI fetcher later.
+    """
+    return {
+        "isin": None,  # Filled by fetch_yahoo_cusip.py
+        "cusip": None,  # Filled by fetch_yahoo_cusip.py
+        "sedol": None,
+        "figi": None,  # Filled by fetch_openfigi_batch.py
+        "lei": lei,
+        "ticker": ticker,
+        "exchange": mic,
+        "name": name,
+        "currency": "USD",
+        "asset_class": "equity",
+        "instrument_type": "COMMON_STOCK",
+        "sector": None,
+        "industry": None,
+        "country": "US",
+        "active": True,
+        "listing_date": None,
+        "delisting_date": None,
+        "listings": [
+            {
+                "exchange": mic,
+                "ticker": ticker,
+                "currency": "USD",
+                "status": "PRIMARY",
+                "listing_date": None,
+                "delisting_date": None,
+            }
+        ],
+        "history": [
+            {
+                "ticker": ticker,
+                "change_date": None,
+                "change_type": "none",
+                "reason": "INITIAL_LISTING",
+                "source": "SEC EDGAR",
+                "source_url": f"https://www.sec.gov/cgi-bin/browse-edgar?CIK={cik_str}",
+            }
+        ],
+        "corporate_actions": [],
+    }
+
+
 def process_company(
     cik: str,
     company_info: Dict,
@@ -246,38 +197,24 @@ def process_company(
     """
     Process a single company from SEC EDGAR.
 
-    Returns:
-        Instrument dict ready for insertion, or None if skipped
+    Returns updated existing instrument, new instrument, or None.
     """
-    ticker = company_info.get("ticker", "").upper()
-    name = company_info.get("title", "")
+    ticker = company_info.get("ticker", "").upper().strip()
+    name = company_info.get("title", "").strip()
 
     if not ticker or not name:
         return None
 
-    # Use cik_str from company info (the JSON key may be unpadded)
     cik_str = company_info.get("cik_str", cik)
-    
-    # Fetch submissions for this company
+
     submissions = fetch_company_submissions(cik_str)
     time.sleep(REQUEST_DELAY)
 
     if not submissions:
         return None
 
-    # SEC EDGAR provides: ticker, name, exchange, LEI, EIN
-    # SEC EDGAR does NOT provide: ISIN, CUSIP, SEDOL, FIGI
-    # Those come from OpenFIGI or ANNA DSB
-    isin = None  # Not available from SEC
-    cusip = None  # Not available from SEC
-    lei = submissions.get("lei")  # May be None
+    lei = submissions.get("lei")
 
-    # ISIN is not available from SEC EDGAR directly.
-    # We still return the instrument with the data we have.
-    # ISIN will be filled in by fetch_identifiers.py (OpenFIGI) later.
-    # For now, use ticker as a temporary identifier if no ISIN.
-
-    # Extract exchange
     exchanges = submissions.get("exchanges", [])
     exchange_name = exchanges[0] if exchanges else ""
     mic = map_exchange_to_mic(exchange_name)
@@ -285,31 +222,27 @@ def process_company(
     if not mic:
         return None
 
-    # Check if this ticker+exchange already exists
+    # Check if this ticker+exchange already exists with ISIN
     for existing in existing_instruments:
         if (
             existing.get("ticker", "").upper() == ticker
             and existing.get("exchange") == mic
-            and existing.get("isin")  # Only match instruments with ISIN
+            and existing.get("isin")
         ):
-            # Update the existing instrument with fresh SEC data
+            # Update existing instrument
             if lei:
                 existing["lei"] = lei
             if name:
                 existing["name"] = name
-            
-            # Update the source info in history
             if existing.get("history"):
                 existing["history"][0]["source"] = "SEC EDGAR"
                 existing["history"][0]["source_url"] = (
                     f"https://www.sec.gov/cgi-bin/browse-edgar?CIK={cik_str}"
                 )
-            
             return existing
 
-    # New instrument — cannot add without ISIN
-    # Will be handled by OpenFIGI enrichment pipeline
-    return None
+    # New instrument — build without ISIN (filled by Yahoo fetcher later)
+    return build_new_instrument(ticker, name, mic, lei, cik_str)
 
 
 def merge_instruments(
@@ -317,30 +250,47 @@ def merge_instruments(
     new: List[Dict],
 ) -> Tuple[List[Dict], int, int]:
     """
-    Merge new instruments into existing list.
+    Merge new instruments into existing by ISIN or ticker+exchange.
 
     Returns:
-        (merged_list, added_count, updated_count)
+        (merged, added, updated)
     """
     existing_by_isin = {i["isin"]: i for i in existing if i.get("isin")}
+    existing_by_ticker_exchange = {
+        (i.get("ticker", "").upper(), i.get("exchange")): i
+        for i in existing
+        if i.get("ticker") and i.get("exchange")
+    }
 
     added = 0
     updated = 0
 
     for instrument in new:
         isin = instrument.get("isin")
-        if not isin:
-            continue
+        ticker = instrument.get("ticker", "").upper()
+        exchange = instrument.get("exchange")
 
-        if isin in existing_by_isin:
-            # Update existing instrument
+        # Try ISIN match first
+        if isin and isin in existing_by_isin:
             existing_by_isin[isin].update(instrument)
             updated += 1
-        else:
-            # Add new instrument
-            existing.append(instrument)
+            continue
+
+        # Try ticker+exchange match
+        key = (ticker, exchange)
+        if key in existing_by_ticker_exchange:
+            existing_by_ticker_exchange[key].update(instrument)
+            updated += 1
+            continue
+
+        # New instrument
+        existing.append(instrument)
+        added += 1
+
+        # Update lookup dicts
+        if isin:
             existing_by_isin[isin] = instrument
-            added += 1
+        existing_by_ticker_exchange[key] = instrument
 
     return existing, added, updated
 
@@ -349,32 +299,17 @@ def merge_instruments(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Fetch and merge company identifiers from SEC EDGAR",
+        description="Fetch and merge company data from SEC EDGAR",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Preview changes without modifying identifiers.json",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=None,
-        help="Write result to a different file (implies --dry-run)",
-    )
-    parser.add_argument(
-        "--limit",
-        type=int,
-        default=None,
-        help="Only process first N companies (for testing)",
-    )
-    parser.add_argument(
-        "--data",
-        type=Path,
-        default=Path("identifiers.json"),
-        help="Path to identifiers.json (default: identifiers.json)",
-    )
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--tickers", type=str, default=None,
+                        help="Comma-separated specific tickers")
+    parser.add_argument("--sp500", action="store_true",
+                        help="Process all S&P 500 tickers from sp500.json")
+    parser.add_argument("--data", type=Path, default=Path("identifiers.json"))
+    parser.add_argument("--sp500-file", type=Path, default=Path("sp500.json"))
 
     args = parser.parse_args()
 
@@ -385,115 +320,101 @@ def main():
     except FileNotFoundError:
         print(f"ERROR: {args.data} not found", file=sys.stderr)
         sys.exit(2)
-    except json.JSONDecodeError as e:
-        print(f"ERROR: Invalid JSON in {args.data}: {e}", file=sys.stderr)
-        sys.exit(2)
 
     existing_instruments = data.get("instruments", [])
 
-    # Fetch all companies from SEC EDGAR
-    companies = fetch_company_tickers()
+    # Build target ticker set
+    target_tickers: Set[str] = set()
 
+    if args.tickers:
+        target_tickers = {t.strip().upper() for t in args.tickers.split(",") if t.strip()}
+    elif args.sp500:
+        try:
+            with open(args.sp500_file, "r", encoding="utf-8") as f:
+                sp500_data = json.load(f)
+            target_tickers = {
+                c.get("ticker", "").upper().strip()
+                for c in sp500_data.get("constituents", [])
+                if c.get("ticker")
+            }
+            print(f"Loaded {len(target_tickers)} tickers from {args.sp500_file}")
+        except FileNotFoundError:
+            print(f"ERROR: {args.sp500_file} not found. Run fetch_sp500_list.py first.", file=sys.stderr)
+            sys.exit(2)
+    else:
+        # Default: existing registry tickers
+        target_tickers = {
+            i.get("ticker", "").upper()
+            for i in existing_instruments
+            if i.get("ticker")
+        }
+        print(f"Using {len(target_tickers)} existing registry tickers")
+
+    # Fetch all companies
+    companies = fetch_company_tickers()
     if not companies:
         print("No companies fetched. Exiting.", file=sys.stderr)
         sys.exit(1)
 
-    # Sort by ticker for deterministic processing
-    # Filter to companies with actual tickers first
+    # Filter to target tickers
     companies_with_tickers = {
         k: v for k, v in companies.items()
-        if v.get("ticker") and v.get("ticker").strip()
+        if v.get("ticker") and v.get("ticker").strip().upper() in target_tickers
     }
+
     sorted_companies = sorted(
         companies_with_tickers.items(),
         key=lambda x: x[1].get("ticker", "").upper(),
     )
-    print(f"  Companies with tickers: {len(sorted_companies)}")
 
-    # Filter to known tickers (existing instruments + common S&P 500 names)
-    known_tickers = {i["ticker"].upper() for i in existing_instruments if i.get("ticker")}
-    
-    # Only match tickers already in our registry
-    # This fetcher UPDATES existing instruments with fresh SEC data
-    # New instruments require OpenFIGI enrichment first (ISIN/FIGI)
-    target_tickers = known_tickers
-    
-    # Filter companies to target tickers
-    filtered_companies = [
-        (cik, info) for cik, info in sorted_companies
-        if info.get("ticker", "").upper() in target_tickers
-    ]
-    
-    print(f"  Target tickers: {len(target_tickers)}")
-    print(f"  Matching companies: {len(filtered_companies)}")
-    
-    sorted_companies = filtered_companies
-    
-    # Apply limit if specified
+    print(f"  Matching companies: {len(sorted_companies)}")
+
     if args.limit:
         sorted_companies = sorted_companies[: args.limit]
-        print(f"Limiting to {args.limit} companies")
+        print(f"  Limiting to {args.limit}")
 
-    # Process companies
+    # Process
     new_instruments = []
-    skipped = 0
     processed = 0
 
     for cik, company_info in sorted_companies:
         processed += 1
-
         if processed % 50 == 0:
             print(f"  Processed {processed}/{len(sorted_companies)}...")
 
         instrument = process_company(cik, company_info, existing_instruments)
-
         if instrument:
             new_instruments.append(instrument)
-        else:
-            skipped += 1
-
-    print(f"\nProcessed: {processed}")
-    print(f"Skipped:   {skipped}")
-    print(f"Added/Updated: {len(new_instruments)}")
 
     # Merge
     merged, added, updated = merge_instruments(existing_instruments, new_instruments)
+    print(f"\nProcessed: {processed}")
     print(f"Added:     {added}")
     print(f"Updated:   {updated}")
+    print(f"Total:     {len(merged)}")
 
     # Update meta
     data["instruments"] = merged
     data["meta"]["count"] = len(merged)
     data["meta"]["generated"] = time.strftime("%Y-%m-%d")
     data["meta"]["data_valid_as_of"] = time.strftime("%Y-%m-%d")
-
     if "SEC EDGAR" not in data["meta"]["sources"]:
         data["meta"]["sources"].append("SEC EDGAR")
 
     # Update coverage
-    exchanges = set()
-    asset_classes = set()
-    countries = set()
-
-    for instrument in merged:
-        if instrument.get("exchange"):
-            exchanges.add(instrument["exchange"])
-        if instrument.get("asset_class"):
-            asset_classes.add(instrument["asset_class"])
-        if instrument.get("country"):
-            countries.add(instrument["country"])
-
+    exchanges = {i["exchange"] for i in merged if i.get("exchange")}
+    asset_classes = {i["asset_class"] for i in merged if i.get("asset_class")}
+    countries = {i["country"] for i in merged if i.get("country")}
     data["meta"]["coverage"]["exchanges"] = sorted(exchanges)
     data["meta"]["coverage"]["asset_classes"] = sorted(asset_classes)
     data["meta"]["coverage"]["countries"] = sorted(countries)
 
-    # Write result
-    if args.dry_run or args.output:
-        output_path = args.output or Path("identifiers.sec_edgar.preview.json")
+    # Write
+    if args.dry_run:
+        output_path = Path("identifiers.sec_edgar.preview.json")
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-        print(f"\nDry run complete. Result written to {output_path}")
-        print("Run without --dry-run to apply changes to identifiers.json")
+        print(f"\nPreview written to {output_path}")
     else:
         with open(args.data, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
