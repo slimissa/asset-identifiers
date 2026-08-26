@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-01-15",
+    "generated": "2026-08-26",
     "count": 50,
     "sources": [
       "SEC EDGAR",
@@ -28,21 +28,17 @@
         "etf"
       ],
       "countries": [
-        "US",
-        "GB",
-        "JP",
-        "HK",
-        "DE",
         "CH",
+        "DE",
         "FR",
+        "GB",
+        "HK",
+        "JP",
         "KR",
-        "CN",
-        "TW",
-        "NL",
-        "IE"
+        "US"
       ]
     },
-    "data_valid_as_of": "2026-08-25"
+    "data_valid_as_of": "2026-08-26"
   },
   "instruments": [
     {
@@ -87,8 +83,8 @@
           "change_date": "1980-12-12",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/aapl"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=320193"
         }
       ],
       "corporate_actions": [
@@ -118,7 +114,7 @@
       "lei": "INR2EJN1ERAN0W5ZP974",
       "ticker": "MSFT",
       "exchange": "XNAS",
-      "name": "Microsoft Corporation",
+      "name": "MICROSOFT CORP",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -144,8 +140,8 @@
           "change_date": "1986-03-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/msft"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=789019"
         }
       ],
       "corporate_actions": []
@@ -184,8 +180,8 @@
           "change_date": "2004-08-19",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/googl"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1652044"
         },
         {
           "ticker": "GOOGL",
@@ -215,7 +211,7 @@
       "lei": "ZX02V2ZJ5VYF7V7M5E56",
       "ticker": "AMZN",
       "exchange": "XNAS",
-      "name": "Amazon.com, Inc.",
+      "name": "AMAZON COM INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -241,8 +237,8 @@
           "change_date": "1997-05-15",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/amzn"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1018724"
         }
       ],
       "corporate_actions": [
@@ -290,8 +286,8 @@
           "change_date": "2012-05-18",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/meta"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1326801"
         },
         {
           "ticker": "META",
@@ -312,7 +308,7 @@
       "lei": "549300K8Y0ZJ7T8P8D21",
       "ticker": "NVDA",
       "exchange": "XNAS",
-      "name": "NVIDIA Corporation",
+      "name": "NVIDIA CORP",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -338,8 +334,8 @@
           "change_date": "1999-01-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/nvda"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1045810"
         }
       ],
       "corporate_actions": [
@@ -369,7 +365,7 @@
       "lei": "5493005J7L7X9Y7Y7F32",
       "ticker": "NFLX",
       "exchange": "XNAS",
-      "name": "Netflix, Inc.",
+      "name": "NETFLIX INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -395,8 +391,8 @@
           "change_date": "2002-05-23",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/nflx"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1065280"
         }
       ],
       "corporate_actions": []
@@ -409,7 +405,7 @@
       "lei": "5493008V2J5Z3V5V3V30",
       "ticker": "SPY",
       "exchange": "XNYS",
-      "name": "SPDR S&P 500 ETF Trust",
+      "name": "SPDR S&P 500 ETF TRUST",
       "currency": "USD",
       "asset_class": "etf",
       "instrument_type": "ETF",
@@ -435,8 +431,8 @@
           "change_date": "1993-01-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/SPY"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=884394"
         }
       ],
       "corporate_actions": []
@@ -449,7 +445,7 @@
       "lei": "549300QZJYJZJZJZJZ41",
       "ticker": "QQQ",
       "exchange": "XNAS",
-      "name": "Invesco QQQ Trust",
+      "name": "INVESCO QQQ TRUST, SERIES 1",
       "currency": "USD",
       "asset_class": "etf",
       "instrument_type": "ETF",
@@ -475,8 +471,8 @@
           "change_date": "1999-03-10",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/etf/qqq"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1067839"
         }
       ],
       "corporate_actions": []
@@ -529,7 +525,7 @@
       "lei": "549300YJZJZJZJZJZJ63",
       "ticker": "JPM",
       "exchange": "XNYS",
-      "name": "JPMorgan Chase & Co.",
+      "name": "JPMORGAN CHASE & CO",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -555,8 +551,8 @@
           "change_date": "1969-03-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/JPM"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=19617"
         }
       ],
       "corporate_actions": []
@@ -569,7 +565,7 @@
       "lei": "549300XJZJZJZJZJZJ74",
       "ticker": "BAC",
       "exchange": "XNYS",
-      "name": "Bank of America Corporation",
+      "name": "BANK OF AMERICA CORP /DE/",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -595,8 +591,8 @@
           "change_date": "1971-11-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/BAC"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=70858"
         }
       ],
       "corporate_actions": []
@@ -609,7 +605,7 @@
       "lei": "549300WJZJZJZJZJZJ85",
       "ticker": "GS",
       "exchange": "XNYS",
-      "name": "The Goldman Sachs Group, Inc.",
+      "name": "GOLDMAN SACHS GROUP INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -635,8 +631,8 @@
           "change_date": "1999-05-04",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/GS"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=886982"
         }
       ],
       "corporate_actions": []
@@ -649,7 +645,7 @@
       "lei": "549300VJZJZJZJZJZJ96",
       "ticker": "V",
       "exchange": "XNYS",
-      "name": "Visa Inc.",
+      "name": "VISA INC.",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -675,8 +671,8 @@
           "change_date": "2008-03-19",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/V"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1403161"
         }
       ],
       "corporate_actions": []
@@ -689,7 +685,7 @@
       "lei": "549300UJZJZJZJZJZJ07",
       "ticker": "MA",
       "exchange": "XNYS",
-      "name": "Mastercard Incorporated",
+      "name": "Mastercard Inc",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -715,8 +711,8 @@
           "change_date": "2006-05-25",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/MA"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1141391"
         }
       ],
       "corporate_actions": []
@@ -729,7 +725,7 @@
       "lei": "549300TJZJZJZJZJZJ18",
       "ticker": "JNJ",
       "exchange": "XNYS",
-      "name": "Johnson & Johnson",
+      "name": "JOHNSON & JOHNSON",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -755,8 +751,8 @@
           "change_date": "1944-09-24",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/JNJ"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=200406"
         }
       ],
       "corporate_actions": []
@@ -769,7 +765,7 @@
       "lei": "549300SJZJZJZJZJZJ29",
       "ticker": "PFE",
       "exchange": "XNYS",
-      "name": "Pfizer Inc.",
+      "name": "PFIZER INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -795,8 +791,8 @@
           "change_date": "1942-06-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/PFE"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=78003"
         }
       ],
       "corporate_actions": []
@@ -809,7 +805,7 @@
       "lei": "549300RJZJZJZJZJZJ30",
       "ticker": "UNH",
       "exchange": "XNYS",
-      "name": "UnitedHealth Group Incorporated",
+      "name": "UNITEDHEALTH GROUP INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -835,8 +831,8 @@
           "change_date": "1984-10-17",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/UNH"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=731766"
         }
       ],
       "corporate_actions": []
@@ -849,7 +845,7 @@
       "lei": "549300QJZJZJZJZJZJ41",
       "ticker": "PG",
       "exchange": "XNYS",
-      "name": "The Procter & Gamble Company",
+      "name": "PROCTER & GAMBLE Co",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -875,8 +871,8 @@
           "change_date": "1890-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/PG"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=80424"
         }
       ],
       "corporate_actions": []
@@ -889,7 +885,7 @@
       "lei": "549300PJZJZJZJZJZJ52",
       "ticker": "KO",
       "exchange": "XNYS",
-      "name": "The Coca-Cola Company",
+      "name": "COCA COLA CO",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -915,8 +911,8 @@
           "change_date": "1919-09-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/KO"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=21344"
         }
       ],
       "corporate_actions": [
@@ -938,7 +934,7 @@
       "lei": "549300OJZJZJZJZJZJ63",
       "ticker": "PEP",
       "exchange": "XNAS",
-      "name": "PepsiCo, Inc.",
+      "name": "PEPSICO INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -964,8 +960,8 @@
           "change_date": "1919-12-18",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/pep"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=77476"
         }
       ],
       "corporate_actions": []
@@ -1027,7 +1023,7 @@
       "lei": "549300MJZJZJZJZJZJ85",
       "ticker": "COST",
       "exchange": "XNAS",
-      "name": "Costco Wholesale Corporation",
+      "name": "COSTCO WHOLESALE CORP /NEW",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1053,8 +1049,8 @@
           "change_date": "1985-12-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/cost"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=909832"
         }
       ],
       "corporate_actions": []
@@ -1067,7 +1063,7 @@
       "lei": "549300LJZJZJZJZJZJ96",
       "ticker": "CAT",
       "exchange": "XNYS",
-      "name": "Caterpillar Inc.",
+      "name": "CATERPILLAR INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1093,8 +1089,8 @@
           "change_date": "1929-12-02",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/CAT"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=18230"
         }
       ],
       "corporate_actions": []
@@ -1107,7 +1103,7 @@
       "lei": "549300KJZJZJZJZJZJ07",
       "ticker": "BA",
       "exchange": "XNYS",
-      "name": "The Boeing Company",
+      "name": "BOEING CO",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1133,8 +1129,8 @@
           "change_date": "1934-09-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/BA"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=12927"
         }
       ],
       "corporate_actions": []
@@ -1147,7 +1143,7 @@
       "lei": "549300JJZJZJZJZJZJ18",
       "ticker": "GE",
       "exchange": "XNYS",
-      "name": "General Electric Company",
+      "name": "GENERAL ELECTRIC CO",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1173,8 +1169,8 @@
           "change_date": "1892-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/GE"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=40545"
         }
       ],
       "corporate_actions": [
@@ -1196,7 +1192,7 @@
       "lei": "549300IJZJZJZJZJZJ29",
       "ticker": "HON",
       "exchange": "XNAS",
-      "name": "Honeywell International Inc.",
+      "name": "HONEYWELL INTERNATIONAL INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1222,8 +1218,8 @@
           "change_date": "1925-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/hon"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=773840"
         }
       ],
       "corporate_actions": []
@@ -1236,7 +1232,7 @@
       "lei": "549300HJZJZJZJZJZJ30",
       "ticker": "XOM",
       "exchange": "XNYS",
-      "name": "Exxon Mobil Corporation",
+      "name": "ExxonMobil Holdings Corp",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1262,8 +1258,8 @@
           "change_date": "1920-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/XOM"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=2115436"
         },
         {
           "ticker": "XOM",
@@ -1284,7 +1280,7 @@
       "lei": "549300GJZJZJZJZJZJ41",
       "ticker": "CVX",
       "exchange": "XNYS",
-      "name": "Chevron Corporation",
+      "name": "CHEVRON CORP",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1310,8 +1306,8 @@
           "change_date": "1921-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/CVX"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=93410"
         }
       ],
       "corporate_actions": []
@@ -1324,7 +1320,7 @@
       "lei": "549300FJZJZJZJZJZJ52",
       "ticker": "DIS",
       "exchange": "XNYS",
-      "name": "The Walt Disney Company",
+      "name": "Walt Disney Co",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1350,8 +1346,8 @@
           "change_date": "1957-11-12",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/DIS"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1744489"
         }
       ],
       "corporate_actions": []
@@ -1364,7 +1360,7 @@
       "lei": "549300EJZJZJZJZJZJ63",
       "ticker": "AMD",
       "exchange": "XNAS",
-      "name": "Advanced Micro Devices, Inc.",
+      "name": "ADVANCED MICRO DEVICES INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1390,8 +1386,8 @@
           "change_date": "1972-09-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/amd"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=2488"
         }
       ],
       "corporate_actions": []
@@ -1430,8 +1426,8 @@
           "change_date": "2010-06-29",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/tsla"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1318605"
         }
       ],
       "corporate_actions": [
@@ -1461,7 +1457,7 @@
       "lei": "549300CJZJZJZJZJZJ85",
       "ticker": "INTC",
       "exchange": "XNAS",
-      "name": "Intel Corporation",
+      "name": "INTEL CORP",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1487,8 +1483,8 @@
           "change_date": "1971-10-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/intc"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=50863"
         }
       ],
       "corporate_actions": []
@@ -1501,7 +1497,7 @@
       "lei": "549300BJZJZJZJZJZJ96",
       "ticker": "QCOM",
       "exchange": "XNAS",
-      "name": "QUALCOMM Incorporated",
+      "name": "QUALCOMM INC/DE",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1527,8 +1523,8 @@
           "change_date": "1991-12-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/qcom"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=804328"
         }
       ],
       "corporate_actions": []
@@ -1567,8 +1563,8 @@
           "change_date": "2009-08-06",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/avgo"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1730168"
         }
       ],
       "corporate_actions": [
@@ -1590,7 +1586,7 @@
       "lei": "549300ZJZJZJZJZJZJ18",
       "ticker": "CSCO",
       "exchange": "XNAS",
-      "name": "Cisco Systems, Inc.",
+      "name": "CISCO SYSTEMS, INC.",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1616,8 +1612,8 @@
           "change_date": "1990-02-16",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/csco"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=858877"
         }
       ],
       "corporate_actions": []
@@ -1656,8 +1652,8 @@
           "change_date": "2004-06-23",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/CRM"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1108524"
         }
       ],
       "corporate_actions": []
@@ -1696,8 +1692,8 @@
           "change_date": "2015-07-20",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/pypl"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1633917"
         }
       ],
       "corporate_actions": []
@@ -1710,7 +1706,7 @@
       "lei": "549300WJZJZJZJZJZJ41",
       "ticker": "SBUX",
       "exchange": "XNAS",
-      "name": "Starbucks Corporation",
+      "name": "STARBUCKS CORP",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1736,8 +1732,8 @@
           "change_date": "1992-06-26",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NASDAQ",
-          "source_url": "https://www.nasdaq.com/market-activity/stocks/sbux"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=829224"
         }
       ],
       "corporate_actions": []
@@ -1910,7 +1906,7 @@
       "lei": "549300RJZJZJZJZJZJ96",
       "ticker": "PRU",
       "exchange": "XNYS",
-      "name": "Prudential Financial, Inc.",
+      "name": "PRUDENTIAL FINANCIAL INC",
       "currency": "USD",
       "asset_class": "equity",
       "instrument_type": "COMMON_STOCK",
@@ -1936,8 +1932,8 @@
           "change_date": "2001-12-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/PRU"
+          "source": "SEC EDGAR",
+          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1137774"
         }
       ],
       "corporate_actions": []
