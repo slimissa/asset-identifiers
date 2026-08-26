@@ -9,7 +9,8 @@
       "NASDAQ",
       "NYSE",
       "London Stock Exchange",
-      "Tokyo Stock Exchange"
+      "Tokyo Stock Exchange",
+      "Yahoo Finance"
     ],
     "coverage": {
       "exchanges": [
