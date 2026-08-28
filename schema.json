@@ -547,6 +547,58 @@
                 }
               }
             }
+          },
+          "cik": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "SEC Central Index Key (10 digits)",
+            "pattern": "^[0-9]{10}$"
+          },
+          "sic_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Standard Industrial Classification code",
+            "pattern": "^[0-9]{4}$"
+          },
+          "sic_description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "SIC industry description"
+          },
+          "market_cap": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Market capitalization in USD"
+          },
+          "total_employees": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Total number of employees"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Company business description"
+          },
+          "share_class_figi": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Share class FIGI",
+            "pattern": "^BBG[0-9A-Z]{9}$"
           }
         }
       }

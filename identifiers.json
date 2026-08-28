@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-08-26",
+    "generated": "2026-08-28",
     "count": 50,
     "sources": [
       "SEC EDGAR",
@@ -10,7 +10,8 @@
       "NYSE",
       "London Stock Exchange",
       "Tokyo Stock Exchange",
-      "Yahoo Finance"
+      "Yahoo Finance",
+      "Massive (Polygon.io)"
     ],
     "coverage": {
       "exchanges": [
@@ -39,7 +40,7 @@
         "US"
       ]
     },
-    "data_valid_as_of": "2026-08-26"
+    "data_valid_as_of": "2026-08-28"
   },
   "instruments": [
     {
@@ -84,8 +85,8 @@
           "change_date": "1980-12-12",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=320193"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=AAPL"
         }
       ],
       "corporate_actions": [
@@ -105,7 +106,13 @@
           "source": "Apple Inc. press release",
           "source_url": "https://www.apple.com/newsroom/2020/07/apple-announces-four-for-one-stock-split/"
         }
-      ]
+      ],
+      "cik": "0000320193",
+      "share_class_figi": "BBG001S5N8V8",
+      "sic_code": "3571",
+      "market_cap": 4591037144400.0,
+      "description": "Apple is among the largest companies in the world, with a broad portfolio of hardware and software products targeted at consumers and businesses. Apple's iPhone accounts for the majority of the firm's sales, and Apple's other products, such as the Mac, iPad, and Watch, are designed around the iPhone as the focal point of an expansive software ecosystem. Apple has progressively worked to add new applications, such as streaming video, subscription bundles, and augmented reality. The firm designs its own software and semiconductors and works with subcontractors such as Foxconn and TSMC to build its products and chips. Slightly less than half of Apple's sales come directly through its flagship stores, with the majority coming indirectly through partnerships and distribution.",
+      "total_employees": 166000
     },
     {
       "isin": "US5949181045",
@@ -141,11 +148,17 @@
           "change_date": "1986-03-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=789019"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=MSFT"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000789019",
+      "share_class_figi": "BBG001S5TD05",
+      "sic_code": "7372",
+      "market_cap": 3750346005684.46,
+      "description": "Microsoft develops and licenses consumer and enterprise software. It is known for its Windows operating systems and Office productivity suite. The company is organized into three equally sized broad segments: productivity and business processes (legacy Microsoft Office, cloud-based Office 365, Exchange, SharePoint, Skype, LinkedIn, Dynamics), intelligence cloud (infrastructure- and platform-as-a-service offerings Azure, Windows Server OS, SQL Server), and more personal computing (Windows Client, Xbox, Bing search, display advertising, and Surface laptops, tablets, and desktops).",
+      "total_employees": 223000
     },
     {
       "isin": "US02079K1079",
@@ -181,8 +194,8 @@
           "change_date": "2004-08-19",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1652044"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=GOOGL"
         },
         {
           "ticker": "GOOGL",
@@ -202,7 +215,13 @@
           "source": "Alphabet Inc. press release",
           "source_url": "https://abc.xyz/investor/"
         }
-      ]
+      ],
+      "cik": "0001652044",
+      "share_class_figi": "BBG009S39JY5",
+      "sic_code": "7370",
+      "market_cap": 4166127300180.15,
+      "description": "Alphabet is a holding company that wholly owns internet giant Google. The California-based company derives slightly less than 90% of its revenue from Google services, the vast majority of which is advertising sales. Alongside online ads, Google services houses sales stemming from Google's subscription services (YouTube TV and YouTube Music, among others), platforms (sales and in-app purchases on Play Store), and devices (Chromebooks, Pixel smartphones, and smart home products such as Chromecast). Google's cloud computing platform accounts for roughly 10% of Alphabet's revenue. The firm's investments in up-and-coming technologies such as self-driving cars (Waymo), health (Verily), and internet access (Google Fiber) make up the rest.",
+      "total_employees": 198933
     },
     {
       "isin": "US0231351067",
@@ -238,8 +257,8 @@
           "change_date": "1997-05-15",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1018724"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=AMZN"
         }
       ],
       "corporate_actions": [
@@ -251,7 +270,13 @@
           "source": "Amazon.com, Inc. press release",
           "source_url": "https://ir.aboutamazon.com/"
         }
-      ]
+      ],
+      "cik": "0001018724",
+      "share_class_figi": "BBG001S5PQL7",
+      "sic_code": "5961",
+      "market_cap": 2764100715960.7197,
+      "description": "Amazon is the leading online retailer and marketplace for third party sellers. Retail related revenue represents approximately 74% of total, followed by Amazon Web Services (17%), and advertising services (9%). International segments constitute 22% of Amazon's total revenue, led by Germany, the United Kingdom, and Japan.",
+      "total_employees": 1576000
     },
     {
       "isin": "US30303M1027",
@@ -287,8 +312,8 @@
           "change_date": "2012-05-18",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1326801"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=META"
         },
         {
           "ticker": "META",
@@ -299,7 +324,13 @@
           "source_url": "https://investor.fb.com/"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001326801",
+      "share_class_figi": "BBG001SQCQC5",
+      "sic_code": "7370",
+      "market_cap": 1454880805097.5,
+      "description": "Meta is the largest social media company in the world, boasting close to 4 billion monthly active users worldwide. The firm's \"Family of Apps,\" its core business, consists of Facebook, Instagram, Messenger, and WhatsApp. End users can leverage these applications for a variety of different purposes, from keeping in touch with friends to following celebrities and running digital businesses for free. Meta packages customer data, gleaned from its application ecosystem and sells ads to digital advertisers. While the firm has been investing heavily in its Reality Labs business, it remains a very small part of Meta's overall sales.",
+      "total_employees": 78865
     },
     {
       "isin": "US67066G1040",
@@ -335,8 +366,8 @@
           "change_date": "1999-01-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1045810"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=NVDA"
         }
       ],
       "corporate_actions": [
@@ -356,7 +387,13 @@
           "source": "NVIDIA Corporation press release",
           "source_url": "https://nvidianews.nvidia.com/"
         }
-      ]
+      ],
+      "cik": "0001045810",
+      "share_class_figi": "BBG001S5TZJ6",
+      "sic_code": "3674",
+      "market_cap": 5505033060000.0,
+      "description": "Nvidia is a leading developer of graphics processing units. Traditionally, GPUs were used to enhance the experience on computing platforms, most notably in gaming applications on PCs. GPU use cases have since emerged as important semiconductors used in artificial intelligence to run large language models. Nvidia not only offers AI GPUs, but also a software platform, Cuda, used for AI model development and training. Nvidia is also expanding its data center networking solutions, helping to tie GPUs together to handle complex workloads.",
+      "total_employees": 42000
     },
     {
       "isin": "US64110L1061",
@@ -392,11 +429,17 @@
           "change_date": "2002-05-23",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1065280"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=NFLX"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001065280",
+      "share_class_figi": "BBG001SF6L46",
+      "sic_code": "7841",
+      "market_cap": 332448943731.84,
+      "description": "Netflix's relatively simple business model involves only one business, its streaming service. It has the biggest television entertainment subscriber base in both the United States and the collective international market, with more than 300 million subscribers globally. Netflix has exposure to nearly the entire global population outside of China. The firm has traditionally avoided a regular slate of live programming or sports content, instead focusing on on-demand access to episodic television, movies, and documentaries. The firm introduced ad-supported subscription plans in 2022, giving the firm exposure to the advertising market in addition to the subscription fees that have historically accounted for nearly all its revenue.",
+      "total_employees": 16000
     },
     {
       "isin": "US78462F1030",
@@ -432,11 +475,13 @@
           "change_date": "1993-01-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=884394"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=SPY"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000884394",
+      "share_class_figi": "BBG001S72SM3"
     },
     {
       "isin": "US46090E1038",
@@ -472,11 +517,13 @@
           "change_date": "1999-03-10",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1067839"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=QQQ"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001067839",
+      "share_class_figi": "BBG001S9GN63"
     },
     {
       "isin": "US4642878049",
@@ -512,11 +559,13 @@
           "change_date": "2000-05-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/IWM"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=IWM"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001100663",
+      "share_class_figi": "BBG001SFC7Y7"
     },
     {
       "isin": "US46625H1005",
@@ -552,11 +601,17 @@
           "change_date": "1969-03-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=19617"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=JPM"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000019617",
+      "share_class_figi": "BBG001S8CRC3",
+      "sic_code": "6021",
+      "market_cap": 941582713992.9,
+      "description": "JPMorgan is a leading global financial services firm with operations in 66 countries and over 318,000 employees as of year-end 2025. Under the JPMorgan brands, the bank holding company boasts a $4.9 trillion balance sheet and $2.68 trillion in deposits, as of March 2026. The firm generates its revenue across three core operating segments: consumer and community banking, the commercial and investment bank, and asset and wealth management. It maintains the top global ranking in investment banking fees with an 8.4% market share, serves millions of consumers through its network of over 5,000 US branches, and manages over $7.1 trillion in client assets within its wealth and asset management franchise.",
+      "total_employees": 320560
     },
     {
       "isin": "US0605051046",
@@ -592,11 +647,17 @@
           "change_date": "1971-11-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=70858"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=BAC"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000070858",
+      "share_class_figi": "BBG001S5P0Y0",
+      "sic_code": "6021",
+      "market_cap": 427746417487.05,
+      "description": "Bank of America is a formidable financial titan with a $3.5 trillion balance sheet and a cornerstone of the American economy, holding the second-largest deposit market share in the United States. While the firm has maintained its stronghold among middle-market and retail clientele domestically, Bank of America has continued to hold its own on the global stage, as evidenced by its fourth-largest global trading operation and an investment banking division that regularly finishes in the top four in global league tables. The firm is organized across four segments: consumer banking, global wealth and investment management, global banking, and global markets.",
+      "total_employees": 213000
     },
     {
       "isin": "US38141G1040",
@@ -632,11 +693,17 @@
           "change_date": "1999-05-04",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=886982"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=GS"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000886982",
+      "share_class_figi": "BBG001SC07Z6",
+      "sic_code": "6211",
+      "market_cap": 303071583444.95996,
+      "description": "Goldman Sachs is a storied financial institution, founded in 1869 and best known for its role as a leading global investment bank. The firm has a sprawling reach across global financial centers and has been the leading provider of global merger and acquisition advisory services, by revenue, for the past 20 years. Since the global financial crisis, Goldman has expanded its offerings into more stable fee-based businesses like asset and wealth management, which comprised roughly 30% of post-provision revenue at the end of 2025. The firm generates revenue from investment banking, global market making and trading, lending, asset management, wealth management, and a small and declining portfolio of consumer credit card loans.",
+      "total_employees": 46200
     },
     {
       "isin": "US92826C8394",
@@ -672,11 +739,17 @@
           "change_date": "2008-03-19",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1403161"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=V"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001403161",
+      "share_class_figi": "BBG001SRCFY3",
+      "sic_code": "7389",
+      "market_cap": 708843162351.9401,
+      "description": "Visa is the largest payment processor in the world. In fiscal 2025, it processed almost $17 trillion in total volume. Visa operates in over 200 countries and processes transactions in over 160 currencies. Its systems are capable of processing over 65,000 transactions per second.",
+      "total_employees": 34100
     },
     {
       "isin": "US57636Q1040",
@@ -712,11 +785,17 @@
           "change_date": "2006-05-25",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1141391"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=MA"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001141391",
+      "share_class_figi": "BBG001SKNNS6",
+      "sic_code": "7389",
+      "market_cap": 518361361796.2,
+      "description": "Mastercard is the second-largest payment processor in the world, having processed close to $11 trillion in volume during 2025. Mastercard operates in over 200 countries and processes transactions in over 150 currencies.",
+      "total_employees": 39800
     },
     {
       "isin": "US4781601046",
@@ -752,11 +831,17 @@
           "change_date": "1944-09-24",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=200406"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=JNJ"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000200406",
+      "share_class_figi": "BBG001S5SHQ9",
+      "sic_code": "2834",
+      "market_cap": 640478750124.69,
+      "description": "Johnson & Johnson is the world's largest and most diverse healthcare firm. It has two divisions: innovative medicine and medtech. These now represent all of the company's sales following the divestment of the consumer business, Kenvue, in 2023. After restructurings in 2023-24, the drug division focuses on three main therapeutic areas: immunology, oncology, and neurology. Geographically, just over half of total revenue is generated in the United States.",
+      "total_employees": 140800
     },
     {
       "isin": "US7170811035",
@@ -792,11 +877,17 @@
           "change_date": "1942-06-22",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=78003"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=PFE"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000078003",
+      "share_class_figi": "BBG001S5V466",
+      "sic_code": "2834",
+      "market_cap": 159704853963.78,
+      "description": "Pfizer is one of the world's largest pharmaceutical firms, with annual sales of roughly $60 billion. While it historically sold many types of healthcare products and chemicals, now prescription drugs and vaccines account for the majority of sales. Top sellers include pneumococcal vaccine Prevnar 13 and cardiology drugs Vyndamax and Eliquis. Pfizer sells these products globally, with international sales representing 40% of total sales. Within international sales, emerging markets are a major contributor.",
+      "total_employees": 75000
     },
     {
       "isin": "US91324P1021",
@@ -832,11 +923,17 @@
           "change_date": "1984-10-17",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=731766"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=UNH"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000731766",
+      "share_class_figi": "BBG001S6WCJ1",
+      "sic_code": "6324",
+      "market_cap": 354594844307.35004,
+      "description": "UnitedHealth Group is one of the largest private health insurers and provides medical benefits to about 51 million members globally, including 1 million outside the US as of December 2025. As a leader in employer-sponsored, self-directed, and government-backed insurance plans, UnitedHealth has obtained massive scale in medical insurance. Along with its insurance assets, UnitedHealth's Optum franchises help create a healthcare services colossus that spans everything from pharmaceutical benefits to providing outpatient care and analytics to affiliates and third parties.",
+      "total_employees": 390000
     },
     {
       "isin": "US7427181091",
@@ -872,11 +969,17 @@
           "change_date": "1890-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=80424"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=PG"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000080424",
+      "share_class_figi": "BBG001S5V4L9",
+      "sic_code": "2840",
+      "market_cap": 332719348208.39996,
+      "description": "Since its founding in 1837, Procter & Gamble has become one of the world's largest consumer product manufacturers, with annual sales of nearly $85 billion. It operates with a lineup of leading brands, including more than 20 that generate annual global sales of more than $1 billion each, such as Tide laundry detergent, Charmin toilet paper, Pantene shampoo, and Pampers diapers. Sales outside its home turf represent just more than half of the firm's consolidated total.",
+      "total_employees": 104000
     },
     {
       "isin": "US1912161007",
@@ -912,8 +1015,8 @@
           "change_date": "1919-09-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=21344"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=KO"
         }
       ],
       "corporate_actions": [
@@ -925,7 +1028,13 @@
           "source": "Coca-Cola press release",
           "source_url": "https://www.coca-colacompany.com/"
         }
-      ]
+      ],
+      "cik": "0000021344",
+      "share_class_figi": "BBG001S5SMQ8",
+      "sic_code": "2080",
+      "market_cap": 383185035581.58,
+      "description": "Founded in 1886, Atlanta-headquartered Coca-Cola is the world's largest nonalcoholic beverage company, with a strong portfolio of 200 brands covering key categories including carbonated soft drinks, water, sports, energy, juice, and coffee. Together with bottlers and distribution partners, the company sells finished beverage products bearing Coca-Cola and licensed brands through retailers and food-service locations in more than 200 countries and regions globally. Coca-Cola generates around 60% of its total revenue overseas, with sizable contributions from emerging economies in Latin America and Asia-Pacific.",
+      "total_employees": 65900
     },
     {
       "isin": "US7134481081",
@@ -961,11 +1070,17 @@
           "change_date": "1919-12-18",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=77476"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=PEP"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000077476",
+      "share_class_figi": "BBG001S695T1",
+      "sic_code": "2080",
+      "market_cap": 190702648483.76,
+      "description": "PepsiCo is a global leader in snacks and beverages, owning well-known household brands including Pepsi, Mountain Dew, Gatorade, Lay's, Cheetos, and Doritos, among others. The company dominates the global savory snacks market and also ranks as the second-largest beverage provider in the world (behind Coca-Cola) with diversified exposure to carbonated soft drinks, or CSD, as well as water, sports, and energy drink offerings. Convenience foods account for approximately 58% of its total revenue, with beverages making up the rest. Pepsi owns the bulk of its manufacturing and distribution capacity in the US, but uses bottlers overseas for beverages. International markets made up 41% of total sales and 46% of operating profits before corporate expenses in 2025.",
+      "total_employees": 306000
     },
     {
       "isin": "US9311421039",
@@ -1001,8 +1116,8 @@
           "change_date": "1970-10-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/WMT"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=WMT"
         }
       ],
       "corporate_actions": [
@@ -1014,7 +1129,13 @@
           "source": "Walmart press release",
           "source_url": "https://corporate.walmart.com/"
         }
-      ]
+      ],
+      "cik": "0000104169",
+      "share_class_figi": "BBG001S5XH92",
+      "sic_code": "5331",
+      "market_cap": 816737663677.65,
+      "description": "Since its founding in 1962, Walmart has become the world's largest retailer, operating over 10,700 stores globally (including 4,600 namesake locations on its home turf and another 600 Sam's Club outlets) and growing its e-commerce presence, attracting 270 million customers weekly. In aggregate, the firm posted more than $713 billion in fiscal 2026 sales. Its core operations span three reporting segments: Walmart US (68% of fiscal 2026 sales), Walmart International (19%), and Sam's Club (13%).Within the US, nearly 60% of its $486 billion in fiscal 2026 revenue came from its grocery offerings, with another quarter from general merchandise. Internationally, Walmart's operations are concentrated in Mexico, though it also has budding exposure to India.",
+      "total_employees": 2100000
     },
     {
       "isin": "US22160K1051",
@@ -1050,11 +1171,17 @@
           "change_date": "1985-12-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=909832"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=COST"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000909832",
+      "share_class_figi": "BBG001S9KRQ7",
+      "sic_code": "5331",
+      "market_cap": 414501898946.64,
+      "description": "Founded in 1983, Costco Wholesale now operates a global chain of membership-based warehouse clubs, delivering high-quality goods and services at consistently low prices. As of its most recent fiscal year, Costco operated approximately 910 warehouses, serving more than 80 million members across its three geographic segments: Costco US (approximately 73% of total revenue), Costco Canada (13%), and Costco International (14%).Costco's core value proposition—quality products at unbeatable prices—has yielded consistently strong member renewal rates (93% in the US and Canada and nearly 90% internationally). About 55% of Costco's fiscal 2025 revenue came from its grocery offerings, and another 25% from general merchandise.",
+      "total_employees": 341000
     },
     {
       "isin": "US1491231015",
@@ -1090,11 +1217,17 @@
           "change_date": "1929-12-02",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=18230"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=CAT"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000018230",
+      "share_class_figi": "BBG001S5PJ06",
+      "sic_code": "3531",
+      "market_cap": 375554384313.0,
+      "description": "Caterpillar is the world's leading manufacturer of construction and mining equipment, off-highway diesel and natural gas engines, industrial gas turbines, and diesel-electric locomotives. Its reporting segments are construction, resource, energy, and transportation. Market share approaches 20% across many products. Caterpillar operates a captive finance subsidiary to facilitate sales. The firm has a global reach that is approximately evenly balanced between the US and the rest of the world. Construction skews more domestic, while the other divisions are more geographically diversified. An independent network of over 150 dealers operates approximately 2,800 facilities, giving Caterpillar reach into about 190 countries for sales and support services.",
+      "total_employees": 118000
     },
     {
       "isin": "US0970231058",
@@ -1130,11 +1263,17 @@
           "change_date": "1934-09-05",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=12927"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=BA"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000012927",
+      "share_class_figi": "BBG001S5P0V3",
+      "sic_code": "3721",
+      "market_cap": 165890763497.8,
+      "description": "Boeing is a major aerospace and defense firm operating in three segments: commercial airplanes; defense, space, and security; and global services. Boeing's commercial airplanes segment competes with Airbus in the production of aircraft that can carry more than 130 passengers. Boeing's defense, space, and security segment competes with defense contractors such as Lockheed Martin and Northrop Grumman to create military aircraft, satellites, and weaponry. Global services provides aftermarket support to airlines.",
+      "total_employees": 182000
     },
     {
       "isin": "US3696043013",
@@ -1170,8 +1309,8 @@
           "change_date": "1892-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=40545"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=GE"
         }
       ],
       "corporate_actions": [
@@ -1183,7 +1322,13 @@
           "source": "GE press release",
           "source_url": "https://www.ge.com/"
         }
-      ]
+      ],
+      "cik": "0000040545",
+      "share_class_figi": "BBG001S5PVD5",
+      "sic_code": "3600",
+      "market_cap": 355603800080.49,
+      "description": "GE Aerospace is the global leader in designing, manufacturing, and servicing commercial aircraft turbine engines, along with partner Safran in their CFM joint venture. With its massive global installed base of nearly 80,000 commercial and military engines, GE Aerospace earns most of its profits on recurring service revenue of that equipment, which operates for decades. GE Aerospace is the remaining core business of the company formed in 1892 with historical ties to American inventor Thomas Edison; General Electric became a storied conglomerate, with peak revenue of $130 billion in 2000, until it spun off its appliance, finance, healthcare, and wind and power businesses between 2016 and 2024.",
+      "total_employees": 57000
     },
     {
       "isin": "US4370761029",
@@ -1219,17 +1364,23 @@
           "change_date": "1925-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=773840"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=HON"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000773840",
+      "share_class_figi": "BBG001S5X1N1",
+      "sic_code": "3724",
+      "market_cap": 69850408803.9,
+      "description": "Honeywell traces its roots to 1885 with Albert Butz's firm, Butz Thermo-Electric Regulator, which produced a predecessor to the modern thermostat. Other inventions by Honeywell include biodegradable detergent and autopilot. Today, Honeywell is a global multi-industry behemoth with one of the largest installed bases of equipment. It operates through four business segments: aerospace technologies, industrial automation, energy and sustainability solutions, and building automation. Recently, Honeywell has made several portfolio changes to focus on fewer end markets and align with a set of secular growth trends. The firm is working diligently to expand its installed base, deriving around one third of its revenue from recurring aftermarket services.",
+      "total_employees": 101000
     },
     {
       "isin": "US30231G1022",
       "cusip": "30231G102",
       "sedol": null,
-      "figi": "BBG023CY9MM1",
+      "figi": "BBG000GZQ728",
       "lei": "549300HJZJZJZJZJZJ30",
       "ticker": "XOM",
       "exchange": "XNYS",
@@ -1259,8 +1410,8 @@
           "change_date": "1920-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=2115436"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=XOM"
         },
         {
           "ticker": "XOM",
@@ -1271,7 +1422,13 @@
           "source_url": "https://corporate.exxonmobil.com/"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0002115436",
+      "share_class_figi": "BBG023CY9NL0",
+      "sic_code": "2911",
+      "market_cap": 643267507022.4,
+      "description": "ExxonMobil is an integrated oil and gas company that explores for, produces, and refines oil worldwide. In 2025, it produced 3.3 million barrels of liquids and 8.4 billion cubic feet of natural gas per day. At the end of 2025, reserves were 19.3 billion barrels of oil equivalent, 69% of which were liquids. The company is one of the world's largest refiners, with a total global refining capacity of 4.1 million barrels of oil per day, and is one of the world's largest manufacturers of commodity and specialty chemicals.",
+      "total_employees": 57900
     },
     {
       "isin": "US1667641005",
@@ -1307,11 +1464,17 @@
           "change_date": "1921-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=93410"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=CVX"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000093410",
+      "share_class_figi": "BBG001S67ZC5",
+      "sic_code": "2911",
+      "market_cap": 391869486046.98004,
+      "description": "Chevron is an integrated energy company with exploration, production, and refining operations worldwide. It is the second-largest oil company in the United States with 2025 worldwide net oil-equivalent production of 3.7 million barrels per day, including 8.5 billion cubic feet per day of natural gas and 2.3 million barrels of liquids per day. Production takes place in North America, South America, Europe, Africa, Asia, and Australia. The company's refining networks arelocated in the United States and Asia, with a total worldwide refining capacity of 1.8 million barrels of oil a day at year-end 2025. Net proved reserves at year-end 2025 stood at 10.6 billion barrels of oil equivalent, consisting of 5.7 billion barrels of liquids and 29.2 trillion cubic feet of natural gas.",
+      "total_employees": 43039
     },
     {
       "isin": "US2546871060",
@@ -1347,11 +1510,17 @@
           "change_date": "1957-11-12",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1744489"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=DIS"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001744489",
+      "share_class_figi": "BBG001S5QHF3",
+      "sic_code": "7990",
+      "market_cap": 184444694871.63998,
+      "description": "Disney operates in three global business segments: entertainment, sports, and experiences. Entertainment and experiences both benefit from the firm's ownership of iconic franchises and characters. Entertainment includes the ABC broadcast network, several cable television networks, and the Disney+ and Hulu streaming services. Within the segment, Disney also engages in movie and television production and distribution, with content licensed to movie theaters, other content providers, or, increasingly, kept in-house for use on Disney's own streaming platform and television networks. The sports segment houses the ESPN family of TV networks and streaming services. Experiences contains Disney's theme parks, cruises, and vacation destinations and also engages in merchandise licensing.",
+      "total_employees": 231000
     },
     {
       "isin": "US0079031078",
@@ -1387,11 +1556,17 @@
           "change_date": "1972-09-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=2488"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=AMD"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000002488",
+      "share_class_figi": "BBG001S5NN36",
+      "sic_code": "3674",
+      "market_cap": 778151878270.14,
+      "description": "Advanced Micro Devices designs a variety of digital semiconductors for markets such as PCs, gaming consoles, data centers (including artificial intelligence), industrial, and automotive applications. AMD's traditional strength was in central processing units and graphics processing units used in PCs and data centers. However, AMD is emerging as a prominent player in AI GPUs and related hardware. Additionally, the firm supplies the chips found in prominent game consoles such as the Sony PlayStation and Microsoft Xbox.",
+      "total_employees": 31000
     },
     {
       "isin": "US88160R1014",
@@ -1427,8 +1602,8 @@
           "change_date": "2010-06-29",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1318605"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=TSLA"
         }
       ],
       "corporate_actions": [
@@ -1448,7 +1623,13 @@
           "source": "Tesla press release",
           "source_url": "https://ir.tesla.com/"
         }
-      ]
+      ],
+      "cik": "0001318605",
+      "share_class_figi": "BBG001SQKGD7",
+      "sic_code": "3711",
+      "market_cap": 1401338910865.14,
+      "description": "Tesla is a vertically integrated battery electric vehicle automaker and developer of real-world artificial intelligence software, which includes autonomous driving and humanoid robots. The company has multiple vehicles in its fleet, which include a midsize sedan and crossover SUV in the entry-level luxury category, a luxury light truck, and a semitruck. Tesla also runs a robotaxi service in four US metropolitan areas. Global deliveries in 2025 were nearly 1.64 million vehicles. Additionally, the company sells batteries for stationary storage for residential and commercial properties, including utilities, solar panels, and solar roofs for energy generation. Tesla also owns a fast-charging network and a US auto insurance business.",
+      "total_employees": 134785
     },
     {
       "isin": "US4581401001",
@@ -1484,11 +1665,17 @@
           "change_date": "1971-10-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=50863"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=INTC"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000050863",
+      "share_class_figi": "BBG001S5SF65",
+      "sic_code": "3674",
+      "market_cap": 486797433577.58,
+      "description": "Intel is a leading digital chipmaker focused on designing and manufacturing microprocessors for the global personal computer and data center markets. Intel pioneered the x86 architecture for microprocessors and led the semiconductor industry down the path of Moore's law for advances in semiconductor manufacturing. Intel remains the market share leader in central processing units in both the PC and server end markets. The company is seeking to reinvigorate its chip manufacturing business, Intel Foundry, while developing leading-edge products in its Intel Products business segment.",
+      "total_employees": 851001
     },
     {
       "isin": "US7475251036",
@@ -1524,11 +1711,17 @@
           "change_date": "1991-12-13",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=804328"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=QCOM"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000804328",
+      "share_class_figi": "BBG001S6VS70",
+      "sic_code": "3663",
+      "market_cap": 175995007047.86002,
+      "description": "Qualcomm develops and licenses wireless technology and designs chips for smartphones. The company's key patents revolve around CDMA and OFDMA technologies, which are standards in wireless communications that are the backbone of all 3G, 4G, and 5G networks. Qualcomm's IP is licensed by virtually all wireless device makers. The firm is also the world's largest wireless chip vendor, supplying nearly every premier handset maker with leading-edge processors. Qualcomm also sells RF-front end modules into smartphones, as well as chips into automotive and Internet of Things markets.",
+      "total_employees": 52000
     },
     {
       "isin": "US11135F1012",
@@ -1564,8 +1757,8 @@
           "change_date": "2009-08-06",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1730168"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=AVGO"
         }
       ],
       "corporate_actions": [
@@ -1577,7 +1770,13 @@
           "source": "Broadcom press release",
           "source_url": "https://www.broadcom.com/"
         }
-      ]
+      ],
+      "cik": "0001730168",
+      "share_class_figi": "BBG00KHY5SY8",
+      "sic_code": "3674",
+      "market_cap": 1767631346764.9202,
+      "description": "Broadcom is one of the largest semiconductor companies in the world and has also expanded into infrastructure software. Its semiconductors primarily serve computing and networking, with custom AI accelerators now accounting for the bulk of the business. It is primarily a fabless designer, but holds some manufacturing in-house, such as for its best-of-breed film bulk acoustic resonator filters that sell into the Apple iPhone. In software, it sells virtualization, infrastructure, and security software to large enterprises, financial institutions, and governments. Broadcom is the product of consolidation. Its businesses are an amalgamation of former companies like legacy Broadcom and Avago Technologies in chips, as well as VMware, Brocade, CA Technologies, and Symantec in software.",
+      "total_employees": 33000
     },
     {
       "isin": "US17275R1023",
@@ -1613,11 +1812,17 @@
           "change_date": "1990-02-16",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=858877"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=CSCO"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000858877",
+      "share_class_figi": "BBG001S6HC62",
+      "sic_code": "3576",
+      "market_cap": 442031897679.75,
+      "description": "Cisco Systems is the largest provider of networking equipment in the world and one of the largest software companies in the world. Its largest businesses are selling networking hardware and software (where it has leading market shares) and cybersecurity software such as firewalls. It also has collaboration products, like its Webex suite, and observability tools. It primarily outsources its manufacturing to third parties and has a large sales and marketing staff—25,000 strong across 90 countries. Overall, Cisco employs 80,000 people and sells its products globally.",
+      "total_employees": 86200
     },
     {
       "isin": "US79466L3024",
@@ -1653,11 +1858,17 @@
           "change_date": "2004-06-23",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1108524"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=CRM"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001108524",
+      "share_class_figi": "BBG001SDLP09",
+      "sic_code": "7372",
+      "market_cap": 207437150000.0,
+      "description": "Salesforce provides enterprise cloud computing solutions. The company offers customer relationship management technology that brings companies and customers together. Its Customer 360 platform helps the group deliver a single source of truth, connecting customer data across systems, apps, and devices to help companies sell, service, market, and conduct commerce. It also offers Service Cloud for customer support, Marketing Cloud for digital marketing campaigns, Commerce Cloud as an e-commerce engine, the Salesforce Platform, which allows enterprises to build applications, and other solutions, such as MuleSoft for data integration.",
+      "total_employees": 83334
     },
     {
       "isin": "US70450Y1038",
@@ -1693,11 +1904,17 @@
           "change_date": "2015-07-20",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1633917"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=PYPL"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001633917",
+      "share_class_figi": "BBG0077VNXW5",
+      "sic_code": "7389",
+      "market_cap": 52585179924.78,
+      "description": "PayPal was spun off from eBay in 2015 and provides electronic payment solutions to merchants and consumers, with a focus on online transactions. The company had 439 million active accounts at the end of 2025. The company also owns Venmo, a person-to-person payment platform.",
+      "total_employees": 23800
     },
     {
       "isin": "US8522341036",
@@ -1733,11 +1950,17 @@
           "change_date": "1992-06-26",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=829224"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=SBUX"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000829224",
+      "share_class_figi": "BBG001S72KH6",
+      "sic_code": "5810",
+      "market_cap": 122276400000.0,
+      "description": "Starbucks stands out as the world's biggest and most recognizable coffee brand, powered by ultracustomizable beverages in-store and a sweeping footprint of nearly 41,000 cafes in over 80 countries. About 52% are company-operated, with the balance run by licensees. The company operates roasteries and sells across its North America (74% of revenue as of the end of fiscal 2025), international (21%), and channel development (5%) segments. The brand collects revenue from company-operated stores, licensee royalties, equipment and product sales, retail ready-to-drink beverages, and packaged coffee.",
+      "total_employees": 381000
     },
     {
       "isin": "US0846707026",
@@ -1773,11 +1996,17 @@
           "change_date": "1996-05-09",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/BRK.B"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=BRK.B"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001067983",
+      "share_class_figi": "BBG001S90346",
+      "sic_code": "6331",
+      "market_cap": 1078275523237.7999,
+      "description": "Berkshire Hathaway is a holding company with a wide array of subsidiaries engaged in diverse activities. The firm's core business segment is insurance, run primarily through Geico, Berkshire Hathaway Reinsurance Group, and Berkshire Hathaway Primary Group. Berkshire has used the excess cash thrown off from its operations to acquire Burlington Northern Santa Fe (railroad), Berkshire Hathaway Energy (utilities and energy distributors), and the companies that make up its manufacturing, service, and retailing operations (which include Precision Castparts, Lubrizol, Clayton Homes, Marmon, and IMC/ISCAR). The conglomerate is unique in that it is run on a completely decentralized basis. Berkshire generated close to $371.4 billion in operating revenue in during 2025.",
+      "total_employees": 387800
     },
     {
       "isin": "US9229087690",
@@ -1813,11 +2042,13 @@
           "change_date": "2001-05-24",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/VTI"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=VTI"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000036405",
+      "share_class_figi": "BBG001SHTB03"
     },
     {
       "isin": "US9220426764",
@@ -1853,11 +2084,13 @@
           "change_date": "2007-07-20",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "NYSE",
-          "source_url": "https://www.nyse.com/quote/VEA"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=VEA"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000923202",
+      "share_class_figi": "BBG001SSPWL4"
     },
     {
       "isin": "GB0007099541",
@@ -1893,51 +2126,17 @@
           "change_date": "1978-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "London Stock Exchange",
-          "source_url": "https://www.londonstockexchange.com/stock/PRU/prudential-plc"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=PRU"
         }
       ],
-      "corporate_actions": []
-    },
-    {
-      "isin": "US7443201022",
-      "cusip": "744320102",
-      "sedol": null,
-      "figi": "BBG000HCJMF9",
-      "lei": "549300RJZJZJZJZJZJ96",
-      "ticker": "PRU",
-      "exchange": "XNYS",
-      "name": "PRUDENTIAL FINANCIAL INC",
-      "currency": "USD",
-      "asset_class": "equity",
-      "instrument_type": "COMMON_STOCK",
-      "sector": "FINANCIALS",
-      "industry": "INSURANCE",
-      "country": "US",
-      "active": true,
-      "listing_date": "2001-12-13",
-      "delisting_date": null,
-      "listings": [
-        {
-          "exchange": "XNYS",
-          "ticker": "PRU",
-          "currency": "USD",
-          "status": "PRIMARY",
-          "listing_date": "2001-12-13",
-          "delisting_date": null
-        }
-      ],
-      "history": [
-        {
-          "ticker": "PRU",
-          "change_date": "2001-12-13",
-          "change_type": "none",
-          "reason": "INITIAL_LISTING",
-          "source": "SEC EDGAR",
-          "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?CIK=1137774"
-        }
-      ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001137774",
+      "share_class_figi": "BBG001S97MM7",
+      "sic_code": "6311",
+      "market_cap": 41527650000.0,
+      "description": "Prudential Financial is one of the largest US life insurers, offering annuities, life insurance, and asset-management products. The United States and Japan are its two largest markets. Its US business contributed about 50% of adjusted 2025 earnings and includes institutional retirement (mostly pension risk transfer), individual retirement (annuities), group insurance, and individual life insurance. Its international business represented about 39% of adjusted earnings, with a strong market position in Japan, and the firm also has a presence in emerging markets like Brazil. The company's investment management business, PGIM, contributed approximately 11% of its 2025 adjusted earnings. PGIM had around $1.47 trillion in assets under management at the end of fourth-quarter 2025.",
+      "total_employees": 36824
     },
     {
       "isin": "JP3435000009",
@@ -2013,11 +2212,16 @@
           "change_date": "1988-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "Deutsche Börse",
-          "source_url": "https://www.deutsche-boerse.com/"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=SAP"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001000184",
+      "share_class_figi": "BBG001S6RD41",
+      "market_cap": 255275349991.43997,
+      "description": "Founded in Germany in 1972 by former IBM employees, SAP is the world's largest provider of enterprise application software. Known as the leader in enterprise resource planning software, SAP's portfolio also includes software for supply chain management, procurement, travel and expense management, and customer relationship management, among others. The company operates in more than 180 countries and has more than 400,000 customers, approximately 80% of which are small to medium-size enterprises.",
+      "total_employees": 100000
     },
     {
       "isin": "FR0000121014",
@@ -2053,17 +2257,23 @@
           "change_date": "1989-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "Euronext Paris",
-          "source_url": "https://www.euronext.com/"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=MC"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0001596967",
+      "share_class_figi": "BBG001STYX58",
+      "sic_code": "6282",
+      "market_cap": 5084171686.589999,
+      "description": "Moelis & Co is an independent investment bank that provides strategic and financial advice to a diverse client base, including corporations, financial sponsors, governments, and sovereign wealth funds. The company assists its clients in achieving their strategic goals by offering comprehensive, globally integrated financial advisory services across all industry sectors. It also advises clients on their critical decisions, including mergers and acquisitions, recapitalizations and restructurings, capital markets transactions, and other corporate finance matters. It generates revenue from advisory transactions. The firm derives a majority of its revenue from the United States, followed by Europe and the rest of the World.",
+      "total_employees": 1416
     },
     {
       "isin": "CH0012032048",
       "cusip": null,
       "sedol": null,
-      "figi": null,
+      "figi": "BBG000BS9HN3",
       "lei": "549300NJZJZJZJZJZJ30",
       "ticker": "ROG",
       "exchange": "XSWX",
@@ -2093,11 +2303,17 @@
           "change_date": "1919-01-01",
           "change_type": "none",
           "reason": "INITIAL_LISTING",
-          "source": "SIX Swiss Exchange",
-          "source_url": "https://www.six-group.com/"
+          "source": "Massive (Polygon.io)",
+          "source_url": "https://massive.com/dashboard/keys?ticker=ROG"
         }
       ],
-      "corporate_actions": []
+      "corporate_actions": [],
+      "cik": "0000084748",
+      "share_class_figi": "BBG001S5TTY3",
+      "sic_code": "2821",
+      "market_cap": 2310911765.55,
+      "description": "Rogers Corp designs develop and manufactures engineered materials and components for sale to original equipment manufacturers and component suppliers. The firm operates in three business segments: Advanced Electronics Solutions, which manufactures circuit materials for applications in communications infrastructure, automotive, and consumer electronics markets; elastomeric material solutions, which provide cushioning, sealing, and impact protection in automotive, transportation, and construction applications; and Other, which consists of elastomer components for applications in the general industrial market, as well as elastomer floats for level sensing in fuel tanks, motors, and storage tanks applications in the general industrial and automotive markets.",
+      "total_employees": 3000
     },
     {
       "isin": "HK0941009539",
@@ -2175,6 +2391,44 @@
           "reason": "INITIAL_LISTING",
           "source": "Korea Exchange",
           "source_url": "http://www.krx.co.kr/"
+        }
+      ],
+      "corporate_actions": []
+    },
+    {
+      "isin": "US7443201022",
+      "cusip": "744320102",
+      "sedol": null,
+      "figi": "BBG000HCJMF9",
+      "lei": null,
+      "ticker": "PRU",
+      "exchange": "XNYS",
+      "name": "Prudential Financial, Inc.",
+      "currency": "USD",
+      "asset_class": "equity",
+      "instrument_type": "COMMON_STOCK",
+      "sector": "FINANCIALS",
+      "industry": "INSURANCE",
+      "country": "US",
+      "active": true,
+      "listing_date": "2001-12-13",
+      "delisting_date": null,
+      "listings": [
+        {
+          "exchange": "XNYS",
+          "ticker": "PRU",
+          "currency": "USD",
+          "status": "PRIMARY"
+        }
+      ],
+      "history": [
+        {
+          "ticker": "PRU",
+          "change_date": "2001-12-13",
+          "change_type": "none",
+          "reason": "INITIAL_LISTING",
+          "source": "NYSE",
+          "source_url": "https://www.nyse.com/quote/PRU"
         }
       ],
       "corporate_actions": []
