@@ -1,0 +1,84 @@
+version: 2
+updates:
+  # ─── Python (root — tools, tests, validation scripts) ─────────────
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
+    rebase-strategy: "auto"
+    versioning-strategy: "increase-if-necessary"
+
+  # ─── JavaScript (wrapper) ─────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/wrappers/javascript"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "deps"
+    rebase-strategy: "auto"
+    versioning-strategy: "increase-if-necessary"
+
+  # ─── Rust (wrapper) ────────────────────────────────────────────────
+  - package-ecosystem: "cargo"
+    directory: "/wrappers/rust"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "rust"
+    commit-message:
+      prefix: "deps"
+    rebase-strategy: "auto"
+
+  # ─── Go (wrapper) ──────────────────────────────────────────────────
+  - package-ecosystem: "gomod"
+    directory: "/wrappers/go"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "go"
+    commit-message:
+      prefix: "deps"
+    rebase-strategy: "auto"
+
+  # ─── GitHub Actions (CI workflows) ─────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci(deps)"
+    rebase-strategy: "auto"
