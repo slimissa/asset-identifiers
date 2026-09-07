@@ -37,7 +37,7 @@ WIKIPEDIA_SP500_URL = (
     "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
 )
 
-USER_AGENT = "AssetIdentifiersRegistry/1.0.0 (contact: le.ptit.quantos@gmail.com)"
+USER_AGENT = "AssetIdentifiersRegistry/1.1.0 (contact: le.ptit.quantos@gmail.com)"
 
 TIMEOUT = 30
 

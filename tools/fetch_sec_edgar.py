@@ -43,7 +43,7 @@ SEC_EDGAR_SUBMISSIONS_URL = (
     "https://data.sec.gov/submissions/CIK{:010d}.json"
 )
 
-USER_AGENT = "AssetIdentifiersRegistry/1.0.0 (contact: le.ptit.quantos@gmail.com)"
+USER_AGENT = "AssetIdentifiersRegistry/1.1.0 (contact: le.ptit.quantos@gmail.com)"
 
 REQUEST_DELAY = 0.15
 TIMEOUT = 30

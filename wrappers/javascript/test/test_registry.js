@@ -33,6 +33,16 @@ const { AssetRegistry } = require('../src/index.js');
 
 const REGISTRY_PATH = path.resolve(__dirname, '../../../identifiers.json');
 const registry = new AssetRegistry(REGISTRY_PATH);
+const EXPECTED_COUNT = 283;
+const EXPECTED_ISIN = 283;
+const EXPECTED_CUSIP = 263;
+const EXPECTED_FIGI = 50;
+const EXPECTED_LEI = 49;
+const EXPECTED_CUSIP_PERCENT = 92.93;
+const EXPECTED_FIGI_PERCENT = 17.67;
+const EXPECTED_LEI_PERCENT = 17.31;
+const EXPECTED_COUNTRY_COUNT = 10;
+
 
 // ─── Registry Loading Tests ──────────────────────────────────────────
 
@@ -42,12 +52,12 @@ describe('Registry Loading', () => {
   });
 
   test('has correct instrument count', () => {
-    assert.equal(registry.count, 50);
+    assert.equal(registry.count, EXPECTED_COUNT);
   });
 
   test('has instruments array', () => {
     assert.ok(Array.isArray(registry.instruments));
-    assert.equal(registry.instruments.length, 50);
+    assert.equal(registry.instruments.length, EXPECTED_COUNT);
   });
 
   test('has path', () => {
@@ -57,8 +67,8 @@ describe('Registry Loading', () => {
   test('has metadata', () => {
     const meta = registry.meta();
     assert.ok(meta, 'Metadata should exist');
-    assert.equal(meta.version, '1.0.0');
-    assert.equal(meta.count, 50);
+    assert.equal(meta.version, '1.1.0');
+    assert.equal(meta.count, EXPECTED_COUNT);
   });
 });
 
@@ -225,7 +235,7 @@ describe('Filtering', () => {
   test('filters by equity asset class', () => {
     const equities = registry.byAssetClass('equity');
     assert.ok(equities.length > 0);
-    assert.equal(equities.length + registry.byAssetClass('etf').length, 50);
+    assert.equal(equities.length + registry.byAssetClass('etf').length, EXPECTED_COUNT);
   });
 
   test('filters by country', () => {
@@ -253,7 +263,7 @@ describe('Filtering', () => {
 
 describe('Metadata', () => {
   test('returns version', () => {
-    assert.equal(registry.version(), '1.0.0');
+    assert.equal(registry.version(), '1.1.0');
   });
 
   test('returns generation date', () => {
@@ -268,7 +278,7 @@ describe('Metadata', () => {
 
   test('returns all instruments', () => {
     const all = registry.all();
-    assert.equal(all.length, 50);
+    assert.equal(all.length, EXPECTED_COUNT);
   });
 });
 
@@ -301,7 +311,7 @@ describe('Aggregate Information', () => {
     assert.ok(countries.includes('US'));
     assert.ok(countries.includes('GB'));
     assert.ok(countries.includes('JP'));
-    assert.equal(countries.length, 8);
+    assert.equal(countries.length, EXPECTED_COUNTRY_COUNT);
   });
 });
 
@@ -366,15 +376,15 @@ describe('Convenience Methods', () => {
 describe('Statistical Methods', () => {
   test('identifierCoverage returns ISIN coverage', () => {
     const coverage = registry.identifierCoverage();
-    assert.equal(coverage.isin.covered, 50);
-    assert.equal(coverage.isin.total, 50);
+    assert.equal(coverage.isin.covered, EXPECTED_ISIN);
+    assert.equal(coverage.isin.total, EXPECTED_ISIN);
     assert.equal(coverage.isin.percentage, 100);
   });
 
   test('identifierCoverage returns CUSIP coverage', () => {
     const coverage = registry.identifierCoverage();
-    assert.equal(coverage.cusip.covered, 43);
-    assert.equal(coverage.cusip.percentage, 86);
+    assert.equal(coverage.cusip.covered, EXPECTED_CUSIP);
+    assert.equal(coverage.cusip.percentage, EXPECTED_CUSIP_PERCENT);
   });
 
   test('identifierCoverage returns SEDOL coverage', () => {
@@ -385,14 +395,14 @@ describe('Statistical Methods', () => {
 
   test('identifierCoverage returns FIGI coverage', () => {
     const coverage = registry.identifierCoverage();
-    assert.equal(coverage.figi.covered, 49);
-    assert.equal(coverage.figi.percentage, 98);
+    assert.equal(coverage.figi.covered, EXPECTED_FIGI);
+    assert.equal(coverage.figi.percentage, EXPECTED_FIGI_PERCENT);
   });
 
   test('identifierCoverage returns LEI coverage', () => {
     const coverage = registry.identifierCoverage();
-    assert.equal(coverage.lei.covered, 50);
-    assert.equal(coverage.lei.percentage, 100);
+    assert.equal(coverage.lei.covered, EXPECTED_LEI);
+    assert.equal(coverage.lei.percentage, EXPECTED_LEI_PERCENT);
   });
 
   test('tickersWithMultipleListings returns PRU', () => {
@@ -474,14 +484,14 @@ describe('Iterator', () => {
     for (const inst of registry) {
       tickers.push(inst.ticker);
     }
-    assert.equal(tickers.length, 50);
+    assert.equal(tickers.length, EXPECTED_COUNT);
     assert.ok(tickers.includes('AAPL'));
     assert.ok(tickers.includes('MSFT'));
   });
 
   test('spread operator works', () => {
     const instruments = [...registry];
-    assert.equal(instruments.length, 50);
+    assert.equal(instruments.length, EXPECTED_COUNT);
   });
 });
 
@@ -491,13 +501,13 @@ describe('String Representation', () => {
   test('toString returns meaningful string', () => {
     const str = registry.toString();
     assert.ok(str.includes('Asset Identifier Registry'));
-    assert.ok(str.includes('50'));
+    assert.ok(str.includes(String(EXPECTED_COUNT)));
   });
 
   test('toJSON returns object', () => {
     const json = registry.toJSON();
-    assert.equal(json.count, 50);
-    assert.equal(json.instruments, 50);
+    assert.equal(json.count, EXPECTED_COUNT);
+    assert.equal(json.instruments, EXPECTED_COUNT);
   });
 });
 

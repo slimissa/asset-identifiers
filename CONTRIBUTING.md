@@ -378,7 +378,7 @@ Once approved and CI passes, the PR is merged.
 
 ### Rust
 
-- Follow [Rust style guidelines](https://doc.rust-lang.org/1.0.0/style/)
+- Follow [Rust style guidelines](https://doc.rust-lang.org/1.1.0/style/)
 - Use `rustfmt`
 - Run `cargo clippy` before submitting
 

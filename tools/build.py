@@ -153,7 +153,7 @@ def update_metadata(data: Dict) -> Dict:
     data["meta"]["count"] = len(data.get("instruments", []))
     data["meta"]["generated"] = date.today().isoformat()
     data["meta"]["build_timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    data["meta"]["build_version"] = "1.0.0"
+    data["meta"]["build_version"] = "1.1.0"
 
     # Update coverage statistics
     coverage = data["meta"].get("coverage", {})

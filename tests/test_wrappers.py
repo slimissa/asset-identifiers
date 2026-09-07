@@ -89,7 +89,7 @@ class TestPythonWrapper:
     def test_get_count(self):
         """Should return correct instrument count."""
         registry = get_python_wrapper()
-        assert registry.count == 50, f"Expected 50, got {registry.count}"
+        assert registry.count == 283, f"Expected 50, got {registry.count}"
 
     def test_lookup_by_isin(self):
         """Should find AAPL by ISIN."""
@@ -135,7 +135,7 @@ class TestPythonWrapper:
         """Should return all instruments."""
         registry = get_python_wrapper()
         instruments = registry.all()
-        assert len(instruments) == 50, f"Expected 50, got {len(instruments)}"
+        assert len(instruments) == 283, f"Expected 50, got {len(instruments)}"
 
     def test_filter_by_exchange(self):
         """Should filter by exchange."""
@@ -159,7 +159,7 @@ class TestPythonWrapper:
         meta = registry.meta()
         assert "version" in meta
         assert "count" in meta
-        assert meta["count"] == 50
+        assert meta["count"] == 283
 
 
 # ─── Cross-Language Consistency Tests ─────────────────────────────────
@@ -168,7 +168,7 @@ class TestCrossLanguageConsistency:
     """Test that all wrappers return identical results."""
 
     # Expected values from identifiers.json
-    EXPECTED_COUNT = 50
+    EXPECTED_COUNT = 283
     EXPECTED_AAPL_ISIN = "US0378331005"
     EXPECTED_AAPL_CUSIP = "037833100"
     EXPECTED_AAPL_FIGI = "BBG000B9XRY4"

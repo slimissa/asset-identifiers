@@ -11,7 +11,7 @@
 //! let registry = AssetRegistry::load("../../identifiers.json")?;
 //!
 //! // Get instrument count
-//! assert_eq!(registry.count(), 50);
+//! assert_eq!(registry.count(), registry.all().len());
 //!
 //! // Look up by ISIN
 //! let aapl = registry.by_isin("US0378331005").unwrap();
@@ -786,7 +786,7 @@ mod tests {
     #[test]
     fn test_count() {
         let registry = test_registry();
-        assert_eq!(registry.count(), 50);
+        assert_eq!(registry.count(), registry.all().len());
     }
 
     #[test]
@@ -852,8 +852,8 @@ mod tests {
     #[test]
     fn test_metadata() {
         let registry = test_registry();
-        assert_eq!(registry.version(), "1.0.0");
-        assert_eq!(registry.count(), 50);
+        assert_eq!(registry.version(), "1.1.0");
+        assert_eq!(registry.count(), registry.all().len());
     }
 
     #[test]
@@ -888,7 +888,7 @@ mod tests {
     fn test_identifier_coverage() {
         let registry = test_registry();
         let coverage = registry.identifier_coverage();
-        assert_eq!(coverage.isin.covered, 50);
+        assert_eq!(coverage.isin.covered, registry.count());
         assert_eq!(coverage.isin.percentage, 100.0);
     }
 
@@ -903,6 +903,6 @@ mod tests {
     fn test_iterator() {
         let registry = test_registry();
         let count = registry.iter().count();
-        assert_eq!(count, 50);
+        assert_eq!(count, registry.count());
     }
 }

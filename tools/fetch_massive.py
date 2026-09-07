@@ -56,7 +56,7 @@ REQUEST_DELAY = 12.5
 
 TIMEOUT = 15
 
-USER_AGENT = "AssetIdentifiersRegistry/1.0.0 (contact: le.ptit.quantos@gmail.com)"
+USER_AGENT = "AssetIdentifiersRegistry/1.1.0 (contact: le.ptit.quantos@gmail.com)"
 
 
 # ─── Data Fetching ────────────────────────────────────────────────────

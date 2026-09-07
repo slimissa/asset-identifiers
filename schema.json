@@ -27,7 +27,7 @@
           "description": "Registry version following Semantic Versioning.",
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
           "examples": [
-            "1.0.0"
+            "1.1.0"
           ]
         },
         "generated": {

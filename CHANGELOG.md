@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] — 2026-08-14
+## [1.1.0] — 2026-08-14
 
 ### Added
 
@@ -194,7 +194,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Instruments | Tests | Key Changes |
 |---------|------|-------------|-------|-------------|
-| 1.0.0 | 2026-08-14 | 50 | 292 | Initial release |
+| 1.1.0 | 2026-08-14 | 50 | 292 | Initial release |
 ```
 
 ## What this CHANGELOG covers
@@ -202,10 +202,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Section | Content |
 |---------|---------|
 | Unreleased | Planned features and known issues |
-| 1.0.0 Added | Everything new in the initial release |
-| 1.0.0 Changed | Modifications to existing files |
-| 1.0.0 Fixed | All bugs that were found and fixed |
-| 1.0.0 Removed | Items that were deleted |
+| 1.1.0 Added | Everything new in the initial release |
+| 1.1.0 Changed | Modifications to existing files |
+| 1.1.0 Fixed | All bugs that were found and fixed |
+| 1.1.0 Removed | Items that were deleted |
 | Versioning Summary | At-a-glance version history |
 
 ## Why this format works
