@@ -80,7 +80,7 @@ for inst in all_instruments:
 
 # Get registry metadata
 meta = registry.meta()
-print(meta["version"])     # 1.2.0
+print(meta["version"])     # 1.2.1
 print(meta["count"])       # 50
 print(meta["generated"])   # 2026-08-14
 

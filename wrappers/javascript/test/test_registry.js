@@ -36,10 +36,10 @@ const registry = new AssetRegistry(REGISTRY_PATH);
 const EXPECTED_COUNT = 509;
 const EXPECTED_ISIN = 509;
 const EXPECTED_CUSIP = 474;
-const EXPECTED_FIGI = 50;
+const EXPECTED_FIGI = 509;
 const EXPECTED_LEI = 49;
 const EXPECTED_CUSIP_PERCENT = 93.12;
-const EXPECTED_FIGI_PERCENT = 9.82;
+const EXPECTED_FIGI_PERCENT = 100.0;
 const EXPECTED_LEI_PERCENT = 9.63;
 const EXPECTED_COUNTRY_COUNT = 13;
 
@@ -67,7 +67,7 @@ describe('Registry Loading', () => {
   test('has metadata', () => {
     const meta = registry.meta();
     assert.ok(meta, 'Metadata should exist');
-    assert.equal(meta.version, '1.2.0');
+    assert.equal(meta.version, '1.2.1');
     assert.equal(meta.count, EXPECTED_COUNT);
   });
 });
@@ -263,7 +263,7 @@ describe('Filtering', () => {
 
 describe('Metadata', () => {
   test('returns version', () => {
-    assert.equal(registry.version(), '1.2.0');
+    assert.equal(registry.version(), '1.2.1');
   });
 
   test('returns generation date', () => {

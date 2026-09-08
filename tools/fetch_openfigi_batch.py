@@ -43,11 +43,11 @@ OPENFIGI_API_KEY = os.environ.get("OPENFIGI_API_KEY", "")
 REQUEST_DELAY = 0.5  # 2 batches per second (safe)
 
 # Batch size (OpenFIGI max is 100)
-BATCH_SIZE = 100
+BATCH_SIZE = 10
 
 TIMEOUT = 30
 
-USER_AGENT = "AssetIdentifiersRegistry/1.2.0 (contact: le.ptit.quantos@gmail.com)"
+USER_AGENT = "AssetIdentifiersRegistry/1.2.1 (contact: le.ptit.quantos@gmail.com)"
 
 
 # ─── Data Fetching ────────────────────────────────────────────────────
@@ -210,6 +210,9 @@ def process_instruments(
         print(f"Filtered to {len(instruments)} specific instruments")
 
     # Apply limit
+    # Filter to instruments missing FIGI before applying limit.
+    instruments = [i for i in instruments if not i.get("figi")]
+
     if limit:
         instruments = instruments[:limit]
         print(f"Limited to {limit} instruments")

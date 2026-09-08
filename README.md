@@ -7,8 +7,8 @@ Fifty instruments. 292 tests.
 
 [![Validate](https://github.com/slimissa/asset-identifiers/actions/workflows/validate.yml/badge.svg)](https://github.com/slimissa/asset-identifiers/actions/workflows/validate.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Schema Version](https://img.shields.io/badge/schema-1.2.0-green.svg)](./schema.json)
-[![Registry Version](https://img.shields.io/badge/registry-1.2.0-orange.svg)](./identifiers.json)
+[![Schema Version](https://img.shields.io/badge/schema-1.2.1-green.svg)](./schema.json)
+[![Registry Version](https://img.shields.io/badge/registry-1.2.1-orange.svg)](./identifiers.json)
 [![Tests](https://img.shields.io/badge/tests-292-green.svg)](./tests/)
 
 ---
@@ -391,7 +391,7 @@ The registry follows [Semantic Versioning](https://semver.org/):
 - **Minor**: New optional fields added
 - **Patch**: Data corrections
 
-Current version: **1.2.0** (see `identifiers.json` → `meta.version`)
+Current version: **1.2.1** (see `identifiers.json` → `meta.version`)
 
 ---
 

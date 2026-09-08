@@ -45,8 +45,8 @@ func TestRegistryPath(t *testing.T) {
 }
 
 func TestRegistryVersion(t *testing.T) {
-	if testRegistry.Version() != "1.2.0" {
-		t.Errorf("Expected version 1.2.0, got %s", testRegistry.Version())
+	if testRegistry.Version() != "1.2.1" {
+		t.Errorf("Expected version 1.2.1, got %s", testRegistry.Version())
 	}
 }
 
@@ -59,8 +59,8 @@ func TestRegistryMeta(t *testing.T) {
 	if meta.Count != expectedCount {
 		t.Errorf("Expected meta.count to equal All() length, got %d vs %d", meta.Count, expectedCount)
 	}
-	if meta.Version != "1.2.0" {
-		t.Errorf("Expected meta.version 1.2.0, got %s", meta.Version)
+	if meta.Version != "1.2.1" {
+		t.Errorf("Expected meta.version 1.2.1, got %s", meta.Version)
 	}
 }
 
@@ -582,7 +582,7 @@ func TestStringRepresentation(t *testing.T) {
 	}
 
 	// Should contain version and count
-	if !contains(str, "1.2.0") {
+	if !contains(str, "1.2.1") {
 		t.Errorf("Expected version in string: %s", str)
 	}
 	if !contains(str, fmt.Sprint(testRegistry.Count())) {
