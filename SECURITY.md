@@ -12,7 +12,7 @@ Security updates are applied to the latest release only. Older tags are provided
 |---------|-----------|
 | v1.0.2 (latest) | ✅ |
 | v1.0.1 | ❌ |
-| v1.1.0 | ❌ |
+| v1.2.0 | ❌ |
 
 ---
 

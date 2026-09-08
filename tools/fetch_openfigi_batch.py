@@ -47,7 +47,7 @@ BATCH_SIZE = 100
 
 TIMEOUT = 30
 
-USER_AGENT = "AssetIdentifiersRegistry/1.1.0 (contact: le.ptit.quantos@gmail.com)"
+USER_AGENT = "AssetIdentifiersRegistry/1.2.0 (contact: le.ptit.quantos@gmail.com)"
 
 
 # ─── Data Fetching ────────────────────────────────────────────────────

@@ -383,4 +383,4 @@ Fields that are `null` (e.g., `sedol: null`) are **skipped** by validation. A `n
 
 ## Version
 
-This document is version **1.1.0** and corresponds to registry version **1.1.0**.
+This document is version **1.2.0** and corresponds to registry version **1.2.0**.

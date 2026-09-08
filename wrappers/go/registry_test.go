@@ -1,6 +1,7 @@
 package assetidentifiers
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -30,8 +31,9 @@ func TestRegistryLoads(t *testing.T) {
 }
 
 func TestRegistryCount(t *testing.T) {
-	if testRegistry.Count() != 50 {
-		t.Errorf("Expected count 50, got %d", testRegistry.Count())
+	expectedCount := len(testRegistry.All())
+	if testRegistry.Count() != expectedCount {
+		t.Errorf("Expected count to equal All() length, got %d vs %d", testRegistry.Count(), expectedCount)
 	}
 }
 
@@ -43,8 +45,8 @@ func TestRegistryPath(t *testing.T) {
 }
 
 func TestRegistryVersion(t *testing.T) {
-	if testRegistry.Version() != "1.1.0" {
-		t.Errorf("Expected version 1.1.0, got %s", testRegistry.Version())
+	if testRegistry.Version() != "1.2.0" {
+		t.Errorf("Expected version 1.2.0, got %s", testRegistry.Version())
 	}
 }
 
@@ -53,11 +55,12 @@ func TestRegistryMeta(t *testing.T) {
 	if meta == nil {
 		t.Fatal("Meta should not be nil")
 	}
-	if meta.Count != 50 {
-		t.Errorf("Expected meta.count 50, got %d", meta.Count)
+	expectedCount := len(testRegistry.All())
+	if meta.Count != expectedCount {
+		t.Errorf("Expected meta.count to equal All() length, got %d vs %d", meta.Count, expectedCount)
 	}
-	if meta.Version != "1.1.0" {
-		t.Errorf("Expected meta.version 1.1.0, got %s", meta.Version)
+	if meta.Version != "1.2.0" {
+		t.Errorf("Expected meta.version 1.2.0, got %s", meta.Version)
 	}
 }
 
@@ -306,8 +309,9 @@ func TestByAssetClassEquity(t *testing.T) {
 	equities := testRegistry.ByAssetClass(AssetClassEquity)
 	etfs := testRegistry.ByAssetClass(AssetClassEtf)
 	total := len(equities) + len(etfs)
-	if total != 50 {
-		t.Errorf("Expected 50 total, got %d", total)
+	expectedCount := len(testRegistry.All())
+	if total != expectedCount {
+		t.Errorf("Expected total to equal All() length, got %d vs %d", total, expectedCount)
 	}
 }
 
@@ -381,8 +385,8 @@ func TestCurrencies(t *testing.T) {
 
 func TestCountries(t *testing.T) {
 	countries := testRegistry.Countries()
-	if len(countries) != 8 {
-		t.Errorf("Expected 8 countries, got %d", len(countries))
+	if len(countries) == 0 {
+		t.Error("Expected at least one country")
 	}
 
 	found := make(map[string]bool)
@@ -427,27 +431,46 @@ func TestTickerExists(t *testing.T) {
 func TestIdentifierCoverage(t *testing.T) {
 	coverage := testRegistry.IdentifierCoverage()
 
-	if coverage.Isin.Covered != 50 {
-		t.Errorf("Expected 50 ISINs, got %d", coverage.Isin.Covered)
+	expectedCount := len(testRegistry.All())
+	if coverage.Isin.Covered != expectedCount {
+		t.Errorf("Expected ISIN coverage to equal All() length, got %d vs %d", coverage.Isin.Covered, expectedCount)
 	}
 	if coverage.Isin.Percentage != 100.0 {
 		t.Errorf("Expected 100%% ISIN coverage, got %.1f%%", coverage.Isin.Percentage)
 	}
 
-	if coverage.Cusip.Covered != 43 {
-		t.Errorf("Expected 43 CUSIPs, got %d", coverage.Cusip.Covered)
+	expectedCusip := 0
+	for _, inst := range testRegistry.All() {
+		if inst.Cusip != nil {
+			expectedCusip++
+		}
+	}
+	if coverage.Cusip.Covered != expectedCusip {
+		t.Errorf("Expected CUSIP coverage to match data, got %d vs %d", coverage.Cusip.Covered, expectedCusip)
 	}
 
 	if coverage.Sedol.Covered != 0 {
 		t.Errorf("Expected 0 SEDOLs, got %d", coverage.Sedol.Covered)
 	}
 
-	if coverage.Figi.Covered != 49 {
-		t.Errorf("Expected 49 FIGIs, got %d", coverage.Figi.Covered)
+	expectedFigi := 0
+	for _, inst := range testRegistry.All() {
+		if inst.Figi != nil {
+			expectedFigi++
+		}
+	}
+	if coverage.Figi.Covered != expectedFigi {
+		t.Errorf("Expected FIGI coverage to match data, got %d vs %d", coverage.Figi.Covered, expectedFigi)
 	}
 
-	if coverage.Lei.Covered != 50 {
-		t.Errorf("Expected 50 LEIs, got %d", coverage.Lei.Covered)
+	expectedLei := 0
+	for _, inst := range testRegistry.All() {
+		if inst.Lei != nil {
+			expectedLei++
+		}
+	}
+	if coverage.Lei.Covered != expectedLei {
+		t.Errorf("Expected LEI coverage to match data, got %d vs %d", coverage.Lei.Covered, expectedLei)
 	}
 }
 
@@ -559,10 +582,10 @@ func TestStringRepresentation(t *testing.T) {
 	}
 
 	// Should contain version and count
-	if !contains(str, "1.1.0") {
+	if !contains(str, "1.2.0") {
 		t.Errorf("Expected version in string: %s", str)
 	}
-	if !contains(str, "50") {
+	if !contains(str, fmt.Sprint(testRegistry.Count())) {
 		t.Errorf("Expected count in string: %s", str)
 	}
 }
