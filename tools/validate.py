@@ -278,7 +278,7 @@ def load_iso4217_currencies() -> Set[str]:
 
     # GitHub fallback — pin to v1.2.1 tag, only load active currencies
     if not currencies:
-        github_url = "https://raw.githubusercontent.com/slimissa/iso4217/v1.2.1/iso4217.json"
+        github_url = "https://raw.githubusercontent.com/slimissa/iso4217/v1.2.0/iso4217.json"
         data = _fetch_from_github(github_url)
         if data:
             currencies_obj = data.get("currencies", {})
