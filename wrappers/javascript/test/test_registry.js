@@ -33,15 +33,15 @@ const { AssetRegistry } = require('../src/index.js');
 
 const REGISTRY_PATH = path.resolve(__dirname, '../../../identifiers.json');
 const registry = new AssetRegistry(REGISTRY_PATH);
-const EXPECTED_COUNT = 510;
-const EXPECTED_ISIN = 510;
-const EXPECTED_CUSIP = 475;
-const EXPECTED_FIGI = 510;
-const EXPECTED_LEI = 474;
-const EXPECTED_CUSIP_PERCENT = 93.14;
-const EXPECTED_FIGI_PERCENT = 100.0;
-const EXPECTED_LEI_PERCENT = 92.94;
-const EXPECTED_COUNTRY_COUNT = 13;
+const EXPECTED_COUNT = 579;
+const EXPECTED_ISIN = 579;
+const EXPECTED_CUSIP = 542;
+const EXPECTED_FIGI = 577;
+const EXPECTED_LEI = 509;
+const EXPECTED_CUSIP_PERCENT = 93.61;
+const EXPECTED_FIGI_PERCENT = 99.65;
+const EXPECTED_LEI_PERCENT = 87.91;
+const EXPECTED_COUNTRY_COUNT = 17;
 
 
 // ─── Registry Loading Tests ──────────────────────────────────────────
@@ -67,7 +67,7 @@ describe('Registry Loading', () => {
   test('has metadata', () => {
     const meta = registry.meta();
     assert.ok(meta, 'Metadata should exist');
-    assert.equal(meta.version, '1.3.1');
+    assert.equal(meta.version, '1.4.0');
     assert.equal(meta.count, EXPECTED_COUNT);
   });
 });
@@ -263,7 +263,7 @@ describe('Filtering', () => {
 
 describe('Metadata', () => {
   test('returns version', () => {
-    assert.equal(registry.version(), '1.3.1');
+    assert.equal(registry.version(), '1.4.0');
   });
 
   test('returns generation date', () => {

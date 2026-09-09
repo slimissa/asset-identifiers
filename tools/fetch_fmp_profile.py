@@ -45,7 +45,7 @@ except ImportError:
 FMP_BASE_URL = "https://financialmodelingprep.com"
 FMP_PROFILE_URL = f"{FMP_BASE_URL}/stable/profile"
 
-USER_AGENT = "AssetIdentifiersRegistry/1.3.1"
+USER_AGENT = "AssetIdentifiersRegistry/1.4.0"
 
 # Be polite. Adjust if your FMP plan allows faster access.
 DEFAULT_DELAY_SECONDS = 0.6
