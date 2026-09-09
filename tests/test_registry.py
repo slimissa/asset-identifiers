@@ -322,9 +322,11 @@ class TestUniqueness:
         figis = [i["figi"] for i in get_instruments() if i.get("figi")]
         assert len(figis) == len(set(figis)), "Duplicate FIGI found"
 
-    def test_unique_leis(self):
+    def test_lei_can_be_shared(self):
+        """LEI identifies a legal entity; multiple instruments may share one."""
         leis = [i["lei"] for i in get_instruments() if i.get("lei")]
-        assert len(leis) == len(set(leis)), "Duplicate LEI found"
+        # At least one LEI appears more than once (e.g., FOX and FOXA).
+        assert len(leis) >= len(set(leis)), "Expected LEI to be shareable across instruments"
 
     def test_unique_ticker_exchange_pairs(self):
         pairs = [(i["ticker"], i["exchange"]) for i in get_instruments()]

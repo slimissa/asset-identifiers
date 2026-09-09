@@ -426,12 +426,9 @@ impl AssetRegistry {
             // LEI
             if let Some(lei) = &inst.lei {
                 let lei = lei.to_uppercase();
-                if lei_index.insert(lei.clone(), idx).is_some() {
-                    return Err(RegistryError::DuplicateIdentifier {
-                        identifier_type: "LEI",
-                        value: lei,
-                    });
-                }
+                // LEI identifies a legal entity, not an instrument.
+                // Multiple share classes may share the same LEI.
+                lei_index.insert(lei, idx);
             }
 
             // Ticker
