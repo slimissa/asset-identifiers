@@ -153,13 +153,13 @@ describe('FIGI Lookup', () => {
 
 describe('LEI Lookup', () => {
   test('finds AAPL by LEI', () => {
-    const aapl = registry.byLei('HWUPKR0MPOU8FGXBT394');
-    assert.ok(aapl);
-    assert.equal(aapl.ticker, 'AAPL');
+    const results = registry.byLei('HWUPKR0MPOU8FGXBT394');
+    assert.ok(Array.isArray(results));
+    assert.ok(results.some(i => i.ticker === 'AAPL'));
   });
 
-  test('returns null for nonexistent LEI', () => {
-    assert.equal(registry.byLei('00000000000000000000'), null);
+  test('returns empty array for nonexistent LEI', () => {
+    assert.deepEqual(registry.byLei('00000000000000000000'), []);
   });
 });
 
@@ -355,8 +355,9 @@ describe('Convenience Methods', () => {
   });
 
   test('resolve detects LEI', () => {
-    const result = registry.resolve('HWUPKR0MPOU8FGXBT394');
-    assert.equal(result.ticker, 'AAPL');
+    const results = registry.resolve('HWUPKR0MPOU8FGXBT394');
+    assert.ok(Array.isArray(results));
+    assert.ok(results.some(i => i.ticker === 'AAPL'));
   });
 
   test('resolve detects ticker', () => {

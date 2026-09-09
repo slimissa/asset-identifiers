@@ -78,7 +78,7 @@ class AssetRegistry:
         self._cusip_index: Dict[str, Dict] = {}
         self._sedol_index: Dict[str, Dict] = {}
         self._figi_index: Dict[str, Dict] = {}
-        self._lei_index: Dict[str, Dict] = {}
+        self._lei_index: Dict[str, List[Dict]] = {}
         self._ticker_index: Dict[str, List[Dict]] = {}
         self._exchange_index: Dict[str, List[Dict]] = {}
         self._asset_class_index: Dict[str, List[Dict]] = {}
@@ -104,7 +104,7 @@ class AssetRegistry:
 
             lei = inst.get("lei")
             if lei:
-                self._lei_index[lei] = inst
+                self._lei_index.setdefault(lei, []).append(inst)
 
             ticker = inst.get("ticker")
             if ticker:
@@ -246,17 +246,20 @@ class AssetRegistry:
         """
         return self._figi_index.get(figi.upper())
 
-    def by_lei(self, lei: str) -> Optional[Dict]:
+    def by_lei(self, lei: str) -> List[Dict]:
         """
-        Look up an instrument by LEI.
+        Look up instruments by Legal Entity Identifier.
+
+        An LEI identifies a legal entity, not an instrument.
+        Multiple instruments (share classes) may share the same LEI.
 
         Args:
             lei: 20-character LEI
 
         Returns:
-            Instrument dict or None if not found
+            List of instrument dicts sharing this LEI.
         """
-        return self._lei_index.get(lei.upper())
+        return self._lei_index.get(lei.upper(), [])
 
     # ─── Lookup by Ticker ────────────────────────────────────────────
 

@@ -101,7 +101,10 @@ class AssetRegistry {
       if (figi) this._figiIndex.set(figi, inst);
 
       const lei = inst.lei;
-      if (lei) this._leiIndex.set(lei, inst);
+      if (lei) {
+      if (!this._leiIndex.has(lei)) this._leiIndex.set(lei, []);
+      this._leiIndex.get(lei).push(inst);
+    }
 
       const ticker = inst.ticker;
       if (ticker) {
@@ -287,7 +290,7 @@ class AssetRegistry {
    * @returns {Object|null} Instrument object or null
    */
   byLei(lei) {
-    return this._leiIndex.get(lei.toUpperCase()) || null;
+    return this._leiIndex.get(lei.toUpperCase()) || [];
   }
 
   // ─── Lookup by Ticker ────────────────────────────────────────────

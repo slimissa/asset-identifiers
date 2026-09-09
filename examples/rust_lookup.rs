@@ -71,7 +71,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
 
-    if let Some(aapl_lei) = registry.by_lei("HWUPKR0MPOU8FGXBT394") {
+    let aapl_leis = registry.by_lei("HWUPKR0MPOU8FGXBT394");
+    if let Some(aapl_lei) = aapl_leis.first() {
         println!("By LEI HWUPKR... → {} ({})", aapl_lei.ticker, aapl_lei.name);
     }
 

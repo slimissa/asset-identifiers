@@ -315,7 +315,7 @@ declare module 'asset-identifiers-registry' {
      * @param lei - 20-character LEI
      * @returns Instrument or null if not found
      */
-    byLei(lei: string): Instrument | null;
+    byLei(lei: string): Instrument[];
 
     /**
      * Look up instruments by ticker symbol.

@@ -66,10 +66,7 @@ def find_by_figi(figi):
 
 
 def find_by_lei(lei):
-    for inst in get_instruments():
-        if inst.get("lei") == lei:
-            return inst
-    return None
+    return [inst for inst in get_instruments() if inst.get("lei") == lei]
 
 
 # ─── ISIN ↔ CUSIP Cross-Reference Tests ───────────────────────────────
@@ -400,14 +397,14 @@ class TestLEICrossReference:
     """Test LEI relationships."""
 
     def test_lei_lookup_finds_instrument(self):
-        """LEI lookup should return an instrument with that LEI."""
+        """LEI lookup should return all instruments sharing that LEI."""
         for inst in get_instruments():
             lei = inst.get("lei")
             if lei:
-                found = find_by_lei(lei)
-                assert found is not None, f"LEI lookup failed: {lei}"
-                assert found.get("lei") == lei, (
-                    f"LEI {lei} maps to wrong instrument"
+                found_list = find_by_lei(lei)
+                assert found_list, f"LEI lookup failed: {lei}"
+                assert any(f.get("lei") == lei for f in found_list), (
+                    f"LEI {lei} lookup returned wrong instrument(s)"
                 )
 
     def test_lei_can_be_shared(self):

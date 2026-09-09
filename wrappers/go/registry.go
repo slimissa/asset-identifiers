@@ -203,7 +203,7 @@ type AssetRegistry struct {
 	cusipIndex   map[string]int
 	sedolIndex   map[string]int
 	figiIndex    map[string]int
-	leiIndex     map[string]int
+	leiIndex     map[string][]int
 	tickerIndex  map[string][]int
 	exchangeIndex map[string][]int
 	assetClassIndex map[string][]int
@@ -241,7 +241,7 @@ func newRegistry(data registryData, path string) (*AssetRegistry, error) {
 		cusipIndex:      make(map[string]int),
 		sedolIndex:      make(map[string]int),
 		figiIndex:       make(map[string]int),
-		leiIndex:        make(map[string]int),
+		leiIndex:        make(map[string][]int),
 		tickerIndex:     make(map[string][]int),
 		exchangeIndex:   make(map[string][]int),
 		assetClassIndex: make(map[string][]int),
@@ -287,13 +287,10 @@ func newRegistry(data registryData, path string) (*AssetRegistry, error) {
 		}
 
 		// LEI
-		if inst.Lei != nil {
-			lei := strings.ToUpper(*inst.Lei)
-			if _, exists := registry.leiIndex[lei]; exists {
-				return nil, &RegistryError{Op: "duplicate LEI", Err: fmt.Errorf("%s", lei)}
-			}
-			registry.leiIndex[lei] = idx
-		}
+                if inst.Lei != nil {
+                        lei := strings.ToUpper(*inst.Lei)
+                        registry.leiIndex[lei] = append(registry.leiIndex[lei], idx)
+                }
 
 		// Ticker
 		ticker := strings.ToUpper(inst.Ticker)
@@ -405,12 +402,13 @@ func (r *AssetRegistry) ByFigi(figi string) (*Instrument, bool) {
 }
 
 // ByLei looks up an instrument by LEI.
-func (r *AssetRegistry) ByLei(lei string) (*Instrument, bool) {
-	idx, ok := r.leiIndex[strings.ToUpper(lei)]
-	if !ok {
-		return nil, false
-	}
-	return &r.instruments[idx], true
+func (r *AssetRegistry) ByLei(lei string) []*Instrument {
+        indices := r.leiIndex[strings.ToUpper(lei)]
+        result := make([]*Instrument, 0, len(indices))
+        for _, idx := range indices {
+                result = append(result, &r.instruments[idx])
+        }
+        return result
 }
 
 // ─── Lookup by Ticker ────────────────────────────────────────────────

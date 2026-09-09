@@ -156,18 +156,23 @@ func TestByFigiNotFound(t *testing.T) {
 // ─── LEI Lookup Tests ────────────────────────────────────────────────
 
 func TestByLeiFound(t *testing.T) {
-	aapl, ok := testRegistry.ByLei("HWUPKR0MPOU8FGXBT394")
-	if !ok {
+	results := testRegistry.ByLei("HWUPKR0MPOU8FGXBT394")
+	if len(results) == 0 {
 		t.Fatal("Expected AAPL to be found by LEI")
 	}
-	if aapl.Ticker != "AAPL" {
-		t.Errorf("Expected AAPL, got %s", aapl.Ticker)
+	found := false
+	for _, inst := range results {
+		if inst.Ticker == "AAPL" {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("Expected AAPL in LEI results, got %d instrument(s)", len(results))
 	}
 }
 
 func TestByLeiNotFound(t *testing.T) {
-	_, ok := testRegistry.ByLei("00000000000000000000")
-	if ok {
+	if len(testRegistry.ByLei("00000000000000000000")) != 0 {
 		t.Error("Expected LEI to not be found")
 	}
 }

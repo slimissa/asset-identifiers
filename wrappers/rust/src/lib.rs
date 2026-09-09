@@ -320,7 +320,7 @@ pub struct AssetRegistry {
     cusip_index: HashMap<String, usize>,
     sedol_index: HashMap<String, usize>,
     figi_index: HashMap<String, usize>,
-    lei_index: HashMap<String, usize>,
+    lei_index: HashMap<String, Vec<usize>>,
     ticker_index: HashMap<String, Vec<usize>>,
     exchange_index: HashMap<String, Vec<usize>>,
     asset_class_index: HashMap<String, Vec<usize>>,
@@ -373,7 +373,7 @@ impl AssetRegistry {
         let mut cusip_index = HashMap::new();
         let mut sedol_index = HashMap::new();
         let mut figi_index = HashMap::new();
-        let mut lei_index = HashMap::new();
+        let mut lei_index: HashMap<String, Vec<usize>> = HashMap::new();
         let mut ticker_index: HashMap<String, Vec<usize>> = HashMap::new();
         let mut exchange_index: HashMap<String, Vec<usize>> = HashMap::new();
         let mut asset_class_index: HashMap<String, Vec<usize>> = HashMap::new();
@@ -428,7 +428,7 @@ impl AssetRegistry {
                 let lei = lei.to_uppercase();
                 // LEI identifies a legal entity, not an instrument.
                 // Multiple share classes may share the same LEI.
-                lei_index.insert(lei, idx);
+                lei_index.entry(lei).or_default().push(idx);
             }
 
             // Ticker
@@ -547,11 +547,14 @@ impl AssetRegistry {
             .map(|&idx| &self.instruments[idx])
     }
 
-    /// Look up an instrument by LEI.
-    pub fn by_lei(&self, lei: &str) -> Option<&Instrument> {
+    /// Look up instruments by Legal Entity Identifier.
+    ///
+    /// Returns all instruments sharing this LEI.
+    pub fn by_lei(&self, lei: &str) -> Vec<&Instrument> {
         self.lei_index
             .get(&lei.to_uppercase())
-            .map(|&idx| &self.instruments[idx])
+            .map(|indices| indices.iter().map(|&idx| &self.instruments[idx]).collect())
+            .unwrap_or_default()
     }
 
     // ─── Lookup by Ticker ────────────────────────────────────────────
