@@ -33,14 +33,14 @@ const { AssetRegistry } = require('../src/index.js');
 
 const REGISTRY_PATH = path.resolve(__dirname, '../../../identifiers.json');
 const registry = new AssetRegistry(REGISTRY_PATH);
-const EXPECTED_COUNT = 509;
-const EXPECTED_ISIN = 509;
-const EXPECTED_CUSIP = 474;
-const EXPECTED_FIGI = 509;
-const EXPECTED_LEI = 473;
-const EXPECTED_CUSIP_PERCENT = 93.12;
+const EXPECTED_COUNT = 510;
+const EXPECTED_ISIN = 510;
+const EXPECTED_CUSIP = 475;
+const EXPECTED_FIGI = 510;
+const EXPECTED_LEI = 474;
+const EXPECTED_CUSIP_PERCENT = 93.14;
 const EXPECTED_FIGI_PERCENT = 100.0;
-const EXPECTED_LEI_PERCENT = 92.93;
+const EXPECTED_LEI_PERCENT = 92.94;
 const EXPECTED_COUNTRY_COUNT = 13;
 
 

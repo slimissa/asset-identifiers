@@ -328,12 +328,14 @@ class TestTickerChangeHistory:
         rename_events = [h for h in history if h.get("change_type") == "rename"]
         assert len(rename_events) >= 1, "XOM missing rename event"
 
-    def test_googl_history(self):
-        """GOOGL's history should show GOOG → GOOGL."""
+    def test_goog_and_googl_share_classes(self):
+        """GOOG and GOOGL should be separate instruments with different ISINs."""
+        goog = find_by_ticker("GOOG", "XNAS")[0]
         googl = find_by_ticker("GOOGL", "XNAS")[0]
-        history_tickers = [h.get("ticker") for h in googl.get("history", [])]
-        assert "GOOG" in history_tickers, "GOOGL history missing GOOG"
-        assert "GOOGL" in history_tickers, "GOOGL history missing GOOGL"
+        assert goog["isin"] != googl["isin"]
+        assert goog["cusip"] != googl["cusip"]
+        # Both share the same legal entity.
+        assert goog.get("lei") == googl.get("lei")
 
 
 # ─── Multi-Exchange Listing Tests ─────────────────────────────────────
