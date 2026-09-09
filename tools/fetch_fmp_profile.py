@@ -207,6 +207,8 @@ def main():
                         help="Only process first N new tickers")
     parser.add_argument("--tickers", type=str, default=None,
                         help="Comma-separated explicit tickers to process")
+    parser.add_argument("--tickers-file", type=Path, default=None,
+                        help="Path to JSON file with a 'tickers' list")
     parser.add_argument("--data", type=Path, default=Path("identifiers.json"))
     parser.add_argument("--sp500-file", type=Path, default=Path("sp500.json"))
     parser.add_argument("--delay", type=float, default=DEFAULT_DELAY_SECONDS,
@@ -246,6 +248,11 @@ def main():
             if t.strip()
         ]
         print(f"Processing {len(target_symbols)} explicit ticker(s)")
+    elif args.tickers_file:
+        with open(args.tickers_file, "r", encoding="utf-8") as f:
+            ticker_data = json.load(f)
+        target_symbols = [str(t).upper() for t in ticker_data.get("tickers", [])]
+        print(f"Processing {len(target_symbols)} ticker(s) from {args.tickers_file}")
     else:
         # Use S&P 500 constituents.
         try:
@@ -262,11 +269,7 @@ def main():
             if c.get("ticker")
         ]
 
-        # Filter to tickers that do not already have an ISIN on any mapped exchange.
         for sym in sp500_symbols:
-            # We don't know FMP's exchange until fetch, so check only ISIN absence
-            # by a cheap scan after fetching. Here, just take those not present
-            # by (ticker, any known exchange) with ISIN.
             has_isin = any(
                 i.get("ticker", "").upper() == sym and i.get("isin")
                 for i in existing_instruments
