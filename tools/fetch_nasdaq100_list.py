@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import List, Optional
 
 WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/Nasdaq-100"
-USER_AGENT = "AssetIdentifiersRegistry/1.3.0 (contact: le.ptit.quantos@gmail.com)"
+USER_AGENT = "AssetIdentifiersRegistry/1.3.1 (contact: le.ptit.quantos@gmail.com)"
 TIMEOUT = 30
 
 
