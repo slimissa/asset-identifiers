@@ -30,6 +30,14 @@ ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
+from tests.fixture import (
+    FIXTURE_PATH,
+    TESTA, NEWTICK, MULTI, DUP_US, DUP_UK, ETFSYN,
+    count as fixture_count,
+    meta as fixture_meta,
+    all_instruments,
+)
+
 from validate import (
     validate_registry,
     validate_isin_check_digit,
@@ -41,8 +49,8 @@ from validate import (
 # ─── Helper functions ─────────────────────────────────────────────────
 
 def load_registry():
-    """Load identifiers.json."""
-    with open(ROOT / "tests" / "fixtures" / "identifiers.test.json", "r", encoding="utf-8") as f:
+    """Load the test fixture."""
+    with open(FIXTURE_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -63,7 +71,7 @@ class TestRegistryStructure:
     """Test the overall structure of the registry."""
 
     def test_registry_file_exists(self):
-        assert (ROOT / "tests" / "fixtures" / "identifiers.test.json").exists(), "identifiers.json not found"
+        assert FIXTURE_PATH.exists(), "fixture not found"
 
     def test_schema_file_exists(self):
         assert (ROOT / "schema.json").exists(), "schema.json not found"
@@ -90,7 +98,7 @@ class TestRegistryStructure:
 
     @pytest.mark.skip(reason='Validator runs against the full registry, not the fixture')
     def test_full_validation_passes(self):
-        success, errors = validate_registry(ROOT / "tests" / "fixtures" / "identifiers.test.json", ROOT / "schema.json")
+        success, errors = validate_registry(FIXTURE_PATH, ROOT / "schema.json")
         assert success, f"Registry failed validation: {errors}"
 
 
@@ -473,36 +481,43 @@ class TestTemporalConsistency:
 class TestTickerChanges:
     """Test historical ticker changes."""
 
-    def test_meta_has_ticker_change(self):
-        meta = [i for i in get_instruments() if i.get("ticker") == "NEWTICK"]
-        assert len(meta) == 1, "META not found in registry"
+    def test_newtick_present(self):
+        hits = [i for i in get_instruments() if i.get("ticker") == NEWTICK["ticker"]]
+        assert len(hits) == 1, f"{NEWTICK['ticker']} not found in registry"
 
-    def test_meta_history_contains_fb(self):
-        meta = [i for i in get_instruments() if i.get("ticker") == "NEWTICK"][0]
-        history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        assert "OLDTICK" in history_tickers, "META history should contain FB"
+    def test_newtick_history_contains_old(self):
+        inst = [i for i in get_instruments() if i.get("ticker") == NEWTICK["ticker"]][0]
+        history_tickers = [h.get("ticker") for h in inst.get("history", [])]
+        for event in NEWTICK["history"]:
+            assert event["ticker"] in history_tickers, (
+                f"history should contain {event['ticker']}"
+            )
 
-    def test_meta_change_date(self):
-        meta = [i for i in get_instruments() if i.get("ticker") == "NEWTICK"][0]
-        for event in meta.get("history", []):
-            if event.get("ticker") == "NEWTICK" and event.get("change_type") == "rename":
-                assert event.get("change_date") == "2022-06-09", (
-                    f"Expected 2022-06-09, got {event.get('change_date')}"
-                )
+    def test_newtick_change_date(self):
+        inst = [i for i in get_instruments() if i.get("ticker") == NEWTICK["ticker"]][0]
+        for fixture_event in NEWTICK["history"]:
+            if fixture_event.get("change_type") == "rename":
+                matching = [
+                    e for e in inst.get("history", [])
+                    if e.get("change_type") == "rename"
+                ]
+                assert len(matching) == 1
+                assert matching[0].get("change_date") == fixture_event.get("change_date")
 
-    def test_duplicate_ticker_prudential(self):
-        prus = [i for i in get_instruments() if i.get("ticker") == "DUP"]
-        assert len(prus) == 2, "Should have 2 PRU instruments"
+    def test_duplicate_ticker_has_two_instruments(self):
+        hits = [i for i in get_instruments() if i.get("ticker") == DUP_US["ticker"]]
+        assert len(hits) == 2, f"Expected 2 {DUP_US['ticker']} instruments"
 
-    def test_prudential_different_isins(self):
-        prus = [i for i in get_instruments() if i.get("ticker") == "DUP"]
-        isins = {p.get("isin") for p in prus}
-        assert len(isins) == 2, "PRU instruments should have different ISINs"
+    def test_duplicate_ticker_different_isins(self):
+        hits = [i for i in get_instruments() if i.get("ticker") == DUP_US["ticker"]]
+        isins = {h.get("isin") for h in hits}
+        assert len(isins) == 2
 
-    def test_prudential_different_exchanges(self):
-        prus = [i for i in get_instruments() if i.get("ticker") == "DUP"]
-        exchanges = {p.get("exchange") for p in prus}
-        assert exchanges == {"XLON", "XNAS"}, f"Expected XLON and XNAS, got {exchanges}"
+    def test_duplicate_ticker_different_exchanges(self):
+        hits = [i for i in get_instruments() if i.get("ticker") == DUP_US["ticker"]]
+        exchanges = {h.get("exchange") for h in hits}
+        assert exchanges == {DUP_US["exchange"], DUP_UK["exchange"]}
+
 
 
 # ─── Multi-Exchange Listing Tests ─────────────────────────────────────
@@ -510,22 +525,22 @@ class TestTickerChanges:
 class TestMultiExchangeListings:
     """Test instruments with multiple exchange listings."""
 
-    def test_aapl_has_multiple_listings(self):
-        aapl = [i for i in get_instruments() if i.get("ticker") == "MULTI"][0]
-        listings = aapl.get("listings", [])
-        assert len(listings) >= 2, "AAPL should have multiple listings"
+    def test_multi_has_multiple_listings(self):
+        inst = [i for i in get_instruments() if i.get("ticker") == MULTI["ticker"]][0]
+        assert len(inst.get("listings", [])) >= 2
 
-    def test_aapl_listing_exchanges(self):
-        aapl = [i for i in get_instruments() if i.get("ticker") == "MULTI"][0]
-        exchanges = {l.get("exchange") for l in aapl.get("listings", [])}
-        assert "XNAS" in exchanges, "AAPL should be listed on XNAS"
-        assert "XETR" in exchanges, "AAPL should be listed on XETR"
+    def test_multi_listing_exchanges(self):
+        inst = [i for i in get_instruments() if i.get("ticker") == MULTI["ticker"]][0]
+        exchanges = {l.get("exchange") for l in inst.get("listings", [])}
+        for listing in MULTI["listings"]:
+            assert listing["exchange"] in exchanges
 
-    def test_aapl_primary_listing(self):
-        aapl = [i for i in get_instruments() if i.get("ticker") == "MULTI"][0]
-        primary = [l for l in aapl.get("listings", []) if l.get("status") == "PRIMARY"]
-        assert len(primary) == 1, "AAPL should have 1 primary listing"
-        assert primary[0].get("exchange") == "XNAS"
+    def test_multi_primary_listing(self):
+        inst = [i for i in get_instruments() if i.get("ticker") == MULTI["ticker"]][0]
+        primary = [l for l in inst.get("listings", []) if l.get("status") == "PRIMARY"]
+        assert len(primary) == 1
+        assert primary[0].get("exchange") == MULTI["exchange"]
+
 
 
 # ─── Run All Tests ────────────────────────────────────────────────────
@@ -540,7 +555,6 @@ def run_all_tests():
         TestUniqueness,
         TestBusinessRules,
         TestTemporalConsistency,
-        TestDistributionArtifact,
         TestTickerChanges,
         TestMultiExchangeListings,
     ]
