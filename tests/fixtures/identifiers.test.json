@@ -1,0 +1,233 @@
+{
+  "meta": {
+    "version": "0.0.0-test",
+    "generated": "2026-09-10",
+    "count": 7,
+    "sources": [
+      "synthetic"
+    ],
+    "coverage": {
+      "exchanges": [
+        "XLON",
+        "XNAS"
+      ],
+      "asset_classes": [
+        "equity",
+        "etf"
+      ],
+      "countries": [
+        "GB",
+        "US"
+      ]
+    }
+  },
+  "instruments": [
+    {
+      "isin": "US0000000008",
+      "cusip": "000000000",
+      "sedol": null,
+      "figi": "BBG000000001",
+      "lei": "00000000000000000001",
+      "ticker": "TESTA",
+      "exchange": "XNAS",
+      "name": "Synthetic Test A",
+      "currency": "USD",
+      "asset_class": "equity",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XNAS",
+          "ticker": "TESTA",
+          "currency": "USD",
+          "is_primary": true
+        }
+      ],
+      "history": [
+        {
+          "ticker": "TESTA",
+          "change_date": null,
+          "change_type": "none"
+        }
+      ]
+    },
+    {
+      "isin": "US0000000188",
+      "cusip": "000000018",
+      "sedol": null,
+      "figi": "BBG000000002",
+      "lei": "00000000000000000002",
+      "ticker": "TESTB",
+      "exchange": "XNAS",
+      "name": "Synthetic Test B",
+      "currency": "USD",
+      "asset_class": "equity",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XNAS",
+          "ticker": "TESTB",
+          "currency": "USD",
+          "is_primary": true
+        }
+      ],
+      "history": [
+        {
+          "ticker": "TESTB",
+          "change_date": null,
+          "change_type": "none"
+        }
+      ]
+    },
+    {
+      "isin": "US0000000268",
+      "cusip": "000000026",
+      "sedol": null,
+      "figi": "BBG000000003",
+      "lei": "00000000000000000003",
+      "ticker": "NEWTICK",
+      "exchange": "XNAS",
+      "name": "Synthetic Renamed Corp",
+      "currency": "USD",
+      "asset_class": "equity",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XNAS",
+          "ticker": "NEWTICK",
+          "currency": "USD",
+          "is_primary": true
+        }
+      ],
+      "history": [
+        {
+          "ticker": "OLDTICK",
+          "change_date": null,
+          "change_type": "none"
+        },
+        {
+          "ticker": "NEWTICK",
+          "change_date": "2020-06-01",
+          "change_type": "ticker_change"
+        }
+      ]
+    },
+    {
+      "isin": "US0000000348",
+      "cusip": "000000034",
+      "sedol": null,
+      "figi": "BBG000000004",
+      "lei": "00000000000000000004",
+      "ticker": "MULTI",
+      "exchange": "XNAS",
+      "name": "Synthetic Multi Listing",
+      "currency": "USD",
+      "asset_class": "equity",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XNAS",
+          "ticker": "MULTI",
+          "currency": "USD",
+          "is_primary": true
+        },
+        {
+          "exchange": "XETR",
+          "ticker": "SYM",
+          "currency": "EUR",
+          "is_primary": false
+        }
+      ],
+      "history": [
+        {
+          "ticker": "MULTI",
+          "change_date": null,
+          "change_type": "none"
+        }
+      ]
+    },
+    {
+      "isin": "US0000000428",
+      "cusip": "000000042",
+      "sedol": null,
+      "figi": "BBG000000005",
+      "lei": "00000000000000000005",
+      "ticker": "DUP",
+      "exchange": "XNAS",
+      "name": "Synthetic Dup US",
+      "currency": "USD",
+      "asset_class": "equity",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XNAS",
+          "ticker": "DUP",
+          "currency": "USD",
+          "is_primary": true
+        }
+      ],
+      "history": [
+        {
+          "ticker": "DUP",
+          "change_date": null,
+          "change_type": "none"
+        }
+      ]
+    },
+    {
+      "isin": "GB0000000593",
+      "cusip": null,
+      "sedol": null,
+      "figi": "BBG000000006",
+      "lei": "00000000000000000006",
+      "ticker": "DUP",
+      "exchange": "XLON",
+      "name": "Synthetic Dup UK",
+      "currency": "GBP",
+      "asset_class": "equity",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XLON",
+          "ticker": "DUP",
+          "currency": "GBP",
+          "is_primary": true
+        }
+      ],
+      "history": [
+        {
+          "ticker": "DUP",
+          "change_date": null,
+          "change_type": "none"
+        }
+      ]
+    },
+    {
+      "isin": "US0000000678",
+      "cusip": "000000067",
+      "sedol": null,
+      "figi": "BBG000000007",
+      "lei": "00000000000000000007",
+      "ticker": "ETFSYN",
+      "exchange": "XNAS",
+      "name": "Synthetic ETF",
+      "currency": "USD",
+      "asset_class": "etf",
+      "active": true,
+      "listings": [
+        {
+          "exchange": "XNAS",
+          "ticker": "ETFSYN",
+          "currency": "USD",
+          "is_primary": true
+        }
+      ],
+      "history": [
+        {
+          "ticker": "ETFSYN",
+          "change_date": null,
+          "change_type": "none"
+        }
+      ]
+    }
+  ]
+}
