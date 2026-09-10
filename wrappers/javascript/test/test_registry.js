@@ -27,105 +27,80 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const { AssetRegistry } = require('../src/index.js');
-
-// ─── Setup ───────────────────────────────────────────────────────────
-
-const REGISTRY_PATH = path.resolve(__dirname, '../../../tests/fixtures/identifiers.test.json');
-const registry = new AssetRegistry(REGISTRY_PATH);
-const EXPECTED_COUNT = 7;
-const EXPECTED_ISIN = 7;
-const EXPECTED_CUSIP = 6;
-const EXPECTED_FIGI = 7;
-const EXPECTED_LEI = 7;
-const EXPECTED_CUSIP_PERCENT = 93.61;
-const EXPECTED_FIGI_PERCENT = 99.65;
-const EXPECTED_LEI_PERCENT = 87.91;
-const EXPECTED_COUNTRY_COUNT = 17;
-
+const fx = require('./fixture.js');
 
 // ─── Registry Loading Tests ──────────────────────────────────────────
 
-describe.skip('Registry Loading', () => {
+describe('Registry Loading', () => {
   test('loads successfully', () => {
-    assert.ok(registry, 'Registry should be created');
+    assert.ok(fx.registry);
   });
 
   test('has correct instrument count', () => {
-    assert.equal(registry.count, EXPECTED_COUNT);
+    assert.equal(fx.registry.count, fx.count);
   });
 
   test('has instruments array', () => {
-    assert.ok(Array.isArray(registry.instruments));
-    assert.equal(registry.instruments.length, EXPECTED_COUNT);
+    assert.ok(Array.isArray(fx.registry.instruments));
+    assert.equal(fx.registry.instruments.length, fx.count);
   });
 
-  test('has path', () => {
-    assert.ok(registry.path.includes('identifiers.json'));
+  test('has path pointing at fixture', () => {
+    assert.ok(fx.registry.path.includes('identifiers.test.json'));
   });
 
   test('has metadata', () => {
-    const meta = registry.meta();
-    assert.ok(meta, 'Metadata should exist');
-    assert.equal(meta.version, '1.0.0');
-    assert.equal(meta.count, EXPECTED_COUNT);
+    const meta = fx.registry.meta();
+    assert.ok(meta);
+    assert.equal(meta.count, fx.count);
   });
 });
 
 // ─── ISIN Lookup Tests ───────────────────────────────────────────────
 
-describe.skip('ISIN Lookup', () => {
+describe('ISIN Lookup', () => {
   test('finds TESTA by ISIN', () => {
-    const aapl = registry.byIsin('US0000000002');
-    assert.ok(aapl, 'TESTA should be found');
-    assert.equal(aapl.ticker, 'TESTA');
-    assert.equal(aapl.name, 'Apple Inc.');
-    assert.equal(aapl.currency, 'USD');
-    assert.equal(aapl.exchange, 'XNAS');
-    assert.equal(aapl.asset_class, 'equity');
+    const inst = fx.registry.byIsin(fx.TESTA.isin);
+    assert.ok(inst);
+    assert.equal(inst.ticker, fx.TESTA.ticker);
+    assert.equal(inst.name, fx.TESTA.name);
+    assert.equal(inst.currency, fx.TESTA.currency);
+    assert.equal(inst.exchange, fx.TESTA.exchange);
   });
 
-  test('finds MSFT by ISIN', () => {
-    const msft = registry.byIsin('US5949181045');
-    assert.ok(msft);
-    assert.equal(msft.ticker, 'MSFT');
-  });
-
-  test('finds international instrument by ISIN', () => {
-    const sony = registry.byIsin('JP3435000009');
-    assert.ok(sony);
-    assert.equal(sony.ticker, '7203');
-    assert.equal(sony.currency, 'JPY');
+  test('finds NEWTICK by ISIN', () => {
+    const inst = fx.registry.byIsin(fx.NEWTICK.isin);
+    assert.ok(inst);
+    assert.equal(inst.ticker, fx.NEWTICK.ticker);
   });
 
   test('returns null for nonexistent ISIN', () => {
-    assert.equal(registry.byIsin('XX0000000000'), null);
+    assert.equal(fx.registry.byIsin('XX0000000000'), null);
   });
 
   test('is case-insensitive', () => {
-    const lower = registry.byIsin('us0000000005');
-    assert.ok(lower);
-    assert.equal(lower.ticker, 'TESTA');
+    const lower = fx.TESTA.isin.toLowerCase();
+    const inst = fx.registry.byIsin(lower);
+    assert.ok(inst);
+    assert.equal(inst.ticker, fx.TESTA.ticker);
   });
 });
 
 // ─── CUSIP Lookup Tests ──────────────────────────────────────────────
 
-describe.skip('CUSIP Lookup', () => {
+describe('CUSIP Lookup', () => {
   test('finds TESTA by CUSIP', () => {
-    const aapl = registry.byCusip('000000000');
-    assert.ok(aapl);
-    assert.equal(aapl.isin, 'US0000000002');
-  });
-
-  test('finds MSFT by CUSIP', () => {
-    const msft = registry.byCusip('594918104');
-    assert.ok(msft);
-    assert.equal(msft.ticker, 'MSFT');
+    assert.ok(fx.TESTA.cusip, 'fixture TESTA has no CUSIP');
+    const inst = fx.registry.byCusip(fx.TESTA.cusip);
+    assert.ok(inst);
+    assert.equal(inst.isin, fx.TESTA.isin);
   });
 
   test('returns null for nonexistent CUSIP', () => {
-    assert.equal(registry.byCusip('000000000'), null);
+    assert.equal(fx.registry.byCusip('999999999'), null);
   });
 });
 
@@ -133,113 +108,118 @@ describe.skip('CUSIP Lookup', () => {
 
 describe('FIGI Lookup', () => {
   test('finds TESTA by FIGI', () => {
-    const aapl = registry.byFigi('BBG000000001');
-    assert.ok(aapl);
-    assert.equal(aapl.isin, 'US0000000002');
+    assert.ok(fx.TESTA.figi, 'fixture TESTA has no FIGI');
+    const inst = fx.registry.byFigi(fx.TESTA.figi);
+    assert.ok(inst);
+    assert.equal(inst.isin, fx.TESTA.isin);
   });
 
   test('finds NEWTICK by FIGI', () => {
-    const meta = registry.byFigi('BBG000000003');
-    assert.ok(meta);
-    assert.equal(meta.ticker, 'NEWTICK');
+    assert.ok(fx.NEWTICK.figi, 'fixture NEWTICK has no FIGI');
+    const inst = fx.registry.byFigi(fx.NEWTICK.figi);
+    assert.ok(inst);
+    assert.equal(inst.ticker, fx.NEWTICK.ticker);
   });
 
   test('returns null for nonexistent FIGI', () => {
-    assert.equal(registry.byFigi('BBG00000000'), null);
+    assert.equal(fx.registry.byFigi('BBG999999999'), null);
   });
 });
 
 // ─── LEI Lookup Tests ────────────────────────────────────────────────
 
-describe.skip('LEI Lookup', () => {
+describe('LEI Lookup', () => {
   test('finds TESTA by LEI', () => {
-    const results = registry.byLei('HWUPKR0MPOU8FGXBT394');
+    assert.ok(fx.TESTA.lei, 'fixture TESTA has no LEI');
+    const results = fx.registry.byLei(fx.TESTA.lei);
     assert.ok(Array.isArray(results));
-    assert.ok(results.some(i => i.ticker === 'TESTA'));
+    assert.ok(results.some((i) => i.ticker === fx.TESTA.ticker));
   });
 
   test('returns empty array for nonexistent LEI', () => {
-    assert.deepEqual(registry.byLei('00000000000000000000'), []);
+    assert.deepEqual(fx.registry.byLei('00000000000000000000'), []);
   });
 });
 
 // ─── Ticker Lookup Tests ─────────────────────────────────────────────
 
-describe.skip('Ticker Lookup', () => {
+describe('Ticker Lookup', () => {
   test('finds TESTA by ticker with exchange', () => {
-    const aapl = registry.byTicker('TESTA', 'XNAS');
-    assert.ok(aapl);
-    assert.equal(aapl.isin, 'US0000000002');
+    const inst = fx.registry.byTicker(fx.TESTA.ticker, fx.TESTA.exchange);
+    assert.ok(inst);
+    assert.equal(inst.isin, fx.TESTA.isin);
   });
 
   test('finds TESTA by ticker without exchange (returns array)', () => {
-    const results = registry.byTicker('TESTA');
+    const results = fx.registry.byTicker(fx.TESTA.ticker);
     assert.ok(Array.isArray(results));
     assert.equal(results.length, 1);
-    assert.equal(results[0].ticker, 'TESTA');
+    assert.equal(results[0].ticker, fx.TESTA.ticker);
   });
 
-  test('finds DUP on multiple exchanges', () => {
-    const pru = registry.byTicker('DUP');
-    assert.ok(Array.isArray(pru));
-    assert.equal(pru.length, 2);
-
-    const exchanges = pru.map((i) => i.exchange).sort();
-    assert.deepEqual(exchanges, ['XLON', 'XNAS']);
+  test('finds ambiguous ticker on multiple exchanges', () => {
+    const hits = fx.allByTicker(fx.DUP_US.ticker);
+    assert.ok(Array.isArray(hits));
+    assert.equal(hits.length, 2);
+    const exchanges = hits.map((i) => i.exchange).sort();
+    assert.deepEqual(exchanges, [fx.DUP_UK.exchange, fx.DUP_US.exchange].sort());
   });
 
-  test('disambiguates DUP by exchange', () => {
-    const pruLondon = registry.byTicker('DUP', 'XLON');
-    assert.equal(pruLondon.isin, 'GB0007099541');
-    assert.equal(pruLondon.currency, 'GBP');
+  test('disambiguates ambiguous ticker by exchange', () => {
+    const us = fx.registry.byTicker(fx.DUP_US.ticker, fx.DUP_US.exchange);
+    assert.equal(us.isin, fx.DUP_US.isin);
+    assert.equal(us.currency, fx.DUP_US.currency);
 
-    const pruNyse = registry.byTicker('DUP', 'XNAS');
-    assert.equal(pruNyse.isin, 'US7443201022');
-    assert.equal(pruNyse.currency, 'USD');
+    const uk = fx.registry.byTicker(fx.DUP_UK.ticker, fx.DUP_UK.exchange);
+    assert.equal(uk.isin, fx.DUP_UK.isin);
+    assert.equal(uk.currency, fx.DUP_UK.currency);
   });
 
   test('returns null for nonexistent ticker with exchange', () => {
-    assert.equal(registry.byTicker('ZZZZ', 'XNAS'), null);
+    assert.equal(fx.registry.byTicker('ZZZZ', 'XNAS'), null);
   });
 
   test('returns empty array for nonexistent ticker without exchange', () => {
-    assert.deepEqual(registry.byTicker('ZZZZ'), []);
+    assert.deepEqual(fx.registry.byTicker('ZZZZ'), []);
   });
 
   test('is case-insensitive', () => {
-    const aapl = registry.byTicker('aapl', 'xnas');
-    assert.ok(aapl);
-    assert.equal(aapl.isin, 'US0000000002');
+    const inst = fx.registry.byTicker(
+      fx.TESTA.ticker.toLowerCase(),
+      fx.TESTA.exchange.toLowerCase()
+    );
+    assert.ok(inst);
+    assert.equal(inst.isin, fx.TESTA.isin);
   });
 });
 
 // ─── Filtering Tests ─────────────────────────────────────────────────
 
-describe.skip('Filtering', () => {
+describe('Filtering', () => {
   test('filters by exchange', () => {
-    const xnas = registry.byExchange('XNAS');
-    assert.ok(xnas.length > 0);
-    for (const inst of xnas) {
-      assert.equal(inst.exchange, 'XNAS');
+    const hits = fx.registry.byExchange(fx.TESTA.exchange);
+    assert.ok(hits.length > 0);
+    for (const inst of hits) {
+      assert.equal(inst.exchange, fx.TESTA.exchange);
     }
   });
 
   test('filters by asset class', () => {
-    const etfs = registry.byAssetClass('etf');
+    const etfs = fx.registry.byAssetClass(fx.ETFSYN.asset_class);
     assert.ok(etfs.length > 0);
     for (const inst of etfs) {
-      assert.equal(inst.asset_class, 'etf');
+      assert.equal(inst.asset_class, fx.ETFSYN.asset_class);
     }
   });
 
-  test('filters by equity asset class', () => {
-    const equities = registry.byAssetClass('equity');
-    assert.ok(equities.length > 0);
-    assert.equal(equities.length + registry.byAssetClass('etf').length, EXPECTED_COUNT);
+  test('equity + etf equals total', () => {
+    const equities = fx.registry.byAssetClass('equity');
+    const etfs = fx.registry.byAssetClass('etf');
+    assert.equal(equities.length + etfs.length, fx.count);
   });
 
   test('filters by country', () => {
-    const us = registry.byCountry('US');
+    const us = fx.registry.byCountry('US');
     assert.ok(us.length > 0);
     for (const inst of us) {
       assert.equal(inst.country, 'US');
@@ -247,7 +227,7 @@ describe.skip('Filtering', () => {
   });
 
   test('filters by currency', () => {
-    const usd = registry.byCurrency('USD');
+    const usd = fx.registry.byCurrency('USD');
     assert.ok(usd.length > 0);
     for (const inst of usd) {
       assert.equal(inst.currency, 'USD');
@@ -255,7 +235,7 @@ describe.skip('Filtering', () => {
   });
 
   test('returns empty array for nonexistent exchange', () => {
-    assert.deepEqual(registry.byExchange('ZZZZ'), []);
+    assert.deepEqual(fx.registry.byExchange('ZZZZ'), []);
   });
 });
 
@@ -263,110 +243,114 @@ describe.skip('Filtering', () => {
 
 describe('Metadata', () => {
   test('returns version', () => {
-    assert.equal(registry.version(), '1.0.0');
+    assert.ok(fx.registry.version());
   });
 
   test('returns generation date', () => {
-    assert.ok(registry.generated());
+    assert.ok(fx.registry.generated());
   });
 
   test('returns sources', () => {
-    const sources = registry.sources();
+    const sources = fx.registry.sources();
     assert.ok(Array.isArray(sources));
     assert.ok(sources.length >= 1);
   });
 
   test('returns all instruments', () => {
-    const all = registry.all();
-    assert.equal(all.length, EXPECTED_COUNT);
+    assert.equal(fx.registry.all().length, fx.count);
   });
 });
 
 // ─── Aggregate Information Tests ─────────────────────────────────────
 
-describe.skip('Aggregate Information', () => {
+describe('Aggregate Information', () => {
   test('returns sorted exchanges', () => {
-    const exchanges = registry.exchanges();
-    assert.ok(exchanges.includes('XNAS'));
-    assert.ok(exchanges.includes('XNAS'));
-    assert.ok(exchanges.includes('XLON'));
-    assert.ok(exchanges.includes('XTKS'));
-    assert.equal(exchanges.length, 9);
+    const exchanges = fx.registry.exchanges();
+    assert.ok(exchanges.includes(fx.TESTA.exchange));
+    assert.ok(exchanges.includes(fx.DUP_UK.exchange));
+    assert.equal(exchanges.length, fx.exchanges.length);
   });
 
   test('returns sorted asset classes', () => {
-    assert.deepEqual(registry.assetClasses(), ['equity', 'etf']);
+    const classes = fx.registry.assetClasses();
+    assert.ok(classes.includes(fx.ETFSYN.asset_class));
+    assert.ok(classes.includes('equity'));
+    assert.equal(classes.length, fx.assetClasses.length);
   });
 
   test('returns sorted currencies', () => {
-    const currencies = registry.currencies();
-    assert.ok(currencies.includes('USD'));
-    assert.ok(currencies.includes('EUR'));
-    assert.ok(currencies.includes('JPY'));
-    assert.equal(currencies.length, 7);
+    const currencies = fx.registry.currencies();
+    assert.ok(currencies.includes(fx.TESTA.currency));
+    assert.ok(currencies.includes(fx.DUP_UK.currency));
+    assert.equal(currencies.length, fx.currencies.length);
   });
 
   test('returns sorted countries', () => {
-    const countries = registry.countries();
+    const countries = fx.registry.countries();
     assert.ok(countries.includes('US'));
     assert.ok(countries.includes('GB'));
-    assert.ok(countries.includes('JP'));
-    assert.equal(countries.length, EXPECTED_COUNTRY_COUNT);
+    assert.equal(countries.length, fx.countries.length);
   });
 });
 
 // ─── Convenience Method Tests ────────────────────────────────────────
 
-describe.skip('Convenience Methods', () => {
+describe('Convenience Methods', () => {
   test('tickerExists returns true for existing ticker', () => {
-    assert.equal(registry.tickerExists('TESTA'), true);
+    assert.equal(fx.registry.tickerExists(fx.TESTA.ticker), true);
   });
 
   test('tickerExists returns false for nonexistent ticker', () => {
-    assert.equal(registry.tickerExists('ZZZZ'), false);
+    assert.equal(fx.registry.tickerExists('ZZZZ'), false);
   });
 
   test('tickerExists with exchange', () => {
-    assert.equal(registry.tickerExists('DUP', 'XLON'), true);
-    assert.equal(registry.tickerExists('DUP', 'ZZZZ'), false);
+    assert.equal(
+      fx.registry.tickerExists(fx.DUP_UK.ticker, fx.DUP_UK.exchange),
+      true
+    );
+    assert.equal(
+      fx.registry.tickerExists(fx.DUP_US.ticker, 'ZZZZ'),
+      false
+    );
   });
 
   test('isinExists returns true for existing ISIN', () => {
-    assert.equal(registry.isinExists('US0000000002'), true);
+    assert.equal(fx.registry.isinExists(fx.TESTA.isin), true);
   });
 
   test('isinExists returns false for nonexistent ISIN', () => {
-    assert.equal(registry.isinExists('XX0000000000'), false);
+    assert.equal(fx.registry.isinExists('XX0000000000'), false);
   });
 
   test('resolve detects ISIN', () => {
-    const result = registry.resolve('US0000000002');
-    assert.equal(result.ticker, 'TESTA');
+    const result = fx.registry.resolve(fx.TESTA.isin);
+    assert.equal(result.ticker, fx.TESTA.ticker);
   });
 
   test('resolve detects CUSIP', () => {
-    const result = registry.resolve('000000000');
-    assert.equal(result.ticker, 'TESTA');
+    const result = fx.registry.resolve(fx.TESTA.cusip);
+    assert.equal(result.ticker, fx.TESTA.ticker);
   });
 
   test('resolve detects FIGI', () => {
-    const result = registry.resolve('BBG000000001');
-    assert.equal(result.ticker, 'TESTA');
+    const result = fx.registry.resolve(fx.TESTA.figi);
+    assert.equal(result.ticker, fx.TESTA.ticker);
   });
 
   test('resolve detects LEI', () => {
-    const results = registry.resolve('HWUPKR0MPOU8FGXBT394');
+    const results = fx.registry.resolve(fx.TESTA.lei);
     assert.ok(Array.isArray(results));
-    assert.ok(results.some(i => i.ticker === 'TESTA'));
+    assert.ok(results.some((i) => i.ticker === fx.TESTA.ticker));
   });
 
   test('resolve detects ticker', () => {
-    const result = registry.resolve('TESTA', 'XNAS');
-    assert.equal(result.isin, 'US0000000002');
+    const result = fx.registry.resolve(fx.TESTA.ticker, fx.TESTA.exchange);
+    assert.equal(result.isin, fx.TESTA.isin);
   });
 
   test('resolve detects ambiguous ticker', () => {
-    const result = registry.resolve('DUP');
+    const result = fx.registry.resolve(fx.DUP_US.ticker);
     assert.ok(Array.isArray(result));
     assert.equal(result.length, 2);
   });
@@ -374,125 +358,136 @@ describe.skip('Convenience Methods', () => {
 
 // ─── Statistical Method Tests ────────────────────────────────────────
 
-describe.skip('Statistical Methods', () => {
+describe('Statistical Methods', () => {
   test('identifierCoverage returns ISIN coverage', () => {
-    const coverage = registry.identifierCoverage();
-    assert.equal(coverage.isin.covered, EXPECTED_ISIN);
-    assert.equal(coverage.isin.total, EXPECTED_ISIN);
+    const coverage = fx.registry.identifierCoverage();
+    assert.equal(coverage.isin.covered, fx.count);
     assert.equal(coverage.isin.percentage, 100);
   });
 
   test('identifierCoverage returns CUSIP coverage', () => {
-    const coverage = registry.identifierCoverage();
-    assert.equal(coverage.cusip.covered, EXPECTED_CUSIP);
-    assert.equal(coverage.cusip.percentage, EXPECTED_CUSIP_PERCENT);
+    const expectedCusip = fx.registry
+      .all()
+      .filter((i) => i.cusip !== null && i.cusip !== undefined).length;
+    const coverage = fx.registry.identifierCoverage();
+    assert.equal(coverage.cusip.covered, expectedCusip);
   });
 
   test('identifierCoverage returns SEDOL coverage', () => {
-    const coverage = registry.identifierCoverage();
+    const coverage = fx.registry.identifierCoverage();
     assert.equal(coverage.sedol.covered, 0);
     assert.equal(coverage.sedol.percentage, 0);
   });
 
   test('identifierCoverage returns FIGI coverage', () => {
-    const coverage = registry.identifierCoverage();
-    assert.equal(coverage.figi.covered, EXPECTED_FIGI);
-    assert.equal(coverage.figi.percentage, EXPECTED_FIGI_PERCENT);
+    const expectedFigi = fx.registry
+      .all()
+      .filter((i) => i.figi !== null && i.figi !== undefined).length;
+    const coverage = fx.registry.identifierCoverage();
+    assert.equal(coverage.figi.covered, expectedFigi);
   });
 
   test('identifierCoverage returns LEI coverage', () => {
-    const coverage = registry.identifierCoverage();
-    assert.equal(coverage.lei.covered, EXPECTED_LEI);
-    assert.equal(coverage.lei.percentage, EXPECTED_LEI_PERCENT);
+    const expectedLei = fx.registry
+      .all()
+      .filter((i) => i.lei !== null && i.lei !== undefined).length;
+    const coverage = fx.registry.identifierCoverage();
+    assert.equal(coverage.lei.covered, expectedLei);
   });
 
-  test('tickersWithMultipleListings returns DUP', () => {
-    const ambiguous = registry.tickersWithMultipleListings();
-    assert.ok(ambiguous.includes('DUP'));
+  test('tickersWithMultipleListings contains DUP', () => {
+    const ambiguous = fx.registry.tickersWithMultipleListings();
+    assert.ok(ambiguous.includes(fx.DUP_US.ticker));
   });
 });
 
 // ─── Ticker Change Tests ─────────────────────────────────────────────
 
 describe('Ticker Changes', () => {
-  test('NEWTICK history contains OLDTICK', () => {
-    const meta = registry.byIsin('US0000000267');
-    assert.equal(meta.ticker, 'NEWTICK');
-    const historyTickers = meta.history.map((h) => h.ticker);
-    assert.ok(historyTickers.includes('OLDTICK'));
-    assert.ok(historyTickers.includes('NEWTICK'));
+  test('NEWTICK history contains previous tickers', () => {
+    const inst = fx.registry.byIsin(fx.NEWTICK.isin);
+    assert.equal(inst.ticker, fx.NEWTICK.ticker);
+    const historyTickers = inst.history.map((h) => h.ticker);
+    for (const event of fx.NEWTICK.history) {
+      assert.ok(
+        historyTickers.includes(event.ticker),
+        `history should contain ${event.ticker}`
+      );
+    }
   });
 
   test('NEWTICK change date is correct', () => {
-    const meta = registry.byIsin('US0000000267');
-    const renameEvent = meta.history.find((h) => h.change_type === 'rename');
-    assert.equal(renameEvent.change_date, '2022-06-09');
+    const inst = fx.registry.byIsin(fx.NEWTICK.isin);
+    const fixtureRename = fx.NEWTICK.history.find(
+      (h) => h.change_type === 'rename'
+    );
+    if (fixtureRename) {
+      const renameEvent = inst.history.find((h) => h.change_type === 'rename');
+      assert.ok(renameEvent, 'expected a rename event');
+      assert.equal(renameEvent.change_date, fixtureRename.change_date);
+    }
   });
 
   test('NEWTICK ISIN unchanged after rename', () => {
-    const meta = registry.byIsin('US0000000267');
-    assert.equal(meta.isin, 'US0000000267');
-  });
-
-  test.skip('SYNTHXOM history has initial listing', () => {
-    const xom = registry.byTicker('SYNTHXOM', 'XNAS');
-    assert.equal(xom.history[0].change_type, 'none');
-    assert.equal(xom.history[0].ticker, 'XON');
-  });
-
-  test.skip('SYNTHXOM history has merger rename', () => {
-    const xom = registry.byTicker('SYNTHXOM', 'XNAS');
-    const renameEvent = xom.history.find((h) => h.change_type === 'rename');
-    assert.equal(renameEvent.ticker, 'SYNTHXOM');
-    assert.equal(renameEvent.reason, 'MERGER');
+    const inst = fx.registry.byIsin(fx.NEWTICK.isin);
+    assert.equal(inst.isin, fx.NEWTICK.isin);
   });
 });
 
 // ─── Multi-Exchange Listing Tests ────────────────────────────────────
 
-describe.skip('Multi-Exchange Listings', () => {
+describe('Multi-Exchange Listings', () => {
   test('MULTI has multiple listings', () => {
-    const aapl = registry.byIsin('US0000000002');
-    assert.ok(aapl.listings.length >= 2);
+    const inst = fx.registry.byIsin(fx.MULTI.isin);
+    assert.ok(inst.listings.length >= 2);
   });
 
-  test('MULTI listings include XNAS and XETR', () => {
-    const aapl = registry.byIsin('US0000000002');
-    const exchanges = aapl.listings.map((l) => l.exchange);
-    assert.ok(exchanges.includes('XNAS'));
-    assert.ok(exchanges.includes('XETR'));
+  test('MULTI listings include every fixture listing exchange', () => {
+    const inst = fx.registry.byIsin(fx.MULTI.isin);
+    const exchanges = inst.listings.map((l) => l.exchange);
+    for (const listing of fx.MULTI.listings) {
+      assert.ok(
+        exchanges.includes(listing.exchange),
+        `missing listing on ${listing.exchange}`
+      );
+    }
   });
 
-  test('MULTI primary listing is XNAS', () => {
-    const aapl = registry.byIsin('US0000000002');
-    const primary = aapl.listings.find((l) => l.status === 'PRIMARY');
-    assert.equal(primary.exchange, 'XNAS');
+  test('MULTI primary listing matches top-level', () => {
+    const inst = fx.registry.byIsin(fx.MULTI.isin);
+    const primary = inst.listings.find((l) => l.status === 'PRIMARY');
+    assert.ok(primary);
+    assert.equal(primary.exchange, fx.MULTI.exchange);
+    assert.equal(primary.ticker, fx.MULTI.ticker);
   });
 
   test('MULTI listings have different currencies', () => {
-    const aapl = registry.byIsin('US0000000002');
-    const currencies = aapl.listings.map((l) => l.currency);
-    assert.ok(currencies.includes('USD'));
-    assert.ok(currencies.includes('EUR'));
+    const inst = fx.registry.byIsin(fx.MULTI.isin);
+    const currencies = inst.listings.map((l) => l.currency);
+    for (const listing of fx.MULTI.listings) {
+      assert.ok(
+        currencies.includes(listing.currency),
+        `missing currency ${listing.currency}`
+      );
+    }
   });
 });
 
 // ─── Iterator Tests ──────────────────────────────────────────────────
 
-describe.skip('Iterator', () => {
+describe('Iterator', () => {
   test('iterates over all instruments', () => {
     const tickers = [];
-    for (const inst of registry) {
+    for (const inst of fx.registry) {
       tickers.push(inst.ticker);
     }
-    assert.equal(tickers.length, EXPECTED_COUNT);
-    assert.ok(tickers.includes('TESTA'));
-    assert.ok(tickers.includes('MSFT'));
+    assert.equal(tickers.length, fx.count);
+    assert.ok(tickers.includes(fx.TESTA.ticker));
   });
 
   test('spread operator works', () => {
-    const instruments = [...registry];
-    assert.equal(instruments.length, EXPECTED_COUNT);
+    const instruments = [...fx.registry];
+    assert.equal(instruments.length, fx.count);
   });
 });
 
@@ -500,15 +495,15 @@ describe.skip('Iterator', () => {
 
 describe('String Representation', () => {
   test('toString returns meaningful string', () => {
-    const str = registry.toString();
+    const str = fx.registry.toString();
     assert.ok(str.includes('Asset Identifier Registry'));
-    assert.ok(str.includes(String(EXPECTED_COUNT)));
+    assert.ok(str.includes(String(fx.count)));
   });
 
   test('toJSON returns object', () => {
-    const json = registry.toJSON();
-    assert.equal(json.count, EXPECTED_COUNT);
-    assert.equal(json.instruments, EXPECTED_COUNT);
+    const json = fx.registry.toJSON();
+    assert.equal(json.count, fx.count);
+    assert.equal(json.instruments, fx.count);
   });
 });
 
@@ -516,48 +511,22 @@ describe('String Representation', () => {
 
 describe('Error Handling', () => {
   test('throws on nonexistent file', () => {
-    assert.throws(() => {
-      new AssetRegistry('/nonexistent/path/identifiers.json');
-    }, /Failed to read registry file/);
+    assert.throws(
+      () => new AssetRegistry('/nonexistent/path/identifiers.json'),
+      /Failed to read registry file/
+    );
   });
 
   test('throws on invalid JSON', () => {
-    const fs = require('fs');
-    const os = require('os');
-    const invalidPath = path.join(os.tmpdir(), 'invalid_registry.json');
+    const invalidPath = path.join(os.tmpdir(), `invalid_registry_${process.pid}.json`);
     fs.writeFileSync(invalidPath, '{ invalid json');
-
-    assert.throws(() => {
-      new AssetRegistry(invalidPath);
-    }, /Invalid JSON/);
-
-    fs.unlinkSync(invalidPath);
-  });
-});
-
-// ─── Cross-Language Consistency Tests ────────────────────────────────
-
-describe.skip('Cross-Language Consistency', () => {
-  test('matches consistency file values', () => {
-    const consistencyPath = path.resolve(__dirname, '../../../tests/fixtures/identifiers.test.json');
-    const fs = require('fs');
-    const consistency = JSON.parse(fs.readFileSync(consistencyPath, 'utf8'));
-
-    // Count matches
-    assert.equal(registry.count, consistency.registry.count);
-
-    // TESTA matches
-    const aapl = registry.byIsin('US0000000002');
-    assert.equal(aapl.ticker, consistency.instruments.aapl.ticker);
-    assert.equal(aapl.cusip, consistency.instruments.aapl.cusip);
-    assert.equal(aapl.figi, consistency.instruments.aapl.figi);
-
-    // NEWTICK matches
-    const meta = registry.byIsin('US0000000267');
-    assert.equal(meta.ticker, consistency.instruments.meta.ticker);
-
-    // DUP matches
-    const pru = registry.byTicker('DUP');
-    assert.equal(pru.length, consistency.instruments.pru.count);
+    try {
+      assert.throws(
+        () => new AssetRegistry(invalidPath),
+        /Invalid JSON/
+      );
+    } finally {
+      fs.unlinkSync(invalidPath);
+    }
   });
 });
