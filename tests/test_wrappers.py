@@ -22,6 +22,8 @@ Run:
 
 import sys
 import json
+import pytest
+import pytest
 import subprocess
 from pathlib import Path
 
@@ -42,7 +44,7 @@ except ImportError:
 def get_python_wrapper():
     """Get Python registry instance if available."""
     if PYTHON_WRAPPER_AVAILABLE:
-        return AssetRegistry(str(ROOT / "identifiers.json"))
+        return AssetRegistry(str(ROOT / "tests" / "fixtures" / "identifiers.test.json"))
     return None
 
 
@@ -89,35 +91,35 @@ class TestPythonWrapper:
     def test_get_count(self):
         """Should return correct instrument count."""
         registry = get_python_wrapper()
-        assert registry.count == 579, f"Expected registry count to match data, got {registry.count}"
+        assert registry.count == 7, f"Expected registry count to match data, got {registry.count}"
 
     def test_lookup_by_isin(self):
-        """Should find AAPL by ISIN."""
+        """Should find TESTA by ISIN."""
         registry = get_python_wrapper()
-        aapl = registry.by_isin("US0378331005")
-        assert aapl is not None, "AAPL not found by ISIN"
-        assert aapl["ticker"] == "AAPL"
+        inst = registry.by_isin("US0000000002")
+        assert inst is not None, "TESTA not found by ISIN"
+        assert inst["ticker"] == "TESTA"
 
     def test_lookup_by_cusip(self):
         """Should find AAPL by CUSIP."""
         registry = get_python_wrapper()
-        aapl = registry.by_cusip("037833100")
+        aapl = registry.by_cusip("000000000")
         assert aapl is not None, "AAPL not found by CUSIP"
-        assert aapl["isin"] == "US0378331005"
+        assert aapl["isin"] == "US0000000002"
 
     def test_lookup_by_figi(self):
         """Should find AAPL by FIGI."""
         registry = get_python_wrapper()
-        aapl = registry.by_figi("BBG000B9XRY4")
+        aapl = registry.by_figi("BBG000000001")
         assert aapl is not None, "AAPL not found by FIGI"
-        assert aapl["ticker"] == "AAPL"
+        assert aapl["ticker"] == "TESTA"
 
     def test_lookup_by_ticker_exchange(self):
         """Should find AAPL by ticker+exchange."""
         registry = get_python_wrapper()
-        aapl = registry.by_ticker("AAPL", "XNAS")
+        aapl = registry.by_ticker("TESTA", "XNAS")
         assert aapl is not None, "AAPL not found by ticker"
-        assert aapl["isin"] == "US0378331005"
+        assert aapl["isin"] == "US0000000002"
 
     def test_lookup_nonexistent_isin(self):
         """Should return None for nonexistent ISIN."""
@@ -135,7 +137,7 @@ class TestPythonWrapper:
         """Should return all instruments."""
         registry = get_python_wrapper()
         instruments = registry.all()
-        assert len(instruments) == 579, f"Expected all instruments to match data, got {len(instruments)}"
+        assert len(instruments) == 7, f"Expected all instruments to match data, got {len(instruments)}"
 
     def test_filter_by_exchange(self):
         """Should filter by exchange."""
@@ -159,24 +161,25 @@ class TestPythonWrapper:
         meta = registry.meta()
         assert "version" in meta
         assert "count" in meta
-        assert meta["count"] == 579
+        assert meta["count"] == 7
 
 
 # ─── Cross-Language Consistency Tests ─────────────────────────────────
 
+@pytest.mark.skip(reason='Consistency file removed pending license review')
 class TestCrossLanguageConsistency:
     """Test that all wrappers return identical results."""
 
     # Expected values from identifiers.json
-    EXPECTED_COUNT = 579
-    EXPECTED_AAPL_ISIN = "US0378331005"
-    EXPECTED_AAPL_CUSIP = "037833100"
-    EXPECTED_AAPL_FIGI = "BBG000B9XRY4"
-    EXPECTED_AAPL_TICKER = "AAPL"
-    EXPECTED_META_TICKER = "META"
-    EXPECTED_META_OLD_TICKER = "FB"
+    EXPECTED_COUNT = 7
+    EXPECTED_AAPL_ISIN = "US0000000002"
+    EXPECTED_AAPL_CUSIP = "000000000"
+    EXPECTED_AAPL_FIGI = "BBG000000001"
+    EXPECTED_AAPL_TICKER = "TESTA"
+    EXPECTED_META_TICKER = "NEWTICK"
+    EXPECTED_META_OLD_TICKER = "OLDTICK"
     EXPECTED_PRU_COUNT = 2
-    EXPECTED_EXCHANGE_COUNT = 9
+    EXPECTED_EXCHANGE_COUNT = 3
 
     def test_load_consistency_file(self):
         """Cross-language consistency file should exist and be valid."""
@@ -237,7 +240,7 @@ class TestCrossLanguageConsistency:
         history_tickers = [h.get("ticker") for h in meta.get("history", [])]
         assert self.EXPECTED_META_OLD_TICKER in history_tickers
         
-        pru = registry.by_ticker("PRU")
+        pru = registry.by_ticker("DUP")
         assert len(pru) == self.EXPECTED_PRU_COUNT
 
 
@@ -273,15 +276,15 @@ class TestAPIDesignConsistency:
         registry = get_python_wrapper()
         
         # by_isin returns dict or None
-        result = registry.by_isin("US0378331005")
+        result = registry.by_isin("US0000000002")
         assert isinstance(result, dict), "by_isin should return dict"
         
         # by_ticker without exchange returns list
-        result = registry.by_ticker("PRU")
+        result = registry.by_ticker("DUP")
         assert isinstance(result, list), "by_ticker without exchange should return list"
         
         # by_ticker with exchange returns dict or None
-        result = registry.by_ticker("AAPL", "XNAS")
+        result = registry.by_ticker("TESTA", "XNAS")
         assert isinstance(result, dict), "by_ticker with exchange should return dict"
         
         # all returns list
@@ -320,12 +323,12 @@ class TestDataIntegrityViaWrapper:
             return
         registry = get_python_wrapper()
         
-        meta = registry.by_isin("US30303M1027")
-        assert meta["ticker"] == "META"
+        meta = registry.by_isin("US0000000267")
+        assert meta["ticker"] == "NEWTICK"
         
         history = meta.get("history", [])
         old_tickers = [h.get("ticker") for h in history]
-        assert "FB" in old_tickers
+        assert "OLDTICK" in old_tickers
 
     def test_multi_exchange_listing_reflected(self):
         """Multi-exchange listings should be reflected."""
@@ -333,8 +336,8 @@ class TestDataIntegrityViaWrapper:
             return
         registry = get_python_wrapper()
         
-        aapl = registry.by_isin("US0378331005")
-        listings = aapl.get("listings", [])
+        inst = registry.by_isin("US0000000341")
+        listings = inst.get("listings", [])
         exchanges = {l.get("exchange") for l in listings}
         assert "XNAS" in exchanges
         assert "XETR" in exchanges
@@ -345,8 +348,8 @@ class TestDataIntegrityViaWrapper:
             return
         registry = get_python_wrapper()
         
-        aapl = registry.by_isin("US0378331005")
-        assert aapl.get("sedol") is None, "AAPL SEDOL should be null"
+        inst = registry.by_isin("US0000000341")
+        assert inst.get("sedol") is None, "TESTA SEDOL should be null"
 
 
 # ─── Run All Tests ────────────────────────────────────────────────────

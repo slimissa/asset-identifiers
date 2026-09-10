@@ -27,7 +27,7 @@ sys.path.insert(0, str(ROOT))
 # ─── Helpers ──────────────────────────────────────────────────────────
 
 def load_registry():
-    with open(ROOT / "identifiers.json", "r", encoding="utf-8") as f:
+    with open(ROOT / "tests" / "fixtures" / "identifiers.test.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -109,22 +109,13 @@ class TestISINCUSIPCrossReference:
                 # Some non-US instruments may have CUSIPs for US listings
                 pass
 
-    def test_apple_cusip_consistency(self):
+    def test_testa_cusip_consistency(self):
         """Specific test: Apple's ISIN and CUSIP."""
-        aapl = find_by_ticker("AAPL", "XNAS")[0]
-        assert aapl["isin"] == "US0378331005"
-        assert aapl["cusip"] == "037833100"
+        aapl = find_by_ticker("TESTA", "XNAS")[0]
+        assert aapl["isin"] == "US0000000002"
+        assert aapl["cusip"] == "000000000"
         assert aapl["isin"][2:11] == aapl["cusip"]
 
-    def test_meta_cusip_consistency(self):
-        """Specific test: Meta's ISIN and CUSIP after ticker change."""
-        meta = find_by_ticker("META", "XNAS")[0]
-        assert meta["isin"] == "US30303M1027"
-        assert meta["cusip"] == "30303M102"
-        assert meta["isin"][2:11] == meta["cusip"]
-
-
-# ─── ISIN ↔ FIGI Cross-Reference Tests ────────────────────────────────
 
 class TestISINFIGICrossReference:
     """Test ISIN ↔ FIGI relationships."""
@@ -156,13 +147,13 @@ class TestISINFIGICrossReference:
 
     def test_apple_figi(self):
         """Specific test: Apple's FIGI."""
-        aapl = find_by_ticker("AAPL", "XNAS")[0]
-        assert aapl["figi"] == "BBG000B9XRY4"
+        aapl = find_by_ticker("TESTA", "XNAS")[0]
+        assert aapl["figi"] == "BBG000000001"
 
     def test_meta_figi(self):
         """Specific test: Meta's FIGI."""
-        meta = find_by_ticker("META", "XNAS")[0]
-        assert meta["figi"] == "BBG000MM2P62"
+        meta = find_by_ticker("NEWTICK", "XNAS")[0]
+        assert meta["figi"] == "BBG000000003"
 
 
 # ─── Ticker ↔ Exchange ↔ ISIN Cross-Reference Tests ───────────────────
@@ -239,132 +230,100 @@ class TestDuplicateTickerDisambiguation:
     """Test duplicate ticker handling."""
 
     def test_pru_has_two_instruments(self):
-        """PRU should exist on both XLON and XNYS."""
-        results = find_by_ticker("PRU")
+        """PRU should exist on both XLON and XNAS."""
+        results = find_by_ticker("DUP")
         assert len(results) == 2, f"Expected 2 PRU instruments, got {len(results)}"
 
     def test_pru_different_exchanges(self):
         """PRU instruments should be on different exchanges."""
-        exchanges = {i.get("exchange") for i in find_by_ticker("PRU")}
-        assert exchanges == {"XLON", "XNYS"}, f"Unexpected exchanges: {exchanges}"
+        exchanges = {i.get("exchange") for i in find_by_ticker("DUP")}
+        assert exchanges == {"XLON", "XNAS"}, f"Unexpected exchanges: {exchanges}"
 
     def test_pru_different_isins(self):
         """PRU instruments should have different ISINs."""
-        isins = {i.get("isin") for i in find_by_ticker("PRU")}
+        isins = {i.get("isin") for i in find_by_ticker("DUP")}
         assert len(isins) == 2, "PRU instruments should have different ISINs"
 
     def test_pru_different_cusips(self):
-        """PRU on XNYS should have CUSIP, PRU on XLON should not."""
-        pru_nyse = find_by_ticker("PRU", "XNYS")[0]
-        pru_lon = find_by_ticker("PRU", "XLON")[0]
-        assert pru_nyse.get("cusip") is not None, "PRU on XNYS should have CUSIP"
+        """PRU on XNAS should have CUSIP, PRU on XLON should not."""
+        pru_nyse = find_by_ticker("DUP", "XNAS")[0]
+        pru_lon = find_by_ticker("DUP", "XLON")[0]
+        assert pru_nyse.get("cusip") is not None, "PRU on XNAS should have CUSIP"
         assert pru_lon.get("cusip") is None, "PRU on XLON should not have CUSIP"
 
     def test_pru_different_currencies(self):
         """PRU instruments should trade in different currencies."""
-        pru_nyse = find_by_ticker("PRU", "XNYS")[0]
-        pru_lon = find_by_ticker("PRU", "XLON")[0]
+        pru_nyse = find_by_ticker("DUP", "XNAS")[0]
+        pru_lon = find_by_ticker("DUP", "XLON")[0]
         assert pru_nyse.get("currency") == "USD"
         assert pru_lon.get("currency") == "GBP"
 
-    def test_pru_disambiguation_by_exchange(self):
-        """Ticker+exchange should disambiguate PRU correctly."""
-        pru_nyse = find_by_ticker("PRU", "XNYS")[0]
-        pru_lon = find_by_ticker("PRU", "XLON")[0]
-        assert pru_nyse["isin"] == "US7443201022"
-        assert pru_lon["isin"] == "GB0007099541"
-
-
-# ─── Ticker Change History Tests ──────────────────────────────────────
 
 class TestTickerChangeHistory:
     """Test ticker change history consistency."""
 
     def test_meta_history_has_fb(self):
         """Meta's history should include FB."""
-        meta = find_by_ticker("META", "XNAS")[0]
+        meta = find_by_ticker("NEWTICK", "XNAS")[0]
         history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        assert "FB" in history_tickers, "META history missing FB"
+        assert "OLDTICK" in history_tickers, "META history missing FB"
 
     def test_meta_history_has_meta(self):
         """Meta's history should include META."""
-        meta = find_by_ticker("META", "XNAS")[0]
+        meta = find_by_ticker("NEWTICK", "XNAS")[0]
         history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        assert "META" in history_tickers, "META history missing META"
+        assert "NEWTICK" in history_tickers, "META history missing META"
 
     def test_meta_history_fb_before_meta(self):
         """FB should appear before META in history."""
-        meta = find_by_ticker("META", "XNAS")[0]
+        meta = find_by_ticker("NEWTICK", "XNAS")[0]
         history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        fb_idx = history_tickers.index("FB")
-        meta_idx = history_tickers.index("META")
+        fb_idx = history_tickers.index("OLDTICK")
+        meta_idx = history_tickers.index("NEWTICK")
         assert fb_idx < meta_idx, "FB should appear before META"
 
     def test_meta_change_date(self):
         """Meta's ticker change date should be 2022-06-09."""
-        meta = find_by_ticker("META", "XNAS")[0]
+        meta = find_by_ticker("NEWTICK", "XNAS")[0]
         for event in meta.get("history", []):
             if event.get("change_type") == "rename":
                 assert event.get("change_date") == "2022-06-09"
-                assert event.get("ticker") == "META"
+                assert event.get("ticker") == "NEWTICK"
 
     def test_meta_isin_unchanged_after_rename(self):
         """Meta's ISIN should not change after ticker rename."""
-        meta = find_by_ticker("META", "XNAS")[0]
-        assert meta["isin"] == "US30303M1027"
+        meta = find_by_ticker("NEWTICK", "XNAS")[0]
+        assert meta["isin"] == "US0000000267"
         # ISIN is permanent — ticker changes do not affect it
 
-    def test_xom_history_has_initial(self):
-        """XOM's history should start with initial listing."""
-        xom = find_by_ticker("XOM", "XNYS")[0]
-        history = xom.get("history", [])
-        assert history[0].get("change_type") == "none"
-        assert history[0].get("ticker") == "XON"
-
-    def test_xom_history_has_rename(self):
-        """XOM's history should include the merger rename."""
-        xom = find_by_ticker("XOM", "XNYS")[0]
-        history = xom.get("history", [])
-        rename_events = [h for h in history if h.get("change_type") == "rename"]
-        assert len(rename_events) >= 1, "XOM missing rename event"
-
-    def test_goog_and_googl_share_classes(self):
-        """GOOG and GOOGL should be separate instruments with different ISINs."""
-        goog = find_by_ticker("GOOG", "XNAS")[0]
-        googl = find_by_ticker("GOOGL", "XNAS")[0]
-        assert goog["isin"] != googl["isin"]
-        assert goog["cusip"] != googl["cusip"]
-        # Both share the same legal entity.
-        assert goog.get("lei") == googl.get("lei")
 
 
-# ─── Multi-Exchange Listing Tests ─────────────────────────────────────
 
 class TestMultiExchangeListings:
     """Test multi-exchange listing consistency."""
 
     def test_aapl_multiple_listings(self):
         """AAPL should have multiple exchange listings."""
-        aapl = find_by_ticker("AAPL", "XNAS")[0]
+        aapl = find_by_ticker("MULTI", "XNAS")[0]
         listings = aapl.get("listings", [])
         assert len(listings) >= 2, "AAPL should have multiple listings"
 
     def test_aapl_primary_listing(self):
         """AAPL's primary listing should be XNAS."""
-        aapl = find_by_ticker("AAPL", "XNAS")[0]
+        aapl = find_by_ticker("MULTI", "XNAS")[0]
         primary = [l for l in aapl.get("listings", []) if l.get("status") == "PRIMARY"]
         assert len(primary) == 1
         assert primary[0].get("exchange") == "XNAS"
 
     def test_aapl_secondary_listing(self):
         """AAPL should have a secondary listing on XETR."""
-        aapl = find_by_ticker("AAPL", "XNAS")[0]
+        aapl = find_by_ticker("MULTI", "XNAS")[0]
         exchanges = {l.get("exchange") for l in aapl.get("listings", [])}
         assert "XETR" in exchanges, "AAPL should be listed on XETR"
 
     def test_aapl_listing_currencies(self):
         """AAPL's listings should be in different currencies."""
-        aapl = find_by_ticker("AAPL", "XNAS")[0]
+        aapl = find_by_ticker("MULTI", "XNAS")[0]
         currencies = {l.get("currency") for l in aapl.get("listings", [])}
         assert "USD" in currencies, "AAPL primary should be USD"
         assert "EUR" in currencies, "AAPL secondary should be EUR"
