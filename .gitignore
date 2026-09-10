@@ -1,0 +1,148 @@
+# ============================================================
+# Asset Identifier Registry — .gitignore
+# ============================================================
+
+# Licensed / restricted data files — MUST NOT be committed
+identifiers.json
+identifiers.dist.json
+identifiers.dist.min.json
+identifiers.fmp.preview.json
+identifiers.yahoo.preview.json
+identifiers.openfigi.preview.json
+history/ticker_changes.json
+history/*.json
+data/
+!data/.gitkeep
+
+# API keys and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+credentials.json
+config.local.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# Python test / coverage
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+htmlcov/
+.hypothesis/
+
+# JavaScript / Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+.yarn/
+.pnp.*
+coverage/
+.nyc_output/
+*.tsbuildinfo
+.eslintcache
+
+# Rust
+target/
+**/target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.dylib
+*.test
+*.out
+vendor/
+go.work
+go.work.sum
+
+# Build outputs
+*.o
+*.obj
+*.a
+*.lib
+*.bin
+out/
+build/
+
+# Editors and IDEs
+.vscode/
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+
+# Local environment
+.local/
+local/
+*.local
+scratch/
+sandbox/
+
+# CI / GitHub artifacts
+.github/workflows/*.yml.bak
