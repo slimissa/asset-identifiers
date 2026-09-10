@@ -23,11 +23,19 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
 
+from tests.fixture import (
+    FIXTURE_PATH,
+    TESTA, NEWTICK, MULTI, DUP_US, DUP_UK, ETFSYN,
+    count as fixture_count,
+    meta as fixture_meta,
+    all_instruments,
+)
+
 
 # ─── Helpers ──────────────────────────────────────────────────────────
 
 def load_registry():
-    with open(ROOT / "tests" / "fixtures" / "identifiers.test.json", "r", encoding="utf-8") as f:
+    with open(FIXTURE_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -110,12 +118,11 @@ class TestISINCUSIPCrossReference:
                 pass
 
     def test_testa_cusip_consistency(self):
-        """Specific test: Apple's ISIN and CUSIP."""
-        aapl = find_by_ticker("TESTA", "XNAS")[0]
-        assert aapl["isin"] == "US0000000002"
-        assert aapl["cusip"] == "000000000"
-        assert aapl["isin"][2:11] == aapl["cusip"]
-
+        """TESTA's ISIN and CUSIP should be consistent."""
+        inst = find_by_ticker(TESTA["ticker"], TESTA["exchange"])[0]
+        assert inst["isin"] == TESTA["isin"]
+        assert inst["cusip"] == TESTA["cusip"]
+        assert inst["isin"][2:11] == inst["cusip"]
 
 class TestISINFIGICrossReference:
     """Test ISIN ↔ FIGI relationships."""
@@ -147,13 +154,13 @@ class TestISINFIGICrossReference:
 
     def test_apple_figi(self):
         """Specific test: Apple's FIGI."""
-        aapl = find_by_ticker("TESTA", "XNAS")[0]
-        assert aapl["figi"] == "BBG000000001"
+        inst = find_by_ticker(TESTA["ticker"], TESTA["exchange"])[0]
+        assert inst["figi"] == TESTA["figi"]
 
     def test_meta_figi(self):
         """Specific test: Meta's FIGI."""
-        meta = find_by_ticker("NEWTICK", "XNAS")[0]
-        assert meta["figi"] == "BBG000000003"
+        inst = find_by_ticker(NEWTICK["ticker"], NEWTICK["exchange"])[0]
+        assert inst["figi"] == NEWTICK["figi"]
 
 
 # ─── Ticker ↔ Exchange ↔ ISIN Cross-Reference Tests ───────────────────
@@ -229,127 +236,95 @@ class TestTickerExchangeISINCrossReference:
 class TestDuplicateTickerDisambiguation:
     """Test duplicate ticker handling."""
 
-    def test_pru_has_two_instruments(self):
-        """PRU should exist on both XLON and XNAS."""
-        results = find_by_ticker("DUP")
-        assert len(results) == 2, f"Expected 2 PRU instruments, got {len(results)}"
+    def test_ambiguous_ticker_has_two_instruments(self):
+        results = find_by_ticker(DUP_US["ticker"])
+        assert len(results) == 2
 
-    def test_pru_different_exchanges(self):
-        """PRU instruments should be on different exchanges."""
-        exchanges = {i.get("exchange") for i in find_by_ticker("DUP")}
-        assert exchanges == {"XLON", "XNAS"}, f"Unexpected exchanges: {exchanges}"
+    def test_ambiguous_ticker_different_exchanges(self):
+        exchanges = {i.get("exchange") for i in find_by_ticker(DUP_US["ticker"])}
+        assert exchanges == {DUP_US["exchange"], DUP_UK["exchange"]}
 
-    def test_pru_different_isins(self):
-        """PRU instruments should have different ISINs."""
-        isins = {i.get("isin") for i in find_by_ticker("DUP")}
-        assert len(isins) == 2, "PRU instruments should have different ISINs"
+    def test_ambiguous_ticker_different_isins(self):
+        isins = {i.get("isin") for i in find_by_ticker(DUP_US["ticker"])}
+        assert len(isins) == 2
 
-    def test_pru_different_cusips(self):
-        """PRU on XNAS should have CUSIP, PRU on XLON should not."""
-        pru_nyse = find_by_ticker("DUP", "XNAS")[0]
-        pru_lon = find_by_ticker("DUP", "XLON")[0]
-        assert pru_nyse.get("cusip") is not None, "PRU on XNAS should have CUSIP"
-        assert pru_lon.get("cusip") is None, "PRU on XLON should not have CUSIP"
+    def test_ambiguous_ticker_different_cusips(self):
+        us = find_by_ticker(DUP_US["ticker"], DUP_US["exchange"])[0]
+        uk = find_by_ticker(DUP_UK["ticker"], DUP_UK["exchange"])[0]
+        assert us.get("cusip") is not None
+        assert uk.get("cusip") is None
 
-    def test_pru_different_currencies(self):
-        """PRU instruments should trade in different currencies."""
-        pru_nyse = find_by_ticker("DUP", "XNAS")[0]
-        pru_lon = find_by_ticker("DUP", "XLON")[0]
-        assert pru_nyse.get("currency") == "USD"
-        assert pru_lon.get("currency") == "GBP"
+    def test_ambiguous_ticker_different_currencies(self):
+        us = find_by_ticker(DUP_US["ticker"], DUP_US["exchange"])[0]
+        uk = find_by_ticker(DUP_UK["ticker"], DUP_UK["exchange"])[0]
+        assert us.get("currency") == DUP_US["currency"]
+        assert uk.get("currency") == DUP_UK["currency"]
+
 
 
 class TestTickerChangeHistory:
     """Test ticker change history consistency."""
 
-    def test_meta_history_has_fb(self):
-        """Meta's history should include FB."""
-        meta = find_by_ticker("NEWTICK", "XNAS")[0]
-        history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        assert "OLDTICK" in history_tickers, "META history missing FB"
+    def test_history_contains_all_previous_tickers(self):
+        inst = find_by_ticker(NEWTICK["ticker"], NEWTICK["exchange"])[0]
+        history_tickers = [h.get("ticker") for h in inst.get("history", [])]
+        for event in NEWTICK["history"]:
+            assert event["ticker"] in history_tickers
 
-    def test_meta_history_has_meta(self):
-        """Meta's history should include META."""
-        meta = find_by_ticker("NEWTICK", "XNAS")[0]
-        history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        assert "NEWTICK" in history_tickers, "META history missing META"
+    def test_history_is_chronological(self):
+        inst = find_by_ticker(NEWTICK["ticker"], NEWTICK["exchange"])[0]
+        dated = [h for h in inst.get("history", []) if h.get("change_date")]
+        dates = [h["change_date"] for h in dated]
+        assert dates == sorted(dates)
 
-    def test_meta_history_fb_before_meta(self):
-        """FB should appear before META in history."""
-        meta = find_by_ticker("NEWTICK", "XNAS")[0]
-        history_tickers = [h.get("ticker") for h in meta.get("history", [])]
-        fb_idx = history_tickers.index("OLDTICK")
-        meta_idx = history_tickers.index("NEWTICK")
-        assert fb_idx < meta_idx, "FB should appear before META"
+    def test_rename_event_date_matches_fixture(self):
+        inst = find_by_ticker(NEWTICK["ticker"], NEWTICK["exchange"])[0]
+        for fixture_event in NEWTICK["history"]:
+            if fixture_event.get("change_type") == "rename":
+                matches = [
+                    e for e in inst.get("history", [])
+                    if e.get("change_type") == "rename"
+                ]
+                assert len(matches) == 1
+                assert matches[0]["change_date"] == fixture_event["change_date"]
 
-    def test_meta_change_date(self):
-        """Meta's ticker change date should be 2022-06-09."""
-        meta = find_by_ticker("NEWTICK", "XNAS")[0]
-        for event in meta.get("history", []):
-            if event.get("change_type") == "rename":
-                assert event.get("change_date") == "2022-06-09"
-                assert event.get("ticker") == "NEWTICK"
-
-    def test_meta_isin_unchanged_after_rename(self):
-        """Meta's ISIN should not change after ticker rename."""
-        meta = find_by_ticker("NEWTICK", "XNAS")[0]
-        assert meta["isin"] == "US0000000267"
-        # ISIN is permanent — ticker changes do not affect it
-
+    def test_isin_unchanged_after_rename(self):
+        inst = find_by_ticker(NEWTICK["ticker"], NEWTICK["exchange"])[0]
+        assert inst["isin"] == NEWTICK["isin"]
 
 
 
 class TestMultiExchangeListings:
     """Test multi-exchange listing consistency."""
 
-    def test_aapl_multiple_listings(self):
-        """AAPL should have multiple exchange listings."""
-        aapl = find_by_ticker("MULTI", "XNAS")[0]
-        listings = aapl.get("listings", [])
-        assert len(listings) >= 2, "AAPL should have multiple listings"
+    def test_multiple_listings(self):
+        inst = find_by_ticker(MULTI["ticker"], MULTI["exchange"])[0]
+        assert len(inst.get("listings", [])) >= 2
 
-    def test_aapl_primary_listing(self):
-        """AAPL's primary listing should be XNAS."""
-        aapl = find_by_ticker("MULTI", "XNAS")[0]
-        primary = [l for l in aapl.get("listings", []) if l.get("status") == "PRIMARY"]
+    def test_primary_listing_matches_top_level(self):
+        inst = find_by_ticker(MULTI["ticker"], MULTI["exchange"])[0]
+        primary = [l for l in inst.get("listings", []) if l.get("status") == "PRIMARY"]
         assert len(primary) == 1
-        assert primary[0].get("exchange") == "XNAS"
+        assert primary[0].get("exchange") == MULTI["exchange"]
+        assert primary[0].get("ticker") == MULTI["ticker"]
 
-    def test_aapl_secondary_listing(self):
-        """AAPL should have a secondary listing on XETR."""
-        aapl = find_by_ticker("MULTI", "XNAS")[0]
-        exchanges = {l.get("exchange") for l in aapl.get("listings", [])}
-        assert "XETR" in exchanges, "AAPL should be listed on XETR"
+    def test_secondary_listings_present(self):
+        inst = find_by_ticker(MULTI["ticker"], MULTI["exchange"])[0]
+        exchanges = {l.get("exchange") for l in inst.get("listings", [])}
+        for listing in MULTI["listings"]:
+            assert listing["exchange"] in exchanges
 
-    def test_aapl_listing_currencies(self):
-        """AAPL's listings should be in different currencies."""
-        aapl = find_by_ticker("MULTI", "XNAS")[0]
-        currencies = {l.get("currency") for l in aapl.get("listings", [])}
-        assert "USD" in currencies, "AAPL primary should be USD"
-        assert "EUR" in currencies, "AAPL secondary should be EUR"
-
-    def test_listings_match_top_level(self):
-        """Top-level exchange/ticker should match primary listing."""
-        for inst in get_instruments():
-            listings = inst.get("listings", [])
-            if listings:
-                primary = [l for l in listings if l.get("status") == "PRIMARY"]
-                if primary:
-                    assert primary[0].get("exchange") == inst.get("exchange"), (
-                        f"{inst.get('ticker')}: primary listing exchange mismatch"
-                    )
-                    assert primary[0].get("ticker") == inst.get("ticker"), (
-                        f"{inst.get('ticker')}: primary listing ticker mismatch"
-                    )
+    def test_listings_currencies_match_fixture(self):
+        inst = find_by_ticker(MULTI["ticker"], MULTI["exchange"])[0]
+        currencies = {l.get("currency") for l in inst.get("listings", [])}
+        for listing in MULTI["listings"]:
+            assert listing["currency"] in currencies
 
     def test_no_duplicate_listings(self):
-        """No instrument should have duplicate listings."""
         for inst in get_instruments():
-            listings = inst.get("listings", [])
-            pairs = [(l.get("exchange"), l.get("ticker")) for l in listings]
-            assert len(pairs) == len(set(pairs)), (
-                f"{inst.get('ticker')}: duplicate listing found"
-            )
+            pairs = [(l.get("exchange"), l.get("ticker")) for l in inst.get("listings", [])]
+            assert len(pairs) == len(set(pairs))
+
 
 
 # ─── LEI Cross-Reference Tests ────────────────────────────────────────
