@@ -8,24 +8,24 @@
 //! ```rust
 //! use asset_identifiers::AssetRegistry;
 //!
-//! let registry = AssetRegistry::load("../../identifiers.json")?;
+//! let registry = AssetRegistry::load("../../tests/fixtures/identifiers.test.json")?;
 //!
 //! // Get instrument count
 //! assert_eq!(registry.count(), registry.all().len());
 //!
 //! // Look up by ISIN
-//! let aapl = registry.by_isin("US0378331005").unwrap();
-//! assert_eq!(aapl.ticker, "AAPL");
-//! assert_eq!(aapl.name, "Apple Inc.");
+//! let aapl = registry.by_isin("US0000000002").unwrap();
+//! assert_eq!(aapl.ticker, "TESTA");
+//! assert_eq!(aapl.name, "Synthetic Test A");
 //!
 //! // Look up by ticker on a specific exchange
-//! let pru_nyse = registry.by_ticker("PRU", Some("XNYS"));
-//! assert_eq!(pru_nyse.len(), 1);
-//! assert_eq!(pru_nyse[0].isin, "US7443201022");
+//! let dup_us = registry.by_ticker("DUP", Some("XNAS"));
+//! assert_eq!(dup_us.len(), 1);
+//! assert_eq!(dup_us[0].isin, "US0000000424");
 //!
 //! // Look up by ticker without exchange (returns Vec)
-//! let pru_all = registry.by_ticker("PRU", None);
-//! assert_eq!(pru_all.len(), 2);
+//! let dup_all = registry.by_ticker("DUP", None);
+//! assert_eq!(dup_all.len(), 2);
 //! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 
@@ -345,7 +345,7 @@ impl AssetRegistry {
     /// ```rust
     /// use asset_identifiers::AssetRegistry;
     ///
-    /// let registry = AssetRegistry::load("../../identifiers.json")?;
+    /// let registry = AssetRegistry::load("../../tests/fixtures/identifiers.test.json")?;
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self> {
@@ -567,7 +567,7 @@ impl AssetRegistry {
     /// # Warning: Ambiguous Tickers
     ///
     /// Some tickers are ambiguous — the same symbol exists on multiple
-    /// exchanges. "PRU" is Prudential plc (XLON) and Prudential Financial
+    /// exchanges. "DUP" is Prudential plc (XLON) and Prudential Financial
     /// (XNYS). Always use the `exchange` parameter when the ticker might
     /// be ambiguous. Use [`tickers_with_multiple_listings`] to detect
     /// ambiguous tickers before calling without an exchange.
@@ -577,14 +577,14 @@ impl AssetRegistry {
     /// ```rust
     /// use asset_identifiers::AssetRegistry;
     ///
-    /// let registry = AssetRegistry::load("../../identifiers.json")?;
+    /// let registry = AssetRegistry::load("../../tests/fixtures/identifiers.test.json")?;
     ///
     /// // Single result with exchange (recommended)
-    /// let aapl = registry.by_ticker("AAPL", Some("XNAS"));
+    /// let aapl = registry.by_ticker("TESTA", Some("XNAS"));
     /// assert_eq!(aapl.len(), 1);
     ///
     /// // Multiple results without exchange (use with caution)
-    /// let pru = registry.by_ticker("PRU", None);
+    /// let pru = registry.by_ticker("DUP", None);
     /// assert_eq!(pru.len(), 2);
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -780,7 +780,7 @@ mod tests {
     use super::*;
 
     fn test_registry() -> AssetRegistry {
-        AssetRegistry::load("../../identifiers.json").expect("Failed to load test registry")
+        AssetRegistry::load("../../tests/fixtures/identifiers.test.json").expect("Failed to load test registry")
     }
 
     #[test]
@@ -792,37 +792,37 @@ mod tests {
     #[test]
     fn test_by_isin() {
         let registry = test_registry();
-        let aapl = registry.by_isin("US0378331005").unwrap();
-        assert_eq!(aapl.ticker, "AAPL");
-        assert_eq!(aapl.name, "Apple Inc.");
+        let aapl = registry.by_isin("US0000000002").unwrap();
+        assert_eq!(aapl.ticker, "TESTA");
+        assert_eq!(aapl.name, "Synthetic Test A");
     }
 
     #[test]
     fn test_by_cusip() {
         let registry = test_registry();
-        let msft = registry.by_cusip("594918104").unwrap();
-        assert_eq!(msft.ticker, "MSFT");
+        let inst = registry.by_cusip("000000000").unwrap();
+        assert_eq!(inst.ticker, "TESTA");
     }
 
     #[test]
     fn test_by_figi() {
         let registry = test_registry();
-        let aapl = registry.by_figi("BBG000B9XRY4").unwrap();
-        assert_eq!(aapl.isin, "US0378331005");
+        let aapl = registry.by_figi("BBG000000001").unwrap();
+        assert_eq!(aapl.isin, "US0000000002");
     }
 
     #[test]
     fn test_by_ticker_with_exchange() {
         let registry = test_registry();
-        let results = registry.by_ticker("AAPL", Some("XNAS"));
+        let results = registry.by_ticker("TESTA", Some("XNAS"));
         assert_eq!(results.len(), 1);
-        assert_eq!(results[0].isin, "US0378331005");
+        assert_eq!(results[0].isin, "US0000000002");
     }
 
     #[test]
     fn test_by_ticker_ambiguous() {
         let registry = test_registry();
-        let pru = registry.by_ticker("PRU", None);
+        let pru = registry.by_ticker("DUP", None);
         assert_eq!(pru.len(), 2);
     }
 
@@ -852,7 +852,7 @@ mod tests {
     #[test]
     fn test_metadata() {
         let registry = test_registry();
-        assert_eq!(registry.version(), "1.4.0");
+        assert_eq!(registry.version(), "1.0.0");
         assert_eq!(registry.count(), registry.all().len());
     }
 
@@ -861,25 +861,24 @@ mod tests {
         let registry = test_registry();
         let exchanges = registry.exchanges();
         assert!(exchanges.contains(&"XNAS"));
-        assert!(exchanges.contains(&"XNYS"));
-        assert_eq!(exchanges.len(), 9);
+        assert!(exchanges.contains(&"XLON"));
     }
 
     #[test]
     fn test_ticker_change_preserved() {
         let registry = test_registry();
-        let meta = registry.by_isin("US30303M1027").unwrap();
-        assert_eq!(meta.ticker, "META");
+        let meta = registry.by_isin("US0000000267").unwrap();
+        assert_eq!(meta.ticker, "NEWTICK");
         let tickers: Vec<&str> = meta.history.iter().map(|h| h.ticker.as_str()).collect();
-        assert!(tickers.contains(&"FB"));
-        assert!(tickers.contains(&"META"));
+        assert!(tickers.contains(&"OLDTICK"));
+        assert!(tickers.contains(&"NEWTICK"));
     }
 
     #[test]
     fn test_multi_exchange_listing() {
         let registry = test_registry();
-        let aapl = registry.by_isin("US0378331005").unwrap();
-        let exchanges: Vec<&str> = aapl.listings.iter().map(|l| l.exchange.as_str()).collect();
+        let inst = registry.by_isin("US0000000341").unwrap();
+        let exchanges: Vec<&str> = inst.listings.iter().map(|l| l.exchange.as_str()).collect();
         assert!(exchanges.contains(&"XNAS"));
         assert!(exchanges.contains(&"XETR"));
     }
@@ -896,7 +895,7 @@ mod tests {
     fn test_tickers_with_multiple_listings() {
         let registry = test_registry();
         let ambiguous = registry.tickers_with_multiple_listings();
-        assert!(ambiguous.contains(&"PRU"));
+        assert!(ambiguous.contains(&"DUP"));
     }
 
     #[test]
