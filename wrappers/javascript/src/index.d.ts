@@ -280,7 +280,7 @@ declare module 'asset-identifiers-registry' {
     /**
      * Look up an instrument by ISIN.
      *
-     * @param isin - 12-character ISIN (e.g., "US0378331005")
+     * @param isin - 12-character ISIN (e.g., "US0000000002")
      * @returns Instrument or null if not found
      */
     byIsin(isin: string): Instrument | null;
@@ -304,7 +304,7 @@ declare module 'asset-identifiers-registry' {
     /**
      * Look up an instrument by FIGI.
      *
-     * @param figi - 12-character FIGI (e.g., "BBG000B9XRY4")
+     * @param figi - 12-character FIGI (e.g., "BBG000000001")
      * @returns Instrument or null if not found
      */
     byFigi(figi: string): Instrument | null;
