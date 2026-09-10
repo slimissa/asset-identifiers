@@ -23,12 +23,20 @@ Run:
 import sys
 import json
 import pytest
-import pytest
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
+
+from tests.fixture import (
+    FIXTURE_PATH,
+    TESTA, NEWTICK, MULTI, DUP_US, DUP_UK, ETFSYN,
+    count as fixture_count,
+    meta as fixture_meta,
+    exchanges as fixture_exchanges,
+)
+
 
 # Try to import Python wrapper
 try:
@@ -91,35 +99,37 @@ class TestPythonWrapper:
     def test_get_count(self):
         """Should return correct instrument count."""
         registry = get_python_wrapper()
-        assert registry.count == 7, f"Expected registry count to match data, got {registry.count}"
+        assert registry.count == fixture_count()
 
     def test_lookup_by_isin(self):
         """Should find TESTA by ISIN."""
         registry = get_python_wrapper()
-        inst = registry.by_isin("US0000000002")
+        inst = registry.by_isin(TESTA["isin"])
         assert inst is not None, "TESTA not found by ISIN"
-        assert inst["ticker"] == "TESTA"
+        assert inst["ticker"] == TESTA["ticker"]
 
     def test_lookup_by_cusip(self):
-        """Should find AAPL by CUSIP."""
+        """Should find TESTA by CUSIP."""
         registry = get_python_wrapper()
-        aapl = registry.by_cusip("000000000")
-        assert aapl is not None, "AAPL not found by CUSIP"
-        assert aapl["isin"] == "US0000000002"
+        assert TESTA["cusip"] is not None, "fixture TESTA has no CUSIP"
+        inst = registry.by_cusip(TESTA["cusip"])
+        assert inst is not None, "TESTA not found by CUSIP"
+        assert inst["isin"] == TESTA["isin"]
 
     def test_lookup_by_figi(self):
-        """Should find AAPL by FIGI."""
+        """Should find TESTA by FIGI."""
         registry = get_python_wrapper()
-        aapl = registry.by_figi("BBG000000001")
-        assert aapl is not None, "AAPL not found by FIGI"
-        assert aapl["ticker"] == "TESTA"
+        assert TESTA["figi"] is not None, "fixture TESTA has no FIGI"
+        inst = registry.by_figi(TESTA["figi"])
+        assert inst is not None, "TESTA not found by FIGI"
+        assert inst["ticker"] == TESTA["ticker"]
 
     def test_lookup_by_ticker_exchange(self):
-        """Should find AAPL by ticker+exchange."""
+        """Should find TESTA by ticker+exchange."""
         registry = get_python_wrapper()
-        aapl = registry.by_ticker("TESTA", "XNAS")
-        assert aapl is not None, "AAPL not found by ticker"
-        assert aapl["isin"] == "US0000000002"
+        inst = registry.by_ticker(TESTA["ticker"], TESTA["exchange"])
+        assert inst is not None, "TESTA not found by ticker"
+        assert inst["isin"] == TESTA["isin"]
 
     def test_lookup_nonexistent_isin(self):
         """Should return None for nonexistent ISIN."""
@@ -136,24 +146,23 @@ class TestPythonWrapper:
     def test_get_all_instruments(self):
         """Should return all instruments."""
         registry = get_python_wrapper()
-        instruments = registry.all()
-        assert len(instruments) == 7, f"Expected all instruments to match data, got {len(instruments)}"
+        assert len(registry.all()) == fixture_count()
 
     def test_filter_by_exchange(self):
         """Should filter by exchange."""
         registry = get_python_wrapper()
-        xnas = registry.by_exchange("XNAS")
-        assert len(xnas) > 0, "Should find instruments on XNAS"
+        xnas = registry.by_exchange(TESTA["exchange"])
+        assert len(xnas) > 0
         for inst in xnas:
-            assert inst["exchange"] == "XNAS"
+            assert inst["exchange"] == TESTA["exchange"]
 
     def test_filter_by_asset_class(self):
         """Should filter by asset class."""
         registry = get_python_wrapper()
-        etfs = registry.by_asset_class("etf")
-        assert len(etfs) > 0, "Should find ETFs"
+        etfs = registry.by_asset_class(ETFSYN["asset_class"])
+        assert len(etfs) > 0
         for inst in etfs:
-            assert inst["asset_class"] == "etf"
+            assert inst["asset_class"] == ETFSYN["asset_class"]
 
     def test_get_metadata(self):
         """Should return registry metadata."""
@@ -161,8 +170,17 @@ class TestPythonWrapper:
         meta = registry.meta()
         assert "version" in meta
         assert "count" in meta
-        assert meta["count"] == 7
+        assert meta["count"] == fixture_count()
 
+    def test_ambiguous_ticker(self):
+        """DUP should resolve to two distinct instruments."""
+        registry = get_python_wrapper()
+        hits = registry.by_ticker(DUP_US["ticker"])
+        assert isinstance(hits, list)
+        assert len(hits) >= 2
+        exchanges = {h["exchange"] for h in hits}
+        assert DUP_US["exchange"] in exchanges
+        assert DUP_UK["exchange"] in exchanges
 
 # ─── Cross-Language Consistency Tests ─────────────────────────────────
 
