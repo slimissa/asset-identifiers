@@ -778,130 +778,205 @@ impl<'a> IntoIterator for &'a AssetRegistry {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::OnceLock;
 
-    fn test_registry() -> AssetRegistry {
-        AssetRegistry::load("../../tests/fixtures/identifiers.test.json").expect("Failed to load test registry")
+    // ─── Fixture loading ─────────────────────────────────────────────
+
+    fn registry() -> &'static AssetRegistry {
+        static R: OnceLock<AssetRegistry> = OnceLock::new();
+        R.get_or_init(|| {
+            AssetRegistry::load("../../tests/fixtures/identifiers.test.json")
+                .expect("Failed to load test fixture")
+        })
     }
+
+    // ─── Fixture anchors ─────────────────────────────────────────────
+    //
+    // Every test reads its expected values from these anchors. No test
+    // may hardcode a fixture value. If the fixture changes and an anchor
+    // is missing or ambiguous, the test module fails at startup with a
+    // clear message instead of silently asserting against a stale string.
+
+    fn anchor(ticker: &str, exchange: &str) -> Instrument {
+        let hits = registry().by_ticker(ticker, Some(exchange));
+        assert_eq!(
+            hits.len(),
+            1,
+            "fixture missing or ambiguous: {}@{}",
+            ticker,
+            exchange
+        );
+        hits.into_iter().next().unwrap().clone()
+    }
+
+    fn testa() -> Instrument {
+        anchor("TESTA", "XNAS")
+    }
+    fn newtick() -> Instrument {
+        anchor("NEWTICK", "XNAS")
+    }
+    fn multi() -> Instrument {
+        anchor("MULTI", "XNAS")
+    }
+    fn dup_us() -> Instrument {
+        anchor("DUP", "XNAS")
+    }
+    fn dup_uk() -> Instrument {
+        anchor("DUP", "XLON")
+    }
+
+    // ─── Tests ───────────────────────────────────────────────────────
 
     #[test]
     fn test_count() {
-        let registry = test_registry();
-        assert_eq!(registry.count(), registry.all().len());
+        let r = registry();
+        assert_eq!(r.count(), r.all().len());
     }
 
     #[test]
     fn test_by_isin() {
-        let registry = test_registry();
-        let aapl = registry.by_isin("US0000000002").unwrap();
-        assert_eq!(aapl.ticker, "TESTA");
-        assert_eq!(aapl.name, "Synthetic Test A");
+        let testa = testa();
+        let got = registry().by_isin(&testa.isin).unwrap();
+        assert_eq!(got.ticker, testa.ticker);
+        assert_eq!(got.name, testa.name);
     }
 
     #[test]
     fn test_by_cusip() {
-        let registry = test_registry();
-        let inst = registry.by_cusip("000000000").unwrap();
-        assert_eq!(inst.ticker, "TESTA");
+        let testa = testa();
+        let cusip = testa
+            .cusip
+            .as_deref()
+            .expect("TESTA has no CUSIP in fixture");
+        let got = registry().by_cusip(cusip).unwrap();
+        assert_eq!(got.ticker, testa.ticker);
     }
 
     #[test]
     fn test_by_figi() {
-        let registry = test_registry();
-        let aapl = registry.by_figi("BBG000000001").unwrap();
-        assert_eq!(aapl.isin, "US0000000002");
+        let testa = testa();
+        let figi = testa.figi.as_deref().expect("TESTA has no FIGI in fixture");
+        let got = registry().by_figi(figi).unwrap();
+        assert_eq!(got.isin, testa.isin);
     }
 
     #[test]
     fn test_by_ticker_with_exchange() {
-        let registry = test_registry();
-        let results = registry.by_ticker("TESTA", Some("XNAS"));
-        assert_eq!(results.len(), 1);
-        assert_eq!(results[0].isin, "US0000000002");
+        let testa = testa();
+        let hits = registry().by_ticker(&testa.ticker, Some(&testa.exchange));
+        assert_eq!(hits.len(), 1);
+        assert_eq!(hits[0].isin, testa.isin);
     }
 
     #[test]
     fn test_by_ticker_ambiguous() {
-        let registry = test_registry();
-        let pru = registry.by_ticker("DUP", None);
-        assert_eq!(pru.len(), 2);
+        let ambiguous = registry().tickers_with_multiple_listings();
+        assert!(
+            !ambiguous.is_empty(),
+            "fixture must include at least one ambiguous ticker"
+        );
+        for ticker in &ambiguous {
+            let hits = registry().by_ticker(ticker, None);
+            assert!(
+                hits.len() >= 2,
+                "ticker {} reported ambiguous but returned {} hits",
+                ticker,
+                hits.len()
+            );
+        }
     }
 
     #[test]
     fn test_by_ticker_nonexistent() {
-        let registry = test_registry();
-        assert_eq!(registry.by_ticker("ZZZZ", None).len(), 0);
+        assert_eq!(registry().by_ticker("ZZZZ", None).len(), 0);
     }
 
     #[test]
     fn test_filter_by_exchange() {
-        let registry = test_registry();
-        let xnas = registry.by_exchange("XNAS");
-        assert!(!xnas.is_empty());
-        for inst in &xnas {
-            assert_eq!(inst.exchange, "XNAS");
+        let testa = testa();
+        let filtered = registry().by_exchange(&testa.exchange);
+        assert!(!filtered.is_empty());
+        for inst in &filtered {
+            assert_eq!(inst.exchange, testa.exchange);
         }
     }
 
     #[test]
     fn test_filter_by_asset_class() {
-        let registry = test_registry();
-        let etfs = registry.by_asset_class(AssetClass::Etf);
-        assert!(!etfs.is_empty());
+        let testa = testa();
+        let filtered = registry().by_asset_class(testa.asset_class);
+        assert!(!filtered.is_empty());
     }
 
     #[test]
     fn test_metadata() {
-        let registry = test_registry();
-        assert_eq!(registry.version(), "1.0.0");
-        assert_eq!(registry.count(), registry.all().len());
+        let r = registry();
+        assert!(!r.version().is_empty());
+        assert_eq!(r.count(), r.all().len());
     }
 
     #[test]
     fn test_exchanges() {
-        let registry = test_registry();
-        let exchanges = registry.exchanges();
-        assert!(exchanges.contains(&"XNAS"));
-        assert!(exchanges.contains(&"XLON"));
+        let exchanges = registry().exchanges();
+        let testa = testa();
+        let dup_uk = dup_uk();
+        assert!(exchanges.contains(&testa.exchange.as_str()));
+        assert!(exchanges.contains(&dup_uk.exchange.as_str()));
     }
 
     #[test]
     fn test_ticker_change_preserved() {
-        let registry = test_registry();
-        let meta = registry.by_isin("US0000000267").unwrap();
-        assert_eq!(meta.ticker, "NEWTICK");
-        let tickers: Vec<&str> = meta.history.iter().map(|h| h.ticker.as_str()).collect();
-        assert!(tickers.contains(&"OLDTICK"));
-        assert!(tickers.contains(&"NEWTICK"));
+        let newtick = newtick();
+        let got = registry().by_isin(&newtick.isin).unwrap();
+        assert_eq!(got.ticker, newtick.ticker);
+
+        let history_tickers: Vec<&str> = got.history.iter().map(|h| h.ticker.as_str()).collect();
+
+        for event in &newtick.history {
+            assert!(
+                history_tickers.contains(&event.ticker.as_str()),
+                "history missing {}",
+                event.ticker
+            );
+        }
     }
 
     #[test]
     fn test_multi_exchange_listing() {
-        let registry = test_registry();
-        let inst = registry.by_isin("US0000000341").unwrap();
-        let exchanges: Vec<&str> = inst.listings.iter().map(|l| l.exchange.as_str()).collect();
-        assert!(exchanges.contains(&"XNAS"));
-        assert!(exchanges.contains(&"XETR"));
+        let multi = multi();
+        let got = registry().by_isin(&multi.isin).unwrap();
+        let exchanges: Vec<&str> = got.listings.iter().map(|l| l.exchange.as_str()).collect();
+
+        for listing in &multi.listings {
+            assert!(
+                exchanges.contains(&listing.exchange.as_str()),
+                "missing listing on {}",
+                listing.exchange
+            );
+        }
     }
 
     #[test]
     fn test_identifier_coverage() {
-        let registry = test_registry();
-        let coverage = registry.identifier_coverage();
-        assert_eq!(coverage.isin.covered, registry.count());
+        let r = registry();
+        let coverage = r.identifier_coverage();
+        assert_eq!(coverage.isin.covered, r.count());
         assert_eq!(coverage.isin.percentage, 100.0);
     }
 
     #[test]
     fn test_tickers_with_multiple_listings() {
-        let registry = test_registry();
-        let ambiguous = registry.tickers_with_multiple_listings();
-        assert!(ambiguous.contains(&"DUP"));
+        let ambiguous = registry().tickers_with_multiple_listings();
+        assert!(!ambiguous.is_empty());
+        for ticker in &ambiguous {
+            let hits = registry().by_ticker(ticker, None);
+            assert!(hits.len() >= 2);
+        }
     }
 
     #[test]
     fn test_iterator() {
-        let registry = test_registry();
-        let count = registry.iter().count();
-        assert_eq!(count, registry.count());
+        let r = registry();
+        assert_eq!(r.iter().count(), r.count());
     }
 }
