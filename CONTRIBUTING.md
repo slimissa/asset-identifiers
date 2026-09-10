@@ -1,244 +1,192 @@
 # Contributing to Asset Identifier Registry
 
-Thank you for your interest in contributing to the Asset Identifier Registry. This document provides guidelines for submitting corrections, additions, and improvements.
+Guidelines for submitting corrections, additions, and improvements to the
+Asset Identifier Registry.
 
 ---
 
 ## Table of Contents
 
-1. [Code of Conduct](#code-of-conduct)
-2. [Ways to Contribute](#ways-to-contribute)
-3. [Quick Correction Workflow](#quick-correction-workflow)
-4. [Adding a New Instrument](#adding-a-new-instrument)
-5. [Correcting an Identifier](#correcting-an-identifier)
-6. [Data Quality Rules](#data-quality-rules)
-7. [Wrapper Contributions](#wrapper-contributions)
-8. [Testing Requirements](#testing-requirements)
-9. [Pull Request Process](#pull-request-process)
-10. [Style Guidelines](#style-guidelines)
+1. [Data Licensing — Read First](#data-licensing--read-first)
+2. [Code of Conduct](#code-of-conduct)
+3. [Ways to Contribute](#ways-to-contribute)
+4. [The Test Fixture](#the-test-fixture)
+5. [The Anchor Rule](#the-anchor-rule)
+6. [Adding a Fixture Instrument](#adding-a-fixture-instrument)
+7. [Drift Test](#drift-test)
+8. [Adding a Language Wrapper](#adding-a-language-wrapper)
+9. [Running the Test Suites](#running-the-test-suites)
+10. [Data Quality Rules](#data-quality-rules)
+11. [Pull Request Process](#pull-request-process)
+12. [Style Guidelines](#style-guidelines)
+13. [License](#license)
+
+---
+
+## Data Licensing — Read First
+
+This repository does **not** contain real identifier data. The files
+that once held licensed identifiers — `identifiers.json`,
+`identifiers.dist.json`, `sp500.json`, `nasdaq100.json`, and
+related data artifacts — were
+removed during the v1.4.0 data-license review.
+
+See [DATA_LICENSE.md](./DATA_LICENSE.md) for the current policy.
+
+**Do not commit identifier values sourced from Financial Modeling Prep,
+OpenFIGI, Yahoo Finance, CUSIP Global Services, Bloomberg, or any other
+licensed vendor.** Pull requests that add such data will be rejected
+without review.
+
+The code, schema, validator, tools, and wrappers remain Apache 2.0.
 
 ---
 
 ## Code of Conduct
 
-This project adheres to a simple code of conduct:
-
-- Be respectful
-- Be constructive
-- Cite your sources
-- Verify your data
+- Be respectful.
+- Be constructive.
+- Cite your sources.
+- Verify your data.
 
 ---
 
 ## Ways to Contribute
 
 | Contribution Type | Description | Effort |
-|------------------|-------------|--------|
-| **Data correction** | Fix a wrong ISIN, CUSIP, ticker, or metadata | Low |
-| **New instrument** | Add a new instrument to the registry | Low |
+|-------------------|-------------|--------|
+| **Fixture improvement** | Add or refine synthetic instruments used by tests | Low |
 | **New wrapper** | Port the wrapper to another language | High |
-| **Tooling improvement** | Improve validation, build, or fetch tools | Medium |
-| **Test improvement** | Add more test coverage | Medium |
+| **Tooling improvement** | Improve validation, build, or fixture generation | Medium |
+| **Test improvement** | Add coverage using fixture anchors | Medium |
 | **Documentation** | Fix or improve docs | Low |
+| **Code correction** | Fix bugs in validators, parsers, or wrappers | Medium |
 
 ---
 
-## Quick Correction Workflow
+## The Test Fixture
 
-The fastest way to submit a data correction:
+All tests run against a synthetic fixture at:
 
-### Step 1: Open an issue
-
-Use the [Identifier Update template](https://github.com/slimissa/asset-identifiers/issues/new?template=identifier_update.md).
-
-### Step 2: Provide the source
-
-Every data change **requires** an official source URL:
-
-- Exchange announcement (NASDAQ, NYSE, LSE, etc.)
-- SEC filing (EDGAR)
-- Company press release (Investor Relations page)
-- Regulatory filing (GLEIF for LEI, ANNA for ISIN)
-
-### Step 3: Wait for review
-
-A maintainer will verify the source and apply the change.
-
-### Step 4: CI validation
-
-The CI pipeline runs automatically:
-- `python3 tools/validate.py` — registry validation
-- `pytest tests/ -v` — 159 Python tests
-- `npm test` — 72 JavaScript tests
-- `cargo test` — 19 Rust tests
-- `go test ./...` — 42 Go tests
-
----
-
-## Adding a New Instrument
-
-### Required Fields
-
-Every new instrument **must** include:
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `isin` | ✅ | 12-character ISIN with valid check digit |
-| `ticker` | ✅ | Current ticker on primary exchange |
-| `exchange` | ✅ | MIC code (4 characters) |
-| `name` | ✅ | Legal entity name |
-| `currency` | ✅ | ISO 4217 currency code |
-| `asset_class` | ✅ | equity, etf, bond, option, future, other |
-| `active` | ✅ | Boolean |
-| `cusip` | Conditional | Required for US/Canada instruments |
-| `sedol` | Conditional | Required for UK/Europe instruments |
-| `figi` | Recommended | 12-character FIGI |
-| `lei` | Recommended | 20-character LEI |
-| `country` | Recommended | ISO 3166-1 alpha-2 |
-| `listings` | Recommended | Full listing history |
-| `history` | ✅ | At least one entry with `change_type: "none"` |
-| `source_url` | ✅ | Official source for the data |
-
-### Example
-
-```json
-{
-  "isin": "US0378331005",
-  "cusip": "037833100",
-  "figi": "BBG000B9XRY4",
-  "lei": "HWUPKR0MPOU8FGXBT394",
-  "ticker": "AAPL",
-  "exchange": "XNAS",
-  "name": "Apple Inc.",
-  "currency": "USD",
-  "asset_class": "equity",
-  "instrument_type": "COMMON_STOCK",
-  "sector": "TECHNOLOGY",
-  "industry": "CONSUMER_ELECTRONICS",
-  "country": "US",
-  "active": true,
-  "listing_date": "1980-12-12",
-  "delisting_date": null,
-  "listings": [
-    {
-      "exchange": "XNAS",
-      "ticker": "AAPL",
-      "currency": "USD",
-      "status": "PRIMARY"
-    }
-  ],
-  "history": [
-    {
-      "ticker": "AAPL",
-      "change_date": "1980-12-12",
-      "change_type": "none",
-      "reason": "INITIAL_LISTING",
-      "source": "NASDAQ",
-      "source_url": "https://www.nasdaq.com/market-activity/stocks/aapl"
-    }
-  ],
-  "corporate_actions": []
-}
+```
+tests/fixtures/identifiers.test.json
 ```
 
+The fixture is generated by:
+
+```
+python3 tools/gen_test_fixture.py
+```
+
+It contains seven synthetic instruments with fake but check-digit-valid
+identifiers. The fixture exercises every code path in the wrappers
+without carrying licensed data.
+
+Canonical fixture set:
+
+| Anchor | Exchange | Purpose |
+|--------|----------|---------|
+| TESTA | XNAS | Simple US equity |
+| TESTB | XNAS | Second US equity |
+| NEWTICK | XNAS | Renamed from OLDTICK (history chain) |
+| MULTI | XNAS | Two listings (XNAS + XETR) |
+| DUP | XNAS | Ambiguous ticker, US side |
+| DUP | XLON | Ambiguous ticker, UK side |
+| ETFSYN | XNAS | ETF asset class |
+
 ---
 
-## Correcting an Identifier
+## The Anchor Rule
 
-### Check-digit validation
+**Tests must not hardcode fixture values.**
 
-Before submitting a correction, verify the check digit:
+Every test assertion must read its expected value from a per-language
+anchor module that derives the value from the fixture at load time. If
+the fixture changes, the anchors change with it, and the tests stay
+correct without editing.
+
+Where the anchors live:
+
+| Language | Location |
+|----------|----------|
+| Python | `tests/fixture.py` |
+| JavaScript | `wrappers/javascript/test/fixture.js` |
+| Rust | `mod fixture` inside `wrappers/rust/src/lib.rs` |
+| Go | `mustByTickerExchange` in `wrappers/go/registry_test.go` |
+
+Rules:
+
+- Read from anchors, not from literals.
+- Negative-case values (nonexistent ISIN, nonexistent ticker) are the
+  only permitted literals. They are inputs, not expected values.
+- If a test needs a fixture value that no anchor exposes, add an anchor.
+  Do not inline the value.
+- Anchors throw at load time if the fixture is missing or ambiguous. A
+  missing anchor fails loudly, not silently.
+
+### Why this rule exists
+
+Without it, every fixture change forces a manual edit of dozens of
+hardcoded strings across four test suites. That process is error-prone
+and has produced stale ISINs, dangling variable references, and hours
+of debugging in this repository's history. The anchor rule removes the
+entire class of failure.
+
+---
+
+## Adding a Fixture Instrument
+
+1. Edit `tools/gen_test_fixture.py`.
+2. Regenerate the fixture:
+
+   ```
+   python3 tools/gen_test_fixture.py
+   ```
+
+3. Add an anchor in each language's fixture module:
+
+   - `tests/fixture.py`
+   - `wrappers/javascript/test/fixture.js`
+   - `mod fixture` in `wrappers/rust/src/lib.rs`
+   - `mustByTickerExchange` block in `wrappers/go/registry_test.go`
+
+4. Add tests that use the anchor.
+5. Run all four suites.
+6. Run the drift test (see below).
+
+---
+
+## Drift Test
+
+After any fixture change, run the drift test:
 
 ```bash
-# Validate an ISIN
-python3 -c "
-import sys
-sys.path.insert(0, 'tools')
-from validate import validate_isin_check_digit
-print(validate_isin_check_digit('US0378331005'))
-"
-
-# Validate a CUSIP
-python3 -c "
-import sys
-sys.path.insert(0, 'tools')
-from validate import validate_cusip_check_digit
-print(validate_cusip_check_digit('037833100'))
-"
-
-# Validate a SEDOL
-python3 -c "
-import sys
-sys.path.insert(0, 'tools')
-from validate import validate_sedol_check_digit
-print(validate_sedol_check_digit('2046251'))
-"
+sed -i 's/Synthetic Test A/Synthetic Test A Prime/' tools/gen_test_fixture.py
+python3 tools/gen_test_fixture.py
+pytest tests/ -q
+(cd wrappers/javascript && npm test)
+(cd wrappers/rust && cargo test)
+(cd wrappers/go && go clean -testcache && go test ./...)
+git checkout tools/gen_test_fixture.py
+python3 tools/gen_test_fixture.py
 ```
 
-### What cannot be corrected without a source
-
-- ISIN changes without an official announcement
-- Ticker changes without an exchange filing
-- Delistings without an exchange notice
-- Corporate actions without a press release
+All four suites must pass in both runs. If any test fails after the
+fixture change, a literal remained hardcoded. Fix it before committing.
 
 ---
 
-## Data Quality Rules
-
-### Rule 1: Source URL Required
-
-Every explicit data entry **must** have a `source_url` pointing to an official source.
-
-### Rule 2: Check Digits Must Validate
-
-All ISIN, CUSIP, and SEDOL values must pass their respective check-digit algorithms.
-
-### Rule 3: No Duplicates
-
-No two instruments may share the same ISIN, CUSIP, SEDOL, FIGI, or LEI.
-
-### Rule 4: Ticker+Exchange Pairs Must Be Unique
-
-The same ticker may appear on different exchanges (e.g., PRU on XLON and XNYS), but the pair (ticker, exchange) must be unique.
-
-### Rule 5: US Instruments Require CUSIP
-
-Instruments with country "US" or "CA" must have a CUSIP.
-
-### Rule 6: History Must Be Chronological
-
-History events must be ordered by `change_date` ascending.
-
-### Rule 7: First History Event Must Be "none"
-
-The first entry in `history` must have `change_type: "none"` (initial listing).
-
-### Rule 8: Corporate Actions Must Be Chronological
-
-Corporate actions must be ordered by `date` ascending.
-
-### Rule 9: Active Instruments Cannot Have Delisting Date
-
-If `active: true`, `delisting_date` must be `null`.
-
-### Rule 10: Inactive Instruments Must Have Delisting Date
-
-If `active: false`, `delisting_date` must be set.
-
----
-
-## Wrapper Contributions
-
-### Adding a New Language Wrapper
+## Adding a Language Wrapper
 
 To add a wrapper for a new language:
 
-1. Create `wrappers/<language>/` directory
-2. Implement the standard API (see below)
-3. Write tests that match `tests/cross_language_consistency.json`
-4. Write a README following the existing pattern
-5. Add CI job to `.github/workflows/validate.yml`
+1. Create `wrappers/<language>/`.
+2. Implement the standard API (see below).
+3. Add a fixture module exposing anchors for that language.
+4. Write tests using the anchors. Do not hardcode fixture values.
+5. Write a README describing usage.
+6. Add a CI job to `.github/workflows/validate.yml`.
+7. Add the language to the drift test.
 
 ### Standard API Contract
 
@@ -247,7 +195,7 @@ All wrappers must implement:
 | Method | Description |
 |--------|-------------|
 | `load(path)` / `new(path)` | Load the registry |
-| `count()` / `.count` | Number of instruments |
+| `count` | Number of instruments |
 | `by_isin(isin)` / `byIsin(isin)` | Lookup by ISIN |
 | `by_cusip(cusip)` / `byCusip(cusip)` | Lookup by CUSIP |
 | `by_figi(figi)` / `byFigi(figi)` | Lookup by FIGI |
@@ -260,50 +208,73 @@ All wrappers must implement:
 | `all()` | Return all instruments |
 | `meta()` / `version()` | Return metadata |
 
-### Cross-Language Consistency
+---
 
-All wrappers must return identical results for the values in `tests/cross_language_consistency.json`:
+## Running the Test Suites
+
+Before opening a pull request, run all four:
 
 ```bash
-# The consistency contract
-cat tests/cross_language_consistency.json
+# Python
+pytest tests/ -q
+
+# JavaScript
+(cd wrappers/javascript && npm test)
+
+# Rust
+(cd wrappers/rust && cargo test)
+
+# Go
+(cd wrappers/go && go clean -testcache && go test ./...)
 ```
+
+Current totals (approximate; they change as coverage grows):
+
+| Suite | Result |
+|-------|--------|
+| Python | 144 passed, 1 skipped |
+| JavaScript | 67 passed |
+| Rust | 16 lib + 3 doc passed |
+| Go | passing |
+
+All suites must pass with **zero failures** before a PR is opened.
+
+Optionally validate the fixture itself:
+
+```bash
+cp tests/fixtures/identifiers.test.json identifiers.json
+python3 tools/validate.py
+rm identifiers.json
+```
+
+Note: `identifiers.json` is in `.gitignore` and must not be committed.
 
 ---
 
-## Testing Requirements
+## Data Quality Rules
 
-### Before submitting a PR
+These rules apply to fixture additions and to any registry data a user
+supplies under their own license:
 
-Run **all** tests:
-
-```bash
-# 1. Registry validation
-python3 tools/validate.py --verbose
-
-# 2. Build distribution
-python3 tools/build.py
-
-# 3. Python tests (159)
-pytest tests/ -v
-
-# 4. JavaScript tests (72)
-cd wrappers/javascript && npm test && cd ../..
-
-# 5. Rust tests (19)
-cd wrappers/rust && cargo test && cd ../..
-
-# 6. Go tests (42)
-cd wrappers/go && go test ./... && cd ../..
-```
-
-All must pass with **zero failures**.
+1. **Check digits must validate.** Every ISIN, CUSIP, and SEDOL must
+   pass its respective check-digit algorithm.
+2. **No duplicates.** No two instruments may share an ISIN, CUSIP,
+   SEDOL, or FIGI.
+3. **Ticker+exchange pairs must be unique.** The same ticker may
+   appear on different exchanges, but the pair (ticker, exchange) must
+   be unique.
+4. **History must be chronological.** History events ordered by
+   `change_date` ascending.
+5. **First history event is initial listing.** `change_type: "none"`.
+6. **Active instruments have no delisting date.**
+7. **Inactive instruments have a delisting date.**
+8. **Listings use `status: "PRIMARY"`** for the primary listing.
 
 ---
 
 ## Pull Request Process
 
-### Step 1: Fork and branch
+### 1. Fork and branch
 
 ```bash
 git clone https://github.com/slimissa/asset-identifiers.git
@@ -311,44 +282,46 @@ cd asset-identifiers
 git checkout -b fix/your-change
 ```
 
-### Step 2: Make your change
+### 2. Make the change
 
-Edit the relevant files.
+Edit the relevant files. If the fixture changes, regenerate it and
+update the anchors in every language.
 
-### Step 3: Validate
+### 3. Validate
 
-Run the full test suite (see above).
+Run all four test suites and the drift test.
 
-### Step 4: Commit
+### 4. Commit
 
-```bash
-git add .
-git commit -m "Fix: correct AAPL CUSIP check digit"
-```
+Use scoped commit messages:
 
-Use clear commit messages:
 - `Fix: ...` for corrections
-- `Add: ...` for new instruments
+- `Add: ...` for new features
 - `Update: ...` for changes
 - `Remove: ...` for deletions
 
-### Step 5: Push and create PR
+Keep one concern per commit. If a change touches multiple languages,
+commit per language.
+
+### 5. Push and open a PR
 
 ```bash
 git push origin fix/your-change
 ```
 
-Then create a Pull Request on GitHub.
+Then create a pull request on GitHub.
 
-### Step 6: Review
+### 6. Review
 
 A maintainer will:
-- Verify the source URL
+
+- Verify that no licensed data was added
+- Confirm the anchor rule was followed
 - Run the CI pipeline
 - Check data quality rules
 - Review code style
 
-### Step 7: Merge
+### 7. Merge
 
 Once approved and CI passes, the PR is merged.
 
@@ -359,50 +332,44 @@ Once approved and CI passes, the PR is merged.
 ### JSON
 
 - 2-space indentation
-- Sorted keys in alphabetical order
-- `null` for missing optional fields (not empty strings)
+- Sorted keys
+- `null` for missing optional fields (never empty strings)
 - ISO 8601 dates (`YYYY-MM-DD`)
 
 ### Python
 
-- Follow [PEP 8](https://pep8.org/)
-- Type hints on all functions
-- Docstrings on all public methods
+- PEP 8
+- Type hints on public functions
+- Docstrings on public classes and methods
 
 ### JavaScript
 
-- Use `const` and `let` (never `var`)
-- camelCase for methods
-- Semicolons required
-- Single quotes for strings
+- `const` and `let` only; never `var`
+- Single quotes
+- Semicolons
+- `node:test` for tests
 
 ### Rust
 
-- Follow [Rust style guidelines](https://doc.rust-lang.org/1.2.1/style/)
-- Use `rustfmt`
-- Run `cargo clippy` before submitting
+- `cargo fmt` before committing
+- `cargo clippy` clean
+- Prefer `&str` over `String` in argument position
 
 ### Go
 
-- Follow [Effective Go](https://go.dev/doc/effective_go)
-- Run `go fmt` before submitting
-- Use `golint` for linting
-
----
-
-## Questions?
-
-Open an issue with the `question` label:
-https://github.com/slimissa/asset-identifiers/issues/new
+- `gofmt` before committing
+- Named returns only when they aid clarity
+- Avoid package-level mutable state
 
 ---
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the Apache 2.0 License.
+Code contributions are licensed under Apache 2.0.
+
+Data contributions must comply with [DATA_LICENSE.md](./DATA_LICENSE.md).
+In practice, this means: do not contribute identifier values unless you
+hold a license that permits redistribution.
 
 ---
 
-## Acknowledgments
-
-Thank you to all contributors who help maintain the quality and accuracy of this registry.
