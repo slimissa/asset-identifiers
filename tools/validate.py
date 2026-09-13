@@ -61,6 +61,7 @@ COUNTRY_IDENTIFIER_RULES = {
 # ISO 3166-1 alpha-2 country codes (common subset)
 # ISO 3166-1 alpha-2 country codes (full official list)
 ISO3166_COUNTRIES: Set[str] = {
+    "AN",  # Netherlands Antilles — withdrawn 2010 but ISINs grandfathered
     "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR",
     "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE",
     "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ",
@@ -518,10 +519,16 @@ def validate_business_rules(instruments: List[Dict]) -> List[str]:
         # Country-specific identifier rules
         # CUSIP is required for US/Canada (we have verified CUSIP data)
         # SEDOL is not enforced until we have a verified source
-        if country in COUNTRY_IDENTIFIER_RULES:
-            required_type = COUNTRY_IDENTIFIER_RULES[country]
+        # Use ISIN prefix to determine which identifier rule applies.
+        # The `country` field is the listing jurisdiction, which can differ
+        # from the incorporation jurisdiction (e.g. US-listed Irish companies).
+        isin_prefix = (instrument.get("isin") or "")[:2].upper()
+        identifier_country = isin_prefix or country
+
+        if identifier_country in COUNTRY_IDENTIFIER_RULES:
+            required_type = COUNTRY_IDENTIFIER_RULES[identifier_country]
             if required_type == "cusip" and not cusip and instrument.get("isin"):
-                errors.append(f"{ticker}: country {country} requires CUSIP")
+                errors.append(f"{ticker}: country {identifier_country} requires CUSIP")
             elif required_type == "sedol" and not sedol:
                 # SEDOL is not enforced until we have a verified source
                 pass

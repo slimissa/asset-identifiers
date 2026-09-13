@@ -292,6 +292,10 @@ def build(
         errors.extend(validate_business_rules(instruments))
         errors.extend(validate_temporal_consistency(instruments))
 
+        # Deduplicate — validate_registry already ran the same checks on
+        # the on-disk file, so every error appears twice without this.
+        errors = list(dict.fromkeys(errors))
+
         if errors:
             print(f"ERROR: Validation failed with {len(errors)} error(s):", file=sys.stderr)
             for error in errors[:20]:
