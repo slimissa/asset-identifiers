@@ -181,12 +181,11 @@ def validate_cusip_check_digit(cusip: str) -> bool:
         else:
             return False
 
-        # 1-indexed position: i+1
-        # Odd position (1, 3, 5, 7): add directly
-        # Even position (2, 4, 6, 8): double and sum digits
         if (i + 1) % 2 == 1:
-            total += num
+            # Odd position: add digits of num (letters can be multi-digit)
+            total += num // 10 + num % 10
         else:
+            # Even position: double, then add digits
             doubled = num * 2
             total += doubled // 10 + doubled % 10
 
