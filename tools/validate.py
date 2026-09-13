@@ -520,7 +520,7 @@ def validate_business_rules(instruments: List[Dict]) -> List[str]:
         # SEDOL is not enforced until we have a verified source
         if country in COUNTRY_IDENTIFIER_RULES:
             required_type = COUNTRY_IDENTIFIER_RULES[country]
-            if required_type == "cusip" and not cusip:
+            if required_type == "cusip" and not cusip and instrument.get("isin"):
                 errors.append(f"{ticker}: country {country} requires CUSIP")
             elif required_type == "sedol" and not sedol:
                 # SEDOL is not enforced until we have a verified source
