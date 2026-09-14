@@ -40,10 +40,10 @@ jobs:
           pip install pytest jsonschema requests
 
       - name: Validate registry
-        run: python3 tools/validate.py --verbose
+        run: python3 tools/validate.py --verbose --data tests/fixtures/identifiers.test.json
 
       - name: Build distribution
-        run: python3 tools/build.py
+        run: python3 tools/build.py --data tests/fixtures/identifiers.test.json
 
       - name: Run Python tests
         run: |
@@ -162,7 +162,7 @@ jobs:
           from pathlib import Path
 
           # Load files
-          with open("identifiers.json", "r", encoding="utf-8") as f:
+          with open("tests/fixtures/identifiers.test.json", "r", encoding="utf-8") as f:
               data = json.load(f)
 
           with open("schema.json", "r", encoding="utf-8") as f:
@@ -187,7 +187,7 @@ jobs:
           from pathlib import Path
 
           json_files = [
-              "identifiers.json",
+              "tests/fixtures/identifiers.test.json",
               "schema.json",
               "history/ticker_changes.json",
               "tests/cross_language_consistency.json",
@@ -231,6 +231,9 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -238,43 +241,61 @@ jobs:
 
       - name: Verify cross-language consistency
         run: |
+          FIXTURE="tests/fixtures/identifiers.test.json"
+
+          # Each wrapper prints one "ISIN<TAB>ticker<TAB>name" line per
+          # fixture instrument, in fixture order. Compare every wrapper's
+          # output to the fixture's own values directly — there is no
+          # separate "golden" contract file to keep in sync by hand.
+          python3 examples/consistency_check.py "$FIXTURE" > /tmp/py.tsv
+          node examples/consistency_check.js "$FIXTURE" > /tmp/js.tsv
+          (cd wrappers/rust && cargo run --quiet --example consistency_check -- "../../$FIXTURE") > /tmp/rust.tsv
+          (cd examples && go run consistency_check.go "../$FIXTURE") > /tmp/go.tsv
+
           python3 - << 'EOF'
           import json
           from pathlib import Path
 
-          # Load the consistency contract
-          with open("tests/cross_language_consistency.json", "r", encoding="utf-8") as f:
-              consistency = json.load(f)
+          with open("tests/fixtures/identifiers.test.json", "r", encoding="utf-8") as f:
+              fixture = json.load(f)
 
-          expected_count = consistency["registry"]["count"]
-          expected_aapl = consistency["instruments"]["aapl"]
+          expected = {
+              inst["isin"]: (inst["ticker"], inst["name"])
+              for inst in fixture["instruments"]
+          }
 
-          # Check Python result
-          import sys
-          sys.path.insert(0, "wrappers/python")
-          from asset_identifiers import AssetRegistry
+          def load_tsv(path):
+              rows = {}
+              for line in Path(path).read_text().splitlines():
+                  isin, ticker, name = line.split("\t")
+                  rows[isin] = (ticker, name)
+              return rows
 
-          py_registry = AssetRegistry("identifiers.json")
-          assert py_registry.count == expected_count, f"Python count mismatch: {py_registry.count}"
+          wrappers = {
+              "Python": load_tsv("/tmp/py.tsv"),
+              "JavaScript": load_tsv("/tmp/js.tsv"),
+              "Rust": load_tsv("/tmp/rust.tsv"),
+              "Go": load_tsv("/tmp/go.tsv"),
+          }
 
-          py_aapl = py_registry.by_isin(expected_aapl["isin"])
-          assert py_aapl is not None, "Python: AAPL not found"
-          assert py_aapl["ticker"] == expected_aapl["ticker"], "Python: ticker mismatch"
-          assert py_aapl["cusip"] == expected_aapl["cusip"], "Python: CUSIP mismatch"
-          assert py_aapl["figi"] == expected_aapl["figi"], "Python: FIGI mismatch"
-          print(f"Python OK: {expected_count} instruments, AAPL verified")
+          failures = []
+          for name, rows in wrappers.items():
+              if set(rows) != set(expected):
+                  failures.append(f"{name}: returned ISINs {sorted(rows)} != fixture ISINs {sorted(expected)}")
+                  continue
+              for isin, (exp_ticker, exp_name) in expected.items():
+                  got_ticker, got_name = rows[isin]
+                  if (got_ticker, got_name) != (exp_ticker, exp_name):
+                      failures.append(
+                          f"{name}: {isin} — expected ({exp_ticker!r}, {exp_name!r}), "
+                          f"got ({got_ticker!r}, {got_name!r})"
+                      )
 
-          # Check Go result
-          import subprocess
-          go_check = subprocess.run(
-              ["go", "run", "go_lookup.go"],
-              capture_output=True, text=True, timeout=30,
-              cwd="examples"
-          )
-          if go_check.returncode != 0:
-              print(f"Go FAILED: {go_check.stderr}")
+          if failures:
+              print(f"FAILED: {len(failures)} disagreement(s) found:")
+              for f in failures:
+                  print(f"  - {f}")
               exit(1)
-          print("Go OK: example ran successfully")
 
-          print("Cross-language consistency verified")
+          print(f"Cross-language consistency verified: all 4 wrappers agree on {len(expected)} instruments")
           EOF

@@ -435,17 +435,25 @@ def validate_check_digits(instruments: List[Dict]) -> List[str]:
     """Validate all check digits."""
     errors = []
     for instrument in instruments:
+        ticker = instrument.get("ticker", "?")
+
         isin = instrument.get("isin")
-        if isin and not validate_isin_check_digit(isin):
-            errors.append(f"Invalid ISIN check digit: {isin} (ticker: {instrument.get('ticker', '?')})")
+        if isin and not isinstance(isin, str):
+            errors.append(f"{ticker}: isin must be a string, got {type(isin).__name__}")
+        elif isin and not validate_isin_check_digit(isin):
+            errors.append(f"Invalid ISIN check digit: {isin} (ticker: {ticker})")
 
         cusip = instrument.get("cusip")
-        if cusip and not validate_cusip_check_digit(cusip):
-            errors.append(f"Invalid CUSIP check digit: {cusip} (ticker: {instrument.get('ticker', '?')})")
+        if cusip and not isinstance(cusip, str):
+            errors.append(f"{ticker}: cusip must be a string, got {type(cusip).__name__}")
+        elif cusip and not validate_cusip_check_digit(cusip):
+            errors.append(f"Invalid CUSIP check digit: {cusip} (ticker: {ticker})")
 
         sedol = instrument.get("sedol")
-        if sedol and not validate_sedol_check_digit(sedol):
-            errors.append(f"Invalid SEDOL check digit: {sedol} (ticker: {instrument.get('ticker', '?')})")
+        if sedol and not isinstance(sedol, str):
+            errors.append(f"{ticker}: sedol must be a string, got {type(sedol).__name__}")
+        elif sedol and not validate_sedol_check_digit(sedol):
+            errors.append(f"Invalid SEDOL check digit: {sedol} (ticker: {ticker})")
 
     return errors
 
@@ -522,7 +530,8 @@ def validate_business_rules(instruments: List[Dict]) -> List[str]:
         # Use ISIN prefix to determine which identifier rule applies.
         # The `country` field is the listing jurisdiction, which can differ
         # from the incorporation jurisdiction (e.g. US-listed Irish companies).
-        isin_prefix = (instrument.get("isin") or "")[:2].upper()
+        isin_value = instrument.get("isin")
+        isin_prefix = isin_value[:2].upper() if isinstance(isin_value, str) else ""
         identifier_country = isin_prefix or country
 
         if identifier_country in COUNTRY_IDENTIFIER_RULES:
@@ -688,6 +697,8 @@ def validate_registry(data_path: Path, schema_path: Path) -> Tuple[bool, List[st
     errors.extend(validate_data_valid_as_of(data))
 
     instruments = data.get("instruments", [])
+    cross_errors: List[str] = []
+    cross_warnings: List[str] = []
     if instruments:
         errors.extend(validate_check_digits(instruments))
         errors.extend(validate_uniqueness(instruments))

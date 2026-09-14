@@ -278,6 +278,18 @@ def merge_into_existing(existing: Dict, new: Dict) -> None:
         if new_val is not None and existing.get(field) is None:
             existing[field] = new_val
 
+    # If we just backfilled listing_date above, the existing record's
+    # initial history entry (created by fetch_sec_edgar.py before a
+    # listing date was known) is likely still carrying a null
+    # change_date. Sync it now so the two don't permanently desync —
+    # this null/populated mismatch is what produced 464 schema-invalid
+    # records in the live dataset.
+    existing_history = existing.get("history")
+    new_history = new.get("history")
+    if existing_history and existing_history[0].get("change_date") is None:
+        if new_history and new_history[0].get("change_date") is not None:
+            existing_history[0]["change_date"] = new_history[0]["change_date"]
+
     # If the existing record has no listings, adopt the FMP listings.
     if not existing.get("listings") and new.get("listings"):
         existing["listings"] = new["listings"]

@@ -294,7 +294,7 @@
               "string",
               "null"
             ],
-            "description": "Country of domicile (ISO 3166-1 alpha-2).",
+            "description": "Listing jurisdiction (ISO 3166-1 alpha-2). This is where the instrument is listed, not necessarily the issuer's incorporation country \u2014 it may differ from the country implied by the ISIN prefix (e.g. a company incorporated in Ireland but listed in the US has country=US).",
             "pattern": "^[A-Z]{2}$",
             "minLength": 2,
             "maxLength": 2,

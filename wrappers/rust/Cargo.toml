@@ -74,3 +74,7 @@ ignored = ["serde", "serde_json", "thiserror"]
 [[example]]
 name = "rust_lookup"
 path = "../../examples/rust_lookup.rs"
+
+[[example]]
+name = "consistency_check"
+path = "../../examples/consistency_check.rs"

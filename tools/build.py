@@ -20,12 +20,13 @@ import sys
 import argparse
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any
-from datetime import datetime, date, timezone
+from datetime import date
 
 # Import validator functions
 sys.path.insert(0, str(Path(__file__).parent))
 from validate import (
     validate_registry,
+    validate_schema,
     validate_check_digits,
     validate_uniqueness,
     validate_business_rules,
@@ -152,8 +153,6 @@ def update_metadata(data: Dict) -> Dict:
 
     data["meta"]["count"] = len(data.get("instruments", []))
     data["meta"]["generated"] = date.today().isoformat()
-    data["meta"]["build_timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    data["meta"]["build_version"] = "1.2.1"
 
     # Update coverage statistics
     coverage = data["meta"].get("coverage", {})
@@ -228,7 +227,7 @@ def build_summary(data: Dict) -> str:
     lines.append(f"Version:       {meta.get('version', 'unknown')}")
     lines.append(f"Generated:     {meta.get('generated', 'unknown')}")
     lines.append(f"Instruments:   {len(instruments)}")
-    lines.append(f"Build time:    {meta.get('build_timestamp', 'unknown')}")
+    lines.append(f"Build time:    {meta.get('generated', 'unknown')}")
 
     # Coverage statistics
     coverage = meta.get("coverage", {})
@@ -283,6 +282,9 @@ def build(
 
     if validate:
         print("Validating...")
+        with open(schema_path, "r", encoding="utf-8") as f:
+            schema = json.load(f)
+
         success, errors = validate_registry(data_path, schema_path)
 
         # Also validate the merged data in memory
@@ -291,6 +293,14 @@ def build(
         errors.extend(validate_uniqueness(instruments))
         errors.extend(validate_business_rules(instruments))
         errors.extend(validate_temporal_consistency(instruments))
+
+        # Schema-validate the merged output itself. The on-disk
+        # validate_registry() call above only checks the pre-merge
+        # source file — it never sees history entries that merge_history()
+        # added, so a schema violation introduced by the merge (e.g. a
+        # null change_date) would otherwise ship into the dist artifacts
+        # undetected. Reuse the schema already loaded above.
+        errors.extend(validate_schema(data, schema))
 
         # Deduplicate — validate_registry already ran the same checks on
         # the on-disk file, so every error appears twice without this.
