@@ -31,6 +31,7 @@ from validate import (
     validate_uniqueness,
     validate_business_rules,
     validate_temporal_consistency,
+    SCHEMA_VERSION,
 )
 
 
@@ -153,6 +154,7 @@ def update_metadata(data: Dict) -> Dict:
 
     data["meta"]["count"] = len(data.get("instruments", []))
     data["meta"]["generated"] = date.today().isoformat()
+    data["meta"]["schema_version"] = SCHEMA_VERSION
 
     # Update coverage statistics
     coverage = data["meta"].get("coverage", {})

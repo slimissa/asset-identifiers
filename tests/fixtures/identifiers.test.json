@@ -1,8 +1,9 @@
 {
   "meta": {
-    "version": "1.0.0",
+    "version": "1.4.0",
     "generated": "2026-09-10",
     "data_valid_as_of": "2026-09-10",
+    "schema_version": "1.4.0",
     "count": 7,
     "sources": [
       "synthetic"

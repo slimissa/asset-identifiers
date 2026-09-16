@@ -8,7 +8,7 @@ No real instrument data, no data from FMP, OpenFIGI, Yahoo, or any vendor.
 import json
 from pathlib import Path
 
-from validate import validate_lei_check_digit
+from validate import validate_lei_check_digit, SCHEMA_VERSION
 
 
 # ─── Check-digit helpers ──────────────────────────────────────────────
@@ -216,9 +216,10 @@ instruments = [
 
 fixture = {
     "meta": {
-        "version": "1.0.0",
+        "version": "1.4.0",
         "generated": "2026-09-10",
         "data_valid_as_of": "2026-09-10",
+        "schema_version": SCHEMA_VERSION,
         "count": len(instruments),
         "sources": ["synthetic"],
         "coverage": {

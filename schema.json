@@ -18,7 +18,8 @@
         "generated",
         "count",
         "sources",
-        "data_valid_as_of"
+        "data_valid_as_of",
+        "schema_version"
       ],
       "additionalProperties": false,
       "properties": {
@@ -108,6 +109,14 @@
           "format": "date",
           "examples": [
             "2026-08-25"
+          ]
+        },
+        "schema_version": {
+          "type": "string",
+          "description": "Version of schema.json that produced this data file. Independent of meta.version, which versions the data itself.",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "examples": [
+            "1.0.0"
           ]
         }
       }

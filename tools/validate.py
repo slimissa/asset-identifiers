@@ -58,6 +58,12 @@ COUNTRY_IDENTIFIER_RULES = {
     "AU": None,  # Australia uses ISIN only
 }
 
+# Version of schema.json — independent of meta.version, which versions
+# the data. Bump this when schema.json's structure changes in a way
+# that affects validation. build.py and gen_test_fixture.py both
+# import this rather than hardcoding their own copy of the string.
+SCHEMA_VERSION = "1.4.0"
+
 # ISO 3166-1 alpha-2 country codes (common subset)
 # ISO 3166-1 alpha-2 country codes (full official list)
 ISO3166_COUNTRIES: Set[str] = {

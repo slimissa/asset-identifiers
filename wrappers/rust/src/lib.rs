@@ -818,9 +818,6 @@ mod tests {
     fn multi() -> Instrument {
         anchor("MULTI", "XNAS")
     }
-    fn dup_us() -> Instrument {
-        anchor("DUP", "XNAS")
-    }
     fn dup_uk() -> Instrument {
         anchor("DUP", "XLON")
     }
