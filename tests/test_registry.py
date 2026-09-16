@@ -22,6 +22,7 @@ Run:
 
 import sys
 import json
+import tempfile
 from pathlib import Path
 from datetime import datetime
 
@@ -43,6 +44,7 @@ from validate import (
     validate_isin_check_digit,
     validate_cusip_check_digit,
     validate_sedol_check_digit,
+    validate_lei_check_digit,
 )
 
 
@@ -96,7 +98,6 @@ class TestRegistryStructure:
         instruments = get_instruments()
         assert len(instruments) >= 1, "Registry should have at least 1 instrument"
 
-    @pytest.mark.skip(reason='Validator runs against the full registry, not the fixture')
     def test_full_validation_passes(self):
         success, errors = validate_registry(FIXTURE_PATH, ROOT / "schema.json")
         assert success, f"Registry failed validation: {errors}"
@@ -542,6 +543,100 @@ class TestMultiExchangeListings:
         assert primary[0].get("exchange") == MULTI["exchange"]
 
 
+# ─── Regression tests for Tier 1 fixes ─────────────────────────────────
+
+class TestValidatorEdgeCases:
+    """
+    Regression coverage for the crash bugs and validation gaps found
+    during the Tier 1 / Tier 2 remediation. Each of these reproduces
+    an exact failure mode that previously either crashed the validator
+    or silently passed data it should have rejected.
+    """
+
+    def test_empty_instruments_no_crash(self):
+        """An empty instruments array must not raise UnboundLocalError."""
+        data = {
+            "meta": {
+                "version": "1.0.0",
+                "generated": "2026-01-01",
+                "data_valid_as_of": "2026-01-01",
+                "count": 0,
+                "sources": ["test"],
+                "coverage": {"exchanges": [], "asset_classes": [], "countries": []},
+            },
+            "instruments": [],
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_path = Path(tmpdir) / "empty.json"
+            data_path.write_text(json.dumps(data), encoding="utf-8")
+            success, errors = validate_registry(data_path, ROOT / "schema.json")
+        assert success is False
+        assert len(errors) >= 1
+
+    def test_wrong_type_isin_no_crash(self):
+        """A non-string isin must not raise TypeError; it must be
+        reported as an error instead."""
+        registry = load_registry()
+        registry["instruments"][0]["isin"] = 12345
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_path = Path(tmpdir) / "badtype.json"
+            data_path.write_text(json.dumps(registry), encoding="utf-8")
+            success, errors = validate_registry(data_path, ROOT / "schema.json")
+        assert success is False
+        assert len(errors) >= 1
+        assert any("isin" in e and "string" in e for e in errors)
+
+    def test_xs_prefix_accepted(self):
+        """XS (Euroclear/Clearstream international securities) is not
+        an ISO 3166-1 country code, but it is a real, officially
+        assigned ISIN prefix and must not be rejected by the
+        country-code check."""
+        assert validate_isin_check_digit("XS1234567896") is True
+        # sanity: a fabricated, non-supranational, non-ISO prefix must
+        # still be rejected
+        assert validate_isin_check_digit("XX1234567890") is False
+
+    def test_lei_checksum(self):
+        """LEI check digits must be verified with the real ISO 17442
+        mod-97 checksum, not just accepted by length/pattern."""
+        for inst in get_instruments():
+            lei = inst.get("lei")
+            if lei:
+                assert validate_lei_check_digit(lei) is True, (
+                    f"{inst['ticker']}: fixture LEI {lei} should be checksum-valid"
+                )
+
+        # Negative case: flip the last digit of a real, valid LEI.
+        valid_lei = "HWUPKR0MPOU8FGXBT394"  # Apple's real LEI
+        broken_lei = valid_lei[:-1] + ("5" if valid_lei[-1] != "5" else "6")
+        assert validate_lei_check_digit(valid_lei) is True
+        assert validate_lei_check_digit(broken_lei) is False
+
+    def test_null_change_date_with_listing_date(self):
+        """A record with history[0].change_date = None alongside a
+        populated listing_date must fail schema validation. This is
+        the exact desync pattern (SEC EDGAR creates a null change_date
+        skeleton, a later fetcher backfills listing_date without
+        syncing history) that produced 464 schema-invalid records in
+        the live dataset."""
+        registry = load_registry()
+        inst = registry["instruments"][0]
+        inst["listing_date"] = "1999-11-18"
+        inst["history"] = [{
+            "ticker": inst["ticker"],
+            "change_date": None,
+            "change_type": "none",
+            "reason": "INITIAL_LISTING",
+            "source": "test",
+            "source_url": "https://example.invalid/test",
+        }]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_path = Path(tmpdir) / "null_change_date.json"
+            data_path.write_text(json.dumps(registry), encoding="utf-8")
+            success, errors = validate_registry(data_path, ROOT / "schema.json")
+        assert success is False
+        assert any("change_date" in e for e in errors)
+
 
 # ─── Run All Tests ────────────────────────────────────────────────────
 
@@ -557,6 +652,7 @@ def run_all_tests():
         TestTemporalConsistency,
         TestTickerChanges,
         TestMultiExchangeListings,
+        TestValidatorEdgeCases,
     ]
 
     passed = 0

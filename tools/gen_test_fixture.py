@@ -8,6 +8,8 @@ No real instrument data, no data from FMP, OpenFIGI, Yahoo, or any vendor.
 import json
 from pathlib import Path
 
+from validate import validate_lei_check_digit
+
 
 # ─── Check-digit helpers ──────────────────────────────────────────────
 
@@ -49,6 +51,38 @@ def isin_check(first11: str) -> str:
             v *= 2
         total += v // 10 + v % 10
     return str((10 - (total % 10)) % 10)
+
+
+def lei_check(base18: str) -> str:
+    """Compute the two check digits for an 18-character LEI base
+    (ISO 17442 mod-97 checksum, same algorithm as
+    tools/validate.py::validate_lei_check_digit).
+
+    Convert to numeric (A=10..Z=35), append "00" as a placeholder for
+    the check digits, take mod 97, and the correct check is 98 minus
+    that remainder.
+    """
+    assert len(base18) == 18, "base must be 18 chars"
+    numeric = ''.join(
+        str(ord(ch.upper()) - ord('A') + 10) if ch.isalpha() else ch
+        for ch in base18 + "00"
+    )
+    remainder = int(numeric) % 97
+    return f"{98 - remainder:02d}"
+
+
+def synthetic_lei(n: int) -> str:
+    """A synthetic-but-checksum-valid LEI: 17 zeros, one distinguishing
+    digit, then the mod-97 check digits computed from that base.
+
+    Kept obviously fake (all zeros except one marker digit) to match
+    the style of the rest of this fixture, while still satisfying
+    validate_lei_check_digit — a placeholder like "0000...000N" with an
+    arbitrary trailing pair does not, in general, and six of the seven
+    fixture LEIs did not until this was added.
+    """
+    base18 = "0" * 17 + str(n)
+    return base18 + lei_check(base18)
 
 
 # ─── Instrument builder ───────────────────────────────────────────────
@@ -117,12 +151,12 @@ instruments = [
     make_instrument(
         ticker="TESTB", country="US", cusip_base="00000001",
         name="Synthetic Test B", exchange="XNAS", currency="USD",
-        figi="BBG000000002", lei="00000000000000000002",
+        figi="BBG000000002", lei=synthetic_lei(2),
     ),
     make_instrument(
         ticker="NEWTICK", country="US", cusip_base="00000002",
         name="Synthetic Renamed Corp", exchange="XNAS", currency="USD",
-        figi="BBG000000003", lei="00000000000000000003",
+        figi="BBG000000003", lei=synthetic_lei(3),
         history=[
             {
                 "ticker": "OLDTICK",
@@ -143,7 +177,7 @@ instruments = [
     make_instrument(
         ticker="MULTI", country="US", cusip_base="00000003",
         name="Synthetic Multi Listing", exchange="XNAS", currency="USD",
-        figi="BBG000000004", lei="00000000000000000004",
+        figi="BBG000000004", lei=synthetic_lei(4),
         listings=[
             {
                 "exchange": "XNAS",
@@ -162,18 +196,18 @@ instruments = [
     make_instrument(
         ticker="DUP", country="US", cusip_base="00000004",
         name="Synthetic Dup US", exchange="XNAS", currency="USD",
-        figi="BBG000000005", lei="00000000000000000005",
+        figi="BBG000000005", lei=synthetic_lei(5),
     ),
     make_instrument(
         ticker="DUP", country="GB", cusip_base="00000005",
         name="Synthetic Dup UK", exchange="XLON", currency="GBP",
-        figi="BBG000000006", lei="00000000000000000006",
+        figi="BBG000000006", lei=synthetic_lei(6),
     ),
     make_instrument(
         ticker="ETFSYN", country="US", cusip_base="00000006",
         name="Synthetic ETF", exchange="XNAS", currency="USD",
         asset_class="etf",
-        figi="BBG000000007", lei="00000000000000000007",
+        figi="BBG000000007", lei=synthetic_lei(7),
     ),
 ]
 
@@ -206,7 +240,9 @@ out_path.write_text(
 
 print(f"Wrote {out_path} ({len(instruments)} instruments)")
 for inst in instruments:
+    lei_ok = "OK" if validate_lei_check_digit(inst["lei"]) else "INVALID"
     print(
         f"  {inst['ticker']:8s} {inst['isin']:14s} "
-        f"{inst['cusip'] or '-':10s} {inst['figi']:14s} {inst['exchange']}"
+        f"{inst['cusip'] or '-':10s} {inst['figi']:14s} {inst['exchange']:6s} "
+        f"lei={inst['lei']} ({lei_ok})"
     )

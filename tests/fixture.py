@@ -19,6 +19,7 @@ Regenerate the underlying fixture with:
 """
 
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -124,10 +125,9 @@ ETFSYN  = by_ticker_exchange("ETFSYN",  "XNAS")  # ETF
 
 # Convenience: (ticker, exchange) pairs that the fixture treats as
 # "ambiguous" — meaning `by_ticker(ticker)` returns more than one hit.
+_ticker_counts = Counter(i["ticker"] for i in _INSTRUMENTS)
 AMBIGUOUS_TICKERS: List[str] = sorted(
-    {i["ticker"] for i in _INSTRUMENTS}
-    - {i["ticker"] for i in _INSTRUMENTS if i["ticker"] == "DUP"}  # keep only multi-hit
-    | {"DUP"}  # explicit: DUP is the ambiguous one
+    t for t, c in _ticker_counts.items() if c > 1
 )
 
 # Tickers used in a rename chain, in chronological order.

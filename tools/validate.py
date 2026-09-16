@@ -99,6 +99,18 @@ def char_to_number(char: str) -> int:
     return ord(char.upper()) - ord('A') + 10
 
 
+# ISIN country-code prefixes that are valid but are NOT ISO 3166-1
+# alpha-2 country codes. These are officially assigned by ANNA
+# (Association of National Numbering Agencies) for securities that
+# aren't tied to a single national jurisdiction:
+#   XS — international securities cleared through Euroclear/Clearstream
+#        (most commonly Eurobonds)
+#   EU — securities issued at the EU level rather than by a member state
+# Without this, a mathematically valid ISIN with one of these prefixes
+# is rejected by the country-code check before the Luhn check ever runs.
+SUPRANATIONAL_ISIN_PREFIXES: Set[str] = {"XS", "EU"}
+
+
 def validate_isin_check_digit(isin: str) -> bool:
     """
     Validate ISIN check digit.
@@ -116,9 +128,10 @@ def validate_isin_check_digit(isin: str) -> bool:
 
     isin = isin.upper()
 
-    # Validate country code (first 2 chars must be valid ISO 3166-1 alpha-2)
+    # Validate country code (first 2 chars must be a valid ISO 3166-1
+    # alpha-2 country code, or one of the supranational prefixes above)
     country_code = isin[:2]
-    if country_code not in ISO3166_COUNTRIES:
+    if country_code not in ISO3166_COUNTRIES and country_code not in SUPRANATIONAL_ISIN_PREFIXES:
         return False
 
     # Validate characters 3-11 are alphanumeric
@@ -232,6 +245,24 @@ def validate_sedol_check_digit(sedol: str) -> bool:
 
     check_digit = (10 - (total % 10)) % 10
     return check_digit == int(sedol[6])
+
+
+def validate_lei_check_digit(lei: str) -> bool:
+    """
+    Validate LEI check digit (ISO 17442 mod-97 checksum).
+
+    1. Verify the LEI is 20 characters, alphanumeric.
+    2. Convert letters to digits (A=10 .. Z=35).
+    3. Append the two-digit check to the numeric form.
+    4. Compute mod 97. Must equal 1.
+    """
+    if not lei or len(lei) != 20 or not lei.isalnum():
+        return False
+    digits = ''.join(
+        str(ord(c) - ord('A') + 10) if c.isalpha() else c
+        for c in lei.upper()
+    )
+    return int(digits) % 97 == 1
 
 
 # ─── Registry loading ─────────────────────────────────────────────────
@@ -454,6 +485,12 @@ def validate_check_digits(instruments: List[Dict]) -> List[str]:
             errors.append(f"{ticker}: sedol must be a string, got {type(sedol).__name__}")
         elif sedol and not validate_sedol_check_digit(sedol):
             errors.append(f"Invalid SEDOL check digit: {sedol} (ticker: {ticker})")
+
+        lei = instrument.get("lei")
+        if lei and not isinstance(lei, str):
+            errors.append(f"{ticker}: lei must be a string, got {type(lei).__name__}")
+        elif lei and not validate_lei_check_digit(lei):
+            errors.append(f"Invalid LEI check digit: {lei} (ticker: {ticker})")
 
     return errors
 
